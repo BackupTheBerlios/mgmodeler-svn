@@ -246,7 +246,7 @@ Nurbs::compute () const
 
   /*  for (int i=0;i<ctlnormals.size (); i++)
       ctlpoints.push_back (ctlnormals[i]);*/
-
+  std::cout << "WARNING RECOMPUTING\n" << std::endl;
 
   glPushMatrix ();
   glLoadIdentity();

@@ -102,7 +102,7 @@ public:
     rotate (tangent, normal, p.getCoords(), res.getCoords());
     translate = interpolate(path, where);
     if (translate.z!=0.0) {
-      std::cout << "WARNING interpolate(path[where]) == " << translate.z << "\n";
+      //      std::cout << "WARNING interpolate(path[where]) == " << translate.z << "\n";
       translate.z=0;
     }
 
