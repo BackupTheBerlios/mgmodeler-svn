@@ -32,7 +32,9 @@ MainWindow::MainWindow ()
 			View2D::VIEW_PATH};
 
 
-  m_subconfig = new SubConfig (this, "Subdivision Config", true);
+  m_subconfig = new SubConfig (this, "Subdivision Config", false, 
+			       Qt::WStyle_Customize | Qt::WStyle_Tool |
+			       Qt::WStyle_DialogBorder);
 
   m_view3d = new View3D (mdi);
   m_view3d-> show ();
@@ -50,6 +52,7 @@ MainWindow::MainWindow ()
 void
 MainWindow::show ()
 {
+  setWindowState(WindowMaximized);
   QMainWindow::show();
   createMenus ();
 }
@@ -303,9 +306,14 @@ MainWindow::menuSwitchNormals ()
 void
 MainWindow::menuConfig ()
 {
-  m_subconfig->show ();
+  m_subconfig->show ();  
 }
 
+void
+MainWindow::view3dRedisplay ()
+{
+  m_view3d->redisplay ();
+}
 
 void
 MainWindow::menuSelect ()

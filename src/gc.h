@@ -12,8 +12,15 @@ class GeneralizedCylinder {
   std::list<PluginObject *> profile;
   std::list<PluginObject *> section;
   float normale_scale;
+  int rPath, rSection, rProfile;
  public:
-  GeneralizedCylinder() : normale_scale(1) {}
+  enum Curve {
+    PATH,
+    SECTION,
+    PROFILE
+  };
+  GeneralizedCylinder() : normale_scale(1), rPath(10), rSection(10),
+    rProfile(10) {}
   void setNormalScale (float f);
   void addPath (PluginObject *);
   void addProfile (PluginObject *);
@@ -23,6 +30,7 @@ class GeneralizedCylinder {
   void removeSection (PluginObject *);
   void removeProfile (PluginObject *);
   void cfgDialog ();
+  void setResolution(Curve, int u);
 };
 
 #endif /* GC_H */

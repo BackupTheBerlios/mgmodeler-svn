@@ -103,9 +103,6 @@ Nurbs::buildCtlPointsVector (const std::list<Vec3f *>& source,
 
   float mindist = std::numeric_limits<float>::max ();
 
-  std::cout << "nurbs" << std::endl;
-
-
   /* build ctl points vector */
   p = pts.begin ();
   if (p == pend)
@@ -126,12 +123,7 @@ Nurbs::buildCtlPointsVector (const std::list<Vec3f *>& source,
       }
     }
   }
-  std::cout << "[";
-  for (j = ctlpoints.begin (), jend = ctlpoints.end ();
-       j != jend; ++j)
-    std::cout << "(" << *j << "), ";
-  std::cout << "]" << std::endl;
-
+  return nearest;
 }
 
 static void
@@ -172,10 +164,9 @@ Nurbs::display () const
   std::vector<Vec3f> ctlpoints;
   std::list<Vec3f *>::const_iterator nearest;
   
-  int deg = 1;
+  unsigned int deg = 1;
   int ordre;
   nearest = buildCtlPointsVector ( pts, ctlpoints);
-  
   GLUnurbsObj* nurbs = gluNewNurbsRenderer();
   assert (nurbs);
 
@@ -184,8 +175,6 @@ Nurbs::display () const
   if (deg < ctlpoints.size () - 1)
     deg = ctlpoints.size () - 1;
   ordre = deg + 1; 
-  std::cout << "points " << ctlpoints.size () << std::endl;
-  std::cout << "deg " << deg << ", ordre " << ordre << std::endl;
   if (ctlpoints.size ()>=2) {
     if (ordre >=6)
       ordre = 6;
@@ -206,32 +195,27 @@ Nurbs::beginCallBack (GLenum type, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   switch (type) {
   case GL_LINES:
-    std::cout << "Lines";
     ncb->currenttype = GL_LINES;
     break;
   case GL_LINE_LOOP:
-    std::cout << "LL";
     ncb->currenttype = GL_LINE_LOOP;
     break;
   case GL_LINE_STRIP:
-    std::cout << "LS";
     ncb->currenttype = GL_LINE_STRIP;
     break;
   default:
-    abort ();
+    break;
   }
 }
 void
 Nurbs::vertexCallBack (GLfloat *vtx, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
-  std::cout << "p";
   ncb->res->push_back (ncb->currentVertex = Vec3f (vtx[0], vtx[1], vtx[2]));
 }
 
 void
 Nurbs::normalCallBack (GLfloat *nml, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
-  std::cout << "n";
   ncb->norm->push_back (ncb->currentNormal = Vec3f (nml[0], nml[1], nml[2]));
 }
 
@@ -239,17 +223,14 @@ void
 Nurbs::endCallBack (void *data)  const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   if (ncb->currenttype == GL_LINE_LOOP) {
-    std::cout << "(+np)";
     ncb->res->push_back (ncb->currentVertex);
     ncb->norm->push_back (ncb->currentNormal);
   }
-  std::cout << "E";
 }
 
 void
 Nurbs::compute () const
 {
-
   std::vector<float> knots;
   std::vector<Vec3f> ctlpoints;
   std::vector<Vec3f> ctlnormals;
@@ -258,7 +239,7 @@ Nurbs::compute () const
   ncb.res = &points;
   ncb.norm = &normals;
   ncb.pthis = this;
-  int deg = 1;
+  unsigned int deg = 1;
   int ordre;
 
   assert (resolution);
@@ -278,6 +259,8 @@ Nurbs::compute () const
   GLUnurbsObj* nurbs = gluNewNurbsRenderer();
   assert (nurbs);
   gluNurbsProperty (nurbs, GLU_NURBS_MODE, GLU_NURBS_TESSELLATOR);
+  gluNurbsProperty(nurbs, GLU_U_STEP, resolution);
+  gluNurbsProperty(nurbs, GLU_SAMPLING_METHOD, GLU_DOMAIN_DISTANCE);
   
   gluNurbsCallback(nurbs, GLU_ERROR, 
 		   (GLvoid (*)()) (::nurbsError));
@@ -290,8 +273,6 @@ Nurbs::compute () const
   if (deg < ctlpoints.size () - 1)
     deg = ctlpoints.size () - 1;
   ordre = deg + 1; 
-  std::cout << "points " << pts.size () << std::endl;
-  std::cout << "deg " << deg << ", ordre " << ordre << std::endl;
   if (ctlpoints.size ()>=2) {
     if (ordre >=6)
       ordre = 6;
@@ -308,8 +289,7 @@ Nurbs::compute () const
   gluDeleteNurbsRenderer (nurbs);
   float t = 0;
   float tstep = 1.0f / (points.size () - 1);
-  for (int c = 0; c<points.size (); c++) {
-    std::cout << t << std::endl;
+  for (unsigned int c = 0; c<points.size (); c++) {
     timeline.push_back (t);
     t+=tstep;
     
@@ -330,7 +310,8 @@ Nurbs::evaluate (std::vector<Vec3f>& res) const
 void
 Nurbs::evaluateTimeline (std::vector<float>& t) const
 {
-  compute ();
+  if (need_recompute)
+    compute ();
   float miny = std::numeric_limits<float>::max();
   float maxy = std::numeric_limits<float>::min();
 
@@ -354,14 +335,15 @@ Nurbs::evaluateTimeline (std::vector<float>& t) const
       maxy = y;
   }
 
-  for (int i=0;i<t.size (); i++)
+  for (unsigned int i=0;i<t.size (); i++)
     t[i] = (t[i] - miny)/ (maxy-miny);  
 }
 
 void
 Nurbs::evaluateNormals (std::vector<Vec3f>& n) const
 {
-  compute();
+  if (need_recompute)
+    compute();
   n = normals;
 }
 

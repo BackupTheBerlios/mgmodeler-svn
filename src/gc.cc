@@ -178,7 +178,6 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 {
   v.clear ();
 
-  std::vector<Path> vpath;
   WholePath wpath;
 
   std::vector<Vec3f> vprofile;
@@ -200,9 +199,8 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
   std::cout << "GCSTART" << std::endl;
 
-  vpath.push_back (Path(*ipath));
-
   while (ipath!=iendpath) {
+    (*ipath)->setResolution (rPath);
     wpath.add (Path(*ipath));
     ++ipath;
   }
@@ -210,10 +208,11 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
   wpath.computeBounds ();
   std::cout << "-----------\n";
 
+  (*iprofile)->setResolution(rProfile);
   (*iprofile)->evaluate (vprofile);
-  (*iprofile)->evaluateNormals (vnormalprofile);
   (*iprofile)->evaluateTimeline (vtimeprofile);
 
+  (*isection)->setResolution(rSection);
   (*isection)->evaluate (vsection);
   (*isection)->evaluateNormals (vnormalsection);
   int last = 0;
@@ -288,5 +287,21 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
       v.push_back(face);
     }
+  }
+}
+
+void
+GeneralizedCylinder::setResolution(Curve c, int u) {
+  std::cout << "changing " << c << " to " << u << std::endl; 
+  switch (c) {
+  case PROFILE:
+    rProfile = u;
+    break;
+  case SECTION:
+    rSection = u;
+    break;
+  case PATH:
+    rPath = u;
+    break;
   }
 }

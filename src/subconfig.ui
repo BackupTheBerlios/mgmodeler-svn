@@ -8,9 +8,23 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>287</width>
-            <height>197</height>
+            <width>152</width>
+            <height>98</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>1</horstretch>
+            <verstretch>1</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="baseSize">
+        <size>
+            <width>0</width>
+            <height>0</height>
+        </size>
     </property>
     <property name="caption">
         <string>Subdivision Configuration</string>
@@ -19,200 +33,120 @@
         <pixmap>image0</pixmap>
     </property>
     <property name="sizeGripEnabled">
-        <bool>true</bool>
+        <bool>false</bool>
     </property>
-    <widget class="QLayoutWidget">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>Layout1</cstring>
+            <cstring>textLabel1</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>0</x>
-                <y>160</y>
-                <width>280</width>
-                <height>29</height>
+                <x>10</x>
+                <y>10</y>
+                <width>67</width>
+                <height>19</height>
             </rect>
         </property>
-        <hbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <spacer>
-                <property name="name">
-                    <cstring>Horizontal Spacing2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>20</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonOk</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;OK</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-                <property name="default">
-                    <bool>true</bool>
-                </property>
-            </widget>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>buttonCancel</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Cancel</string>
-                </property>
-                <property name="accel">
-                    <string></string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
-        </hbox>
+        <property name="text">
+            <string>Path:</string>
+        </property>
     </widget>
-    <widget class="QGroupBox">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>SubGroup</cstring>
+            <cstring>textLabel2</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>280</width>
-                <height>150</height>
+                <x>10</x>
+                <y>40</y>
+                <width>66</width>
+                <height>19</height>
             </rect>
         </property>
-        <property name="title">
-            <string>Subdivision</string>
+        <property name="text">
+            <string>Profile:</string>
         </property>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>11</x>
-                    <y>20</y>
-                    <width>67</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Path:</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>60</y>
-                    <width>66</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Profile:</string>
-            </property>
-        </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>textLabel2_2</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>110</y>
-                    <width>66</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="text">
-                <string>Section:</string>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>SubPath</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>20</y>
-                    <width>67</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-            <property name="value">
-                <number>10</number>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>SubSection</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>60</y>
-                    <width>67</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-            <property name="value">
-                <number>10</number>
-            </property>
-        </widget>
-        <widget class="QSpinBox">
-            <property name="name">
-                <cstring>SubProfil</cstring>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>110</y>
-                    <width>67</width>
-                    <height>19</height>
-                </rect>
-            </property>
-            <property name="minValue">
-                <number>1</number>
-            </property>
-            <property name="value">
-                <number>10</number>
-            </property>
-        </widget>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>textLabel2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>70</y>
+                <width>66</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Section:</string>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>SubPath</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>80</x>
+                <y>10</y>
+                <width>67</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="minValue">
+            <number>1</number>
+        </property>
+        <property name="value">
+            <number>10</number>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>SubSection</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>80</x>
+                <y>70</y>
+                <width>67</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="minValue">
+            <number>1</number>
+        </property>
+        <property name="value">
+            <number>10</number>
+        </property>
+    </widget>
+    <widget class="QSpinBox">
+        <property name="name">
+            <cstring>SubProfil</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>80</x>
+                <y>40</y>
+                <width>67</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy>
+                <hsizetype>5</hsizetype>
+                <vsizetype>5</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="minValue">
+            <number>1</number>
+        </property>
+        <property name="value">
+            <number>10</number>
+        </property>
     </widget>
 </widget>
 <images>
@@ -222,17 +156,31 @@
 </images>
 <connections>
     <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
+        <sender>SubProfil</sender>
+        <signal>valueChanged(int)</signal>
         <receiver>SubConfig</receiver>
-        <slot>accept()</slot>
+        <slot>SubProfil_valueChanged(int)</slot>
     </connection>
     <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
+        <sender>SubSection</sender>
+        <signal>valueChanged(int)</signal>
         <receiver>SubConfig</receiver>
-        <slot>reject()</slot>
+        <slot>SubSection_valueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>SubPath</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>SubConfig</receiver>
+        <slot>SubPath_valueChanged(int)</slot>
     </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">subconfig.ui.h</include>
+</includes>
+<slots>
+    <slot>SubPath_valueChanged( int u )</slot>
+    <slot>SubSection_valueChanged( int u )</slot>
+    <slot>SubProfil_valueChanged( int )</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

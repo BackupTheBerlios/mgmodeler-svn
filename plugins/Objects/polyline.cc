@@ -14,7 +14,7 @@
 
 
 PolyLine::PolyLine ()
-  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0), should_close (false)
+  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0), should_close (false), need_recompute(true)
 {
 }
 
@@ -29,8 +29,11 @@ PolyLine::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState 
   switch (button) {
   case QMouseEvent::MidButton:
     selected = getPoint (v);
-    if (selected)
+    need_recompute = false;
+    if (selected) {
       std::cout << PLUGIN_NAME " : dragging point " << *selected << std::endl;
+      need_recompute = true;
+    }
     break;
   default:
     break;
@@ -93,6 +96,7 @@ PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState st
     break;
   }
   should_close=false;
+  need_recompute = true;
   return true;
 }
 
@@ -174,6 +178,7 @@ PolyLine::removePoint (const Vec3f& v)
     std::cout << PLUGIN_NAME " : removing " << v << std::endl;
     pts.erase (i);
   }
+  need_recompute = true;
 }
 
 PolyLine::~PolyLine ()

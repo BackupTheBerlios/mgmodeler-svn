@@ -32,6 +32,8 @@ private:
   void setViewsMode (View2D::eMode mode);
   
   signals:
+  public slots:
+    void view3dRedisplay ();
   private slots:
     
     void menuFileOpen ();

@@ -18,7 +18,7 @@ pkgincludemath_HEADERS=math/vector3.h math/quaternion.h math/matrix4.h \
         math/matrix.h
 
 BUILT_SOURCES=mainwindow_moc.cc icons.cc subconfig_moc.cc subconfig.cc \
-	subconfig.h
+	subconfig.h subconfig.ui.h
 bin_PROGRAMS=MGModeler
 MGModeler_SOURCES=gc.cc mainwindow.cc openglwidget.cc plugin.h view2d.cc \
 		  view3d.h gc.h mainwindow.h openglwidget.h trackball.cc \
