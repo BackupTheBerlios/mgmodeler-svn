@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "polyline.h"
 
 #define PLUGIN_NAME "PolyLine Plugin"
 #define PLUGIN_MENU "object/polylines"
@@ -12,22 +13,6 @@
 
 
 
-
-class PolyLine : public PluginObject
-{
-public:
-  PolyLine ();
-  ~PolyLine ();
-  void buttonDown (QMouseEvent::ButtonState button, double, double, double);
-  bool buttonUp (QMouseEvent::ButtonState button, double, double, double);
-  void endObject ();
-  bool doubleClick (QMouseEvent::ButtonState  button, double, double, double);
-  bool hasPoint (double, double, double);
-  void removePoint (double, double, double);
-  void display ();
-private:
-  std::list<Vec3d *> pts;
-};
 
 PolyLine::PolyLine ()
   :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON)
@@ -82,8 +67,18 @@ PolyLine::endObject ()
 
 
 bool
-PolyLine::hasPoint (double, double, double)
+PolyLine::hasPoint (double x, double y, double z)
 {
+  std::list<Vec3d *>::iterator i;
+  std::list<Vec3d *>::iterator end = pts.end ();
+  double epsilon = std::numeric_limits<typeof((*i)->x)>::epsilon();
+  
+  for (i=pts.begin(); i!=end; ++i) {
+    if (std::abs((*i)->x-x) < epsilon && 
+	std::abs((*i)->y-y) < epsilon)
+      return true;
+  }
+  return false;
 }
 
 
