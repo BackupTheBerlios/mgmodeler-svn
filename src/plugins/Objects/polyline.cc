@@ -221,9 +221,7 @@ PolyLine::display ()
   if (i == end)
     return;
 
-  std::cout << "(" << cursor.x << ", " << cursor.y << ")" << std::endl;
-
-    glBegin (GL_LINE_STRIP);
+  glBegin (GL_LINE_STRIP);
   while (i!=end) {
     std::list<Vec3f *>::iterator first = i++;
     if (first == end)
@@ -259,56 +257,93 @@ PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g)
     return distanceToSegment (Vec3f (p.y, p.x, 0), Vec3f (f.y, f.x, 0),
 			      Vec3f (g.y, g.x, 0));
 
-  std::cout << "computing distance " << p << " to (" << f << ", " << g 
-	    << ")" << std::endl;
-
   // y=a*x+b
   a =  dy / dx ;
-  std::cout << " dx = " << dx << ", dy = " << dy << std::endl;
   b = g.y - a * g.x;
-
-  std::cout << "  eq1: y = " << a << " * x + " << b << std::endl;
 
   // perpendicular y=-1/a*x+d
   c = -1./a;
   d = p.y - c * p.x;
-  std::cout << "  perpendicular: y = " << c << " * x + " << d << std::endl;
 
   // intersection
   x = (d - b) / (a - c);
   y = a * x + b;
 
-  std::cout << "  intersect: (" << x << ", " << y << ")" << std::endl;
-
-  return hypot (p.x - x, p. y - y);
-  //  return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
+  // return hypot (p.x - x, p. y - y);
+  return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
 }
 
 void
-PolyLine::evaluate (int resolution, std::vector<Vec3f>& res) {
+PolyLine::evaluate (std::vector<Vec3f>& res)
+{
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end;
+  res.clear ();
+  if (pts.empty ())
+    return;
+
+  end = pts.end ();
+
+  for (i = pts.begin (); i != end; ++i)
+    res.push_back (**i);
+}
+
+void
+PolyLine::evaluateTimeline (std::vector<float>& t)
+{
+  float dist = 0.0f;
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end;
+  
+  t.clear ();
+
+  if (pts.empty ())
+    return;
+
+  i = pts.begin ();
+  end = pts.end ();
+
+  while (i != end) {
+    std::list<Vec3f *>::iterator first = i++;
+    t.push_back (dist);
+    if (i != end) {
+      float dx = ((*i)->x-(*first)->x);
+      float dy = ((*i)->y-(*first)->y);
+      float l = sqrt (dx * dx + dy * dy);
+      dist += l;
+    }
+  }
+
+  for (int i=0;i<t.size (); i++)
+    t[i]/=dist;  
+}
+
+void
+PolyLine::evaluateNormals (std::vector<Vec3f>& normals) 
+{
+  Vec3f z (0, 0, 1);
   std::list<Vec3f *>::iterator i;
   std::list<Vec3f *>::iterator end = pts.end ();
-  res.clear ();
+
+  normals.clear ();
 
   i = pts.begin ();
   if (i == end)
     return;
 
-  while (i!=end) {
+  while (i != end) {
     std::list<Vec3f *>::iterator first = i++;
-    if (first == end)
-      break;
+
     if (i != end) {
-      Vec3f f(**first);
-      Vec3f step(((*i)->x-(*first)->x)/(double)resolution,
-		 ((*i)->y-(*first)->y)/(double)resolution, 0);
-      for (int j = 0; j <= resolution; j++) {
-	res.push_back (f);
-	f+=step;
-      }
+      float dx = ((*i)->x-(*first)->x);
+      float dy = ((*i)->y-(*first)->y);
+      Vec3f v (dx, dy, 0);
+      Vec3f n = v.cross (z);
+      n.normalize ();
+      normals.push_back (n);
     }
   }
-  glEnd ();
+
 }
 
 

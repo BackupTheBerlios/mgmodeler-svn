@@ -26,7 +26,7 @@ public:
   View3D (QWorkspace *parent, eView view);
 
   virtual void setupView ();
-  virtual void updateStatusBar (int x, int y);
+  virtual void updateStatusBar (float x, float y);
 
   virtual void parseMousePress (QMouseEvent *e);
   virtual void parseMouseRelease (QMouseEvent *e);
@@ -38,8 +38,6 @@ public:
   PluginObject *getActivePlugin () { return m_plugin_active; }
 
   void setMode (eMode mode) {m_mode = mode;}
-
-  virtual void drawPolygons (std::vector<std::vector<Vec3f *> >& );
 
 protected:
 
@@ -60,14 +58,14 @@ public:
   View3DRotation (QWorkspace *parent);
 
   void setupView ();
-  void updateStatusBar (int x, int y);
+  void updateStatusBar (float x, float y);
 
 
   void parseMousePress (QMouseEvent *e);
   void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
 
-  void drawPolygons (std::vector< std::vector<Vec3f *> >&);
+  static void drawPolygons (std::vector< std::vector<Vec3f> >&);
 
 private:
 };

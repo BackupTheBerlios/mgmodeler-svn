@@ -1,8 +1,11 @@
 #include "openglwidget.h"
 #include "view3d.h"
 #include "trackball.h"
+#include "gc.h"
 #include <qgl.h>
 #include <iostream>
+
+extern GeneralizedCylinder gc;
 
 OpenglWidget::OpenglWidget (QWidget *parent, const char *name, 
 			    bool ortho, bool trackball)
@@ -67,8 +70,10 @@ OpenglWidget::paintGL ()
   View3D *parent = (View3D *)m_parent;
 
   if (parent)
-    if (parent-> getActivePlugin ())
+    if (parent-> getActivePlugin ()) {
       parent-> getActivePlugin ()-> display ();
+    } else 
+      gc.display ();
   
   swapBuffers ();
 }

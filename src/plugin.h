@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <exception>
 #include <qevent.h>
+#include <cassert>
 #include "math/vector3.h"
 
 class Plugin;
@@ -59,7 +60,7 @@ class PluginObject : public Plugin
 public:
   PluginObject (const std::string& name, const std::string& menu,  
 		const std::string& filename)
-    :Plugin (name, menu, filename)
+    :Plugin (name, menu, filename), resolution (10)
   { }
 
   const PluginType getType () {return PLUGIN_OBJECT;}
@@ -75,7 +76,15 @@ public:
   virtual bool hasPoint (float x, float y, float z) = 0;
   virtual void removePoint (float x, float y, float z) = 0;
   virtual void display () = 0;
-  virtual void evaluate (int resolution, std::vector<Vec3f>& res) = 0;
+  virtual void evaluate (std::vector<Vec3f>& res) = 0;
+  virtual void evaluateNormals (std::vector<Vec3f>& normals) = 0;
+  virtual void evaluateTimeline (std::vector<float>& time) = 0;
+  void setResolution (int res) {
+    assert (res>0);
+    resolution = res;
+  }
+ protected:
+  int resolution;
 };
 
 class PluginManager

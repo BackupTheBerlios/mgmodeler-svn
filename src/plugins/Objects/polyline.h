@@ -24,13 +24,17 @@ public:
   void display ();
   void drawPoints (std::list<Vec3f *>::iterator nearest);
   float distanceToSegment (const Vec3f& pt, const Vec3f& a, const Vec3f& b);
-  void evaluate (int resolution, std::vector<Vec3f>& res);
+  void evaluate (std::vector<Vec3f>& res);
+  void evaluateTimeline (std::vector<float>& time);
+  void evaluateNormals (std::vector<Vec3f>& time);
+  
  protected:
   std::list<Vec3f *> pts;
   Vec3f *selected;
   Vec3f cursor;
  private:
   bool should_close;
+  
 };
 
 #endif /* POLYLINES_H */

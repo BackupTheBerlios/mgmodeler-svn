@@ -22,17 +22,21 @@ public:
   void display ();
   void drawPoints ();
   void mouseMove (QMouseEvent::ButtonState state, float x, float y, float z);
-  void evaluate (int resolution, std::vector<Vec3f>& res);
+  void evaluate (std::vector<Vec3f>& res);
+  void evaluateTimeline (std::vector<float>& time);
+  void evaluateNormals (std::vector<Vec3f>& normals);
 private:
   Vec3f center;
   Vec3f radius;
+  float r;
   bool drawing;
 };
 
 
 
 Circle::Circle ()
-  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), drawing(false)
+  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), drawing(false),
+   r(1.0)
 {  
 }
 
@@ -50,6 +54,7 @@ Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState stat
   switch (button) {
   case QMouseEvent::LeftButton:
     radius = Vec3f (x, y, z);
+    r = (radius - center).length ();
     std::cout << PLUGIN_NAME" : setting radius control point to " << radius 
 	      << std::endl;
     drawing = false;
@@ -145,20 +150,51 @@ Circle::display ()
 }
 
 void
-Circle::evaluate (int resolution, std::vector<Vec3f>& res)
+Circle::evaluate (std::vector<Vec3f>& res)
 {
-  res.clear ();
-
-  double r = hypot (radius.x - center.x, radius.y - center.y);
-  double astep = M_PI/(resolution/2);;
-  double a = 0;
   
+  res.clear ();
+  assert (resolution);
+  double astep = M_PI/(resolution/2.);
+  double a = 0;
   for (int i=0; i <= resolution; i++) {
-    res.push_back (Vec3f (center.x + r * cos (a),
-		center.y + r * sin (a), 0));
+    res.push_back (Vec3f (/*center.x + */r * cos (a),
+			  /*center.y + */r * sin (a), 0));
     a += astep;
+  }
+}
+
+void
+Circle::evaluateTimeline (std::vector<float>& timeline)
+{
+  timeline.clear ();
+  assert (resolution);
+
+  float timestep = 1.0f / resolution;
+  float t = 0;
+
+  for (int i=0; i <= resolution; i++) {
+    timeline.push_back (t);
+    t+=timestep;
   }
   
 }
 
+void
+Circle::evaluateNormals (std::vector<Vec3f>& normals)
+{
+  normals.clear ();
+  assert (resolution);
+  Vec3f z(0, 0, 1);
+
+  double astep = M_PI/(resolution/2.);
+  double a = 0;
+  for (int i=0; i <= resolution; i++) {
+    Vec3f v(/*center.x + */r * cos (a), /*center.y + */r * sin (a), 0);
+    Vec3f n = v.cross (z);
+    n.normalize ();
+    normals.push_back (n);
+    a += astep;
+  }
+}
 DECLARE_PLUGIN (Circle);

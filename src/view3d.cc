@@ -2,10 +2,13 @@
 #include "openglwidget.h"
 #include "trackball.h"
 #include "plugin.h"
+#include "gc.h"
 
 #include <qgl.h>
 #include <qstring.h>
 #include <iostream>
+
+GeneralizedCylinder gc;
 
 PluginObject *View3D::s_plugin_current = NULL;
 
@@ -55,7 +58,7 @@ View3D::setupView ()
 }
 
 void
-View3D::updateStatusBar (int x, int y)
+View3D::updateStatusBar (float x, float y)
 {
   statusBar() ->clear ();
   
@@ -93,6 +96,17 @@ View3D::parseMousePress (QMouseEvent *e)
 	  m_plugins.push_back (m_plugin_active);
 	m_plugin_active = (PluginObject *)
 	  s_plugin_current-> m_createinstance ();
+	switch (m_view) {
+	case VIEW_PROFIL:
+	  gc.addProfile (m_plugin_active);
+	  break;
+	case VIEW_SECTION:
+	  gc.addSection (m_plugin_active);
+	  break;
+	case VIEW_WAY:
+	  gc.addPath (m_plugin_active);
+	  break;
+	} 
 	s_plugin_current = NULL;
       }
 
@@ -141,7 +155,7 @@ View3D::parseMouseMove (QMouseEvent *e)
 
 	;
     
-      updateStatusBar (e->x (), e->y ());
+      updateStatusBar (x, y);
     }
   
 }
@@ -171,11 +185,6 @@ View3D::getPlugins ()
 }
 
 
-void 
-View3D::drawPolygons (std::vector<std::vector<Vec3f *> >& faces)
-{
-}
-
 // View3DRotation
 
 View3DRotation::View3DRotation (QWorkspace *parent)
@@ -200,7 +209,7 @@ View3DRotation::setupView ()
 }
 
 void
-View3DRotation::updateStatusBar (int x, int y)
+View3DRotation::updateStatusBar (float x, float y)
 {
 }
 
@@ -221,21 +230,35 @@ View3DRotation::parseMouseRelease (QMouseEvent *e)
 
 
 void 
-View3DRotation::drawPolygons (std::vector<std::vector<Vec3f *> >& faces)
+View3DRotation::drawPolygons (std::vector<std::vector<Vec3f> >& faces)
 {
-  std::vector<std::vector<Vec3f *> >::iterator i;
-  std::vector<Vec3f *>::iterator j;
-  for (i=faces.begin (); i!= faces.end (); i++)
+  std::vector<std::vector<Vec3f> >::iterator i;
+  std::vector<Vec3f>::iterator j;
+  //  std::cout << "Drawing polygons ";
+  int current = 0;
+  for (i=faces.begin (); i!= faces.end (); i++, current++)
     {
+      //  std::cout << "!";
       glBegin (GL_POLYGON);
+      switch (current % 3) {
+      case 0:
+	glColor3f (1.f, 0.f, 0.f);
+	break;
+      case 1:
+	glColor3f (0.f, 1.f, 0.f);
+	break;
+      case 2:
+	glColor3f (0.f, 0.f, 1.f);
+	break;
+      }
       for (j = (*i).begin (); j!=(*i).end (); j++)
 	{
-	  Vec3f *v = *j;
-	  glColor3f (1.0, 1.0, 1.0);
-	  glVertex3f (v->x, v->y, v->z);
+	  //	  std::cout << ".";
+	  glVertex3f ((*j).x, (*j).y, (*j).z);
 	  
 	}
       glEnd ();
+      //      std::cout << std::endl;
     }
  
 }
