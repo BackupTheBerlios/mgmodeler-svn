@@ -10,7 +10,8 @@ public:
   enum eMode {
     MODE_EDIT,
     MODE_SELECTION,
-    MODE_MOVE_WINDOW
+    MODE_MOVE_WINDOW,
+    MODE_SELECTION_OBJECT
   };
 
   enum eView {

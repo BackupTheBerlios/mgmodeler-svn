@@ -90,11 +90,29 @@ View2D::parseMousePress (QMouseEvent *e)
 	
 	m_plugin_active->buttonDown (e->button (), e->state (), v);
       }
-  if (m_mode == MODE_SELECTION)
-    {
-      //      PluginObject *objp = findObject (e-> x(), e-> y());
-    }
 
+  if (e->button () == QMouseEvent::LeftButton)
+    if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
+      {
+	printf("PUT\n");
+
+	std::vector<PluginObject *>::iterator i;
+	Vec3f v;
+	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
+
+	for (i = m_plugins.begin (); i!=m_plugins.end (); ++i)
+	  {
+	    if ((*i)->hasPoint (v))
+	      {
+		if (m_plugin_active)
+		  m_plugins.push_back (m_plugin_active);
+		m_plugin_active = *i;
+		//m_mode = MODE_EDIT;
+		printf("Found\n");
+		return;
+	      }
+	  }
+      }
 }
 
 void

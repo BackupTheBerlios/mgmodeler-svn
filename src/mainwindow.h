@@ -46,6 +46,7 @@ private:
   void menuNormals ();
   void menuSwitchNormals ();
   void menuConfig ();
+  void menuSelect ();
   void windowsMenuActivated(int id);
 };
 

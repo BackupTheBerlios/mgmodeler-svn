@@ -87,6 +87,10 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
 	   NULL);
 
+  addTool (this, "Select Object", QPixmap::fromMimeSource ("select.png"),
+	   QKeySequence ("Ctrl+S"), toolbar, NULL, SLOT(menuSelect ()),
+	   NULL);
+
   addTool (this, "Move 2d Window", QPixmap::fromMimeSource ("move.png"),
 	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
 	   NULL);
@@ -109,7 +113,7 @@ MainWindow::createMenus ()
 	pg_target_menu = menu_pg_export;
 
       addTool (this, p->getName ().c_str (), 
-	       QPixmap::fromMimeSource (p-> getIcon ()),
+	       QPixmap (p-> getIcon ()),
 	       QKeySequence (), NULL, pg_target_menu, 
 	       SLOT(menuPluginIOChoice()), str);
     }
@@ -120,7 +124,7 @@ MainWindow::createMenus ()
       str[0] = k;
       Plugin *p = *i;
       addTool (this, p->getMenu ().c_str (), 
-	       QPixmap::fromMimeSource (p-> getIcon ()),
+	       QPixmap (p-> getIcon ()),
 	       QKeySequence (), toolbar, menu_pg_objects,
 	       SLOT(menuPluginChoice()), str);
     }
@@ -252,11 +256,12 @@ MainWindow::menuWindowMove ()
 void
 MainWindow::menuHelp ()
 {
-  /*    QAssistantClient *helpclient = 
-	new QAssistantClient (QDir("help/").absPath(), this );*/
-  system ("assistant -profile ../share/MGModeler/index.dcf&");
-  /*QString docsPath = QDir("help/").absPath();
-    helpclient->showPage( QString("%1/index.dcf").arg(docsPath) );*/
+  QAssistantClient *helpclient = 
+    new QAssistantClient (QDir(DATADIR).absPath(), this );
+  
+  //system ("assistant -profile ../share/MGModeler/index.dcf&");
+  QString docsPath = QDir(DATADIR).absPath();
+  helpclient->showPage(QString("index.html"));//QString("index.html").arg(docsPath) );
 }
 
 void
@@ -299,4 +304,12 @@ void
 MainWindow::menuConfig ()
 {
   m_subconfig->show ();
+}
+
+
+void
+MainWindow::menuSelect ()
+{
+  printf("SELECT\n");
+  setViewsMode (View2D::MODE_SELECTION_OBJECT);
 }
