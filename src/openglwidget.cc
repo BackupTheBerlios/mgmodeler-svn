@@ -21,6 +21,8 @@ OpenglWidget::OpenglWidget (QWidget *parent, const char *name,
       m_update_modelview = true;
     } else 
       m_trackball = 0;
+
+  m_motion_x = m_motion_y = 0.0;
 }
 
 void 
@@ -34,7 +36,43 @@ OpenglWidget::initializeGL ()
 void 
 OpenglWidget::clearGL ()
 {
+  double size = 5.0;
+
+  if (m_orthoview)
+    glClearColor (1.0, 1.0, 1.0, 1.0);
+  else
+    glClearColor (0.0, 0.0, 0.0, 1.0);
+
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (m_orthoview)
+    {
+      glBegin (GL_LINES);
+
+      glColor3f (0.0, 1.0, 0.0);
+      glVertex2f (0.0, 0.0);
+      glVertex2f (size, 0.0);
+      glVertex2f (0.0, 0.0);
+      glVertex2f (0.0, size);
+      glColor3f (1.0, 0.0, 0.0);
+      glVertex2f (0.0, 0.0);
+      glVertex2f (-size, 0.0);
+      glVertex2f (0.0, 0.0);
+      glVertex2f (0.0, -size);
+
+      glColor3f (.85, .85, .85);
+      for (double i=-size; i<size; i+=0.1)
+	if (i!= 0)
+	  {
+	    glVertex2f (i, -size);
+	    glVertex2f (i, size);
+	    glVertex2f (-size, i);
+	    glVertex2f (size, i);
+	  }
+	  
+      glEnd ();
+    }
+  
 }
 
 void 
@@ -105,7 +143,6 @@ OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
   }
   
   updateGL ();
-
 }
 
 
@@ -157,20 +194,27 @@ OpenglWidget::SyncContext ()
       glMatrixMode (GL_MODELVIEW);
     } 
 
-  if (m_trackball_enable)
-    if (m_update_modelview)
-      {
-	Matrix4f modelview;
-
-	m_update_modelview = false;
-	
-	m_trackball->getRotation (modelview);
-	/* Send the Matrix */
-	glLoadIdentity ();
-	gluLookAt (0, 0, 2, 0, 0, 0, 0, 1, 0);
-	glMultMatrixf ((float *)modelview[0]);
-	glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
-      }
+  if (m_update_modelview)
+    {
+      if (m_trackball_enable)
+	{
+	  Matrix4f modelview;
+	  
+	  m_update_modelview = false;
+	  
+	  m_trackball->getRotation (modelview);
+	  /* Send the Matrix */
+	  glLoadIdentity ();
+	  gluLookAt (0, 0, 2, 0, 0, 0, 0, 1, 0);
+	  glMultMatrixf ((float *)modelview[0]);
+	  glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
+	}
+      else
+	{
+	  glLoadIdentity ();
+	  glTranslatef (m_motion_x, m_motion_y, 0.0);
+	}
+    }
 }
 
 void
@@ -340,4 +384,12 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
   }
   glEnd ();
   glPopAttrib();
+}
+
+
+void
+OpenglWidget::moveWindow (int relx, int rely)
+{
+  m_motion_x += relx / 500.0;
+  m_motion_y += rely / 500.0;
 }

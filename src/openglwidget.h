@@ -44,6 +44,8 @@ public:
 		     const std::vector<std::vector<Vec3f> >& normals);
   void drawPolygons (const std::vector<Face>& faces);
 
+  void moveWindow (int relx, int  rely);
+
 private:
   void mousePressEvent (QMouseEvent *e);
   void mouseMoveEvent (QMouseEvent *e);
@@ -56,6 +58,9 @@ private:
 
   int m_width;
   int m_height;
+
+  double m_motion_x;
+  double m_motion_y;
 
   View *m_parent;
   bool m_orthoview;

@@ -17,7 +17,8 @@ View2D::View2D (QWorkspace *parent, eView view)
   
   m_plugin_active = NULL;
 
-  m_mode = MODE_EDIT;
+  m_mode = MODE_MOVE_WINDOW;
+  m_mouse_move = false;
 }
 
 void
@@ -39,8 +40,13 @@ View2D::setupView ()
     default:
       std::cout << "Warning Invalid Axe"<<std::endl;
       break;
-
     }
+
+  //QWidget *glwidget = getOpenglWidget ();
+
+  //glwidget->move (0, 0);
+  //glwidget->resize (20, 20);
+
 }
 
 void
@@ -78,6 +84,12 @@ View2D::parseMousePress (QMouseEvent *e)
 	} 
 	s_plugin_current = NULL;
       }
+  
+  if (e->button () == QMouseEvent::LeftButton)
+    if (m_mode == MODE_MOVE_WINDOW)
+      {
+	beginWindowMotion (e->x (), e->y ());
+      }
 
   if (m_mode == MODE_EDIT)
     if (m_plugin_active)
@@ -106,6 +118,12 @@ View2D::parseMouseRelease (QMouseEvent *e)
       if (m_plugin_active)
 	m_plugin_active->buttonUp (e->button (), e->state (), v);
     }
+
+  if (e->button () == QMouseEvent::LeftButton)
+    if (m_mode == MODE_MOVE_WINDOW)
+      {
+	endWindowMotion ();
+      }
 }
 
 void
@@ -123,7 +141,10 @@ View2D::parseMouseMove (QMouseEvent *e)
 	if (m_plugin_active)
 	  m_plugin_active->mouseMove (e-> state (), v);
 
-	;
+      if (m_mode == MODE_MOVE_WINDOW)
+	{
+	  parseWindowMotion (e->x (), e->y());
+	}
     
       updateStatusBar (v);
     }
@@ -176,4 +197,35 @@ View2D::updateStatusBar (const Vec3f& v)
   
   statusBar() ->message (QString().setNum (v.x)+QString(" ")+
                          QString().setNum (v.y));
+}
+
+void 
+View2D::beginWindowMotion (int x, int y)
+{
+  m_mouse_move = true;
+  m_mouse_move_x = x;
+  m_mouse_move_y = y;
+}
+
+void 
+View2D::parseWindowMotion (int x, int y)
+{
+  int relx, rely;
+
+  if (!m_mouse_move)
+    return;
+
+  relx = x - m_mouse_move_x;
+  rely = m_mouse_move_y - y;
+
+  m_mouse_move_x = x;
+  m_mouse_move_y = y;
+  
+  getOpenglWidget ()-> moveWindow (relx, rely);
+}
+
+void 
+View2D::endWindowMotion ()
+{
+  m_mouse_move = false;
 }

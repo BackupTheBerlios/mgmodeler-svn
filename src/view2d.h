@@ -9,7 +9,8 @@ class View2D : public View
 public:
   enum eMode {
     MODE_EDIT,
-    MODE_SELECTION
+    MODE_SELECTION,
+    MODE_MOVE_WINDOW
   };
 
   enum eView {
@@ -35,11 +36,15 @@ public:
 
   void setMode (eMode mode) {m_mode = mode;}
   void updateStatusBar (const Vec3f& v);
-private:
+ private:
+  void beginWindowMotion (int x, int y);
+  void parseWindowMotion (int x, int y);
+  void endWindowMotion ();
   static PluginObject *s_plugin_current;
   PluginObject *m_plugin_active;
   eView m_view;
-
+  bool m_mouse_move;
+  int m_mouse_move_x, m_mouse_move_y;
   int m_cursor_x, m_cursor_y;
   eMode m_mode;
   std::vector<PluginObject *> m_plugins;

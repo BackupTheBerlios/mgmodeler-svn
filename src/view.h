@@ -20,6 +20,7 @@ public:
   virtual void redisplay () = 0;
 protected:
   void closeEvent( QCloseEvent * );
+  OpenglWidget *getOpenglWidget () {return m_glwidget;}
   OpenglWidget *m_glwidget;
 };
 

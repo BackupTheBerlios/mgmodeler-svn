@@ -69,12 +69,10 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
 	   NULL);
 
-
-  addTool (this, "Selection Mode", ((const char **)icon_cursor),
-	   QKeySequence ("Ctrl+S"), toolbar, NULL, 
-	   SLOT(menuSelect()), NULL);
-
-
+  addTool (this, "Move 2d Window", ((const char **)icon_cursor),
+	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
+	   NULL);
+  
   std::vector<Plugin *>::iterator i;
   int k = 0;
 
@@ -186,9 +184,10 @@ MainWindow::windowsMenuActivated(int id)
      w->showNormal();
    w->setFocus();
 }
+
 void
-MainWindow::menuSelect ()
+MainWindow::menuWindowMove ()
 {
   std::cout<<"SELECT\n";
-  setViewsMode (View2D::MODE_SELECTION);
+  setViewsMode (View2D::MODE_MOVE_WINDOW);
 }

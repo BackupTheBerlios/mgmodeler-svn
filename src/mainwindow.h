@@ -33,7 +33,7 @@ private:
   void menuFileQuit ();
   void menuPluginChoice ();
   void menuPluginIOChoice ();
-  void menuSelect ();
+  void menuWindowMove ();
   void windowsMenuActivated(int id);
 };
 
