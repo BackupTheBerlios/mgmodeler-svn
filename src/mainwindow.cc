@@ -107,7 +107,7 @@ MainWindow::menuPluginChoice ()
   PluginObject *objp = (PluginObject *)PluginManager::getPlugin 
     (sender ()-> name  ()[0]);
   
-  std::cout<<"Plugin: "<< objp->getName ()<<"\n";
+  //std::cout<<"Plugin: "<< objp->getName ()<<"\n";
 
   m_view3d-> setCurrentPlugin (objp);
 }
