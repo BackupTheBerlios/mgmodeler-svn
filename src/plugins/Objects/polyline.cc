@@ -222,7 +222,8 @@ PolyLine::display ()
     return;
 
   std::cout << "(" << cursor.x << ", " << cursor.y << ")" << std::endl;
-  glBegin (GL_LINE_STRIP);
+
+    glBegin (GL_LINE_STRIP);
   while (i!=end) {
     std::list<Vec3f *>::iterator first = i++;
     if (first == end)
@@ -234,12 +235,13 @@ PolyLine::display ()
       if (dist < mindist) {
 	mindist = dist;
 	nearest = first;
-      }
+	}
     }
   }
   glEnd ();
 
   drawPoints (nearest);
+
 }
 
 float

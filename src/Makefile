@@ -1,7 +1,7 @@
 all: MGModeler
-
-CXXFLAGS=-I$(QTDIR)/include -Wall -I. -g -fPIC -DPIC
-LDFLAGS=-L$(QTDIR)/lib -lqt-mt -lGL -lGLU -rdynamic -ldl
+CXX=g++
+CXXFLAGS=-I$(QTDIR)/include -Wall -I. -g -fPIC -DPIC -I$(QTDIR)/include/qt
+LDFLAGS=-L/net/cremi/ddallaro/opt/src/Mesa-6.1/lib -lGL -lGLU -L$(QTDIR)/lib -lqt-mt -ldl
 BIN=MGModeler
 
 
@@ -10,7 +10,7 @@ $(BIN): mainwindow.o mainwindow_moc.o main.o view3d.o openglwidget.o plugin.o tr
 	$(CXX) $(LDFLAGS) $(LIBS) -o $@ $^
 
 mainwindow_moc.cc: mainwindow.h
-	moc $^ > $@
+	$(QTDIR)/bin/moc $^ > $@
 clean:
 	rm -f *~ *.o $(BIN)
 mainwindow_moc.o: mainwindow_moc.cc mainwindow.h

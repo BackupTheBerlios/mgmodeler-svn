@@ -12,6 +12,7 @@ PluginObject *View3D::s_plugin_current = NULL;
 View3D::View3D (QWorkspace *parent, std::string name)
   :QMainWindow (parent, name.c_str (), 0)
 {
+  m_plugin_active = NULL;
 }
 
 
@@ -169,12 +170,19 @@ View3D::getPlugins ()
   return m_plugins;
 }
 
+
+void 
+View3D::drawPolygons (std::vector<std::vector<Vec3f *> >& faces)
+{
+}
+
 // View3DRotation
 
 View3DRotation::View3DRotation (QWorkspace *parent)
-  :View3D (parent, "OpenGL 3D View")
+    :View3D (parent, "OpenGL 3D View")
 {
   m_glwidget = new OpenglWidget (this, "OpenGL 3D View", false, true);
+  //m_parent = parent;
   setCentralWidget (m_glwidget);
   setMouseTracking (true);
   m_editable = false;
@@ -199,7 +207,6 @@ View3DRotation::updateStatusBar (int x, int y)
 void
 View3DRotation::parseMousePress (QMouseEvent *e)
 {
-  
 }
 
 void
@@ -210,6 +217,26 @@ View3DRotation::parseMouseMove (QMouseEvent *e)
 void
 View3DRotation::parseMouseRelease (QMouseEvent *e)
 {
-  
+}
+
+
+void 
+View3DRotation::drawPolygons (std::vector<std::vector<Vec3f *> >& faces)
+{
+  std::vector<std::vector<Vec3f *> >::iterator i;
+  std::vector<Vec3f *>::iterator j;
+  for (i=faces.begin (); i!= faces.end (); i++)
+    {
+      glBegin (GL_POLYGON);
+      for (j = (*i).begin (); j!=(*i).end (); j++)
+	{
+	  Vec3f *v = *j;
+	  glColor3f (1.0, 1.0, 1.0);
+	  glVertex3f (v->x, v->y, v->z);
+	  
+	}
+      glEnd ();
+    }
+ 
 }
 

@@ -6,6 +6,7 @@
 #include <qstatusbar.h>
 #include "plugin.h"
 #include "view3d.h"
+#include "math/vector3.h"
 
 class OpenglWidget;
 class Trackball;
@@ -34,9 +35,11 @@ public:
   void setCurrentPlugin (PluginObject *p);
   const std::vector<PluginObject *>& getPlugins();
 
-  PluginObject *getActivePlugin () {return m_plugin_active;}
+  PluginObject *getActivePlugin () { return m_plugin_active; }
 
   void setMode (eMode mode) {m_mode = mode;}
+
+  virtual void drawPolygons (std::vector<std::vector<Vec3f *> >& );
 
 protected:
 
@@ -63,6 +66,8 @@ public:
   void parseMousePress (QMouseEvent *e);
   void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
+
+  void drawPolygons (std::vector< std::vector<Vec3f *> >&);
 
 private:
 };

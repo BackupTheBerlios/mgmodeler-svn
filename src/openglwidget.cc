@@ -66,8 +66,9 @@ OpenglWidget::paintGL ()
 
   View3D *parent = (View3D *)m_parent;
 
-  if (parent-> getActivePlugin ())
-    parent-> getActivePlugin ()-> display ();
+  if (parent)
+    if (parent-> getActivePlugin ())
+      parent-> getActivePlugin ()-> display ();
   
   swapBuffers ();
 }
@@ -98,6 +99,7 @@ OpenglWidget::mouseDoubleClickEvent (QMouseEvent *e)
 {
   View3D *parent = (View3D *)m_parent;
   parent-> parseMouseDoubleClick (e);
+  updateGL ();
 }
 
 void
@@ -126,16 +128,15 @@ void
 OpenglWidget::mouseMoveEvent (QMouseEvent *e) {
   View3D *parent = (View3D *)m_parent;
   parent-> parseMouseMove (e);
-  updateGL ();
   
   if (e-> state ()&QMouseEvent::LeftButton)
     if (m_trackball_enable)
       {
 	m_trackball->computeOrientation (e->x (), e->y ());
 	m_update_modelview = true;
-	updateGL ();
       }
-  
+
+  updateGL ();  
 }
 
 void

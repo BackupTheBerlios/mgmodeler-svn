@@ -1,3 +1,4 @@
+CXX=g++
 CXXFLAGS=-I$(QTDIR)/include -I ../.. -g -fPIC
 LDFLAGS=-L$(QTDIR)/lib -shared
 BIN=../bin/polyline.so ../bin/nurbs.so ../bin/circle.so
