@@ -96,6 +96,10 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+S"), toolbar, menu_file, SLOT(menuFileSave()),
 	   NULL);
 
+  addTool (this, "Close Import",QPixmap::fromMimeSource ("fileclose.png") ,
+	   QKeySequence ("Ctrl+Q"), toolbar, menu_file, SLOT(menuFileClose()),
+	   NULL);
+
   menu_file->insertSeparator();
 
   addTool (this, "Quit",QPixmap::fromMimeSource ("exit.png") ,
@@ -158,8 +162,6 @@ MainWindow::createMenus ()
       menu_window->insertItem(windows.at(i)->caption(),
 			      this, SLOT( windowsMenuActivated( int ) ) );
     menu_window->setItemParameter( id, i );
-    /*    menu_window->setItemChecked
-	  ( id, mdi->activeWindow() == windows.at(i) );*/
   }  
 
   toolbar->addSeparator(); 
@@ -278,6 +280,13 @@ MainWindow::menuFileSave ()
     }
     m_view2d[i]->save (stream);
   }
+}
+
+void
+MainWindow::menuFileClose ()
+{
+  m_view3d->Init ();
+  m_view3d->display ();
 }
 
 void

@@ -94,8 +94,6 @@ OpenglWidget::resizeGL (int w, int h)
   updateGL ();
 }
 
-int zi=0;
-
 void 
 OpenglWidget::paintGL ()
 {

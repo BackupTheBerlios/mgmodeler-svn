@@ -10,6 +10,8 @@ class View3D : public View
 public:
   View3D (QWorkspace *parent, const std::string& name = "View3D");
 
+  void Init () {current = NULL;}
+
   void setupView ();
   void updateStatusBar (const std::string& s);
 
@@ -24,7 +26,7 @@ public:
   std::vector<Face> getFaces () 
     {
       std::vector<Face> f;
-      gc.compute (f);
+      f = gc.getFaces ();
       return f;
     }
   

@@ -41,6 +41,7 @@ private:
     void menuFileNew ();
   void menuFileOpen ();
   void menuFileSave ();
+  void menuFileClose ();
   void menuFileQuit ();
   void menuPluginChoice ();
   void menuPluginIOChoice ();
