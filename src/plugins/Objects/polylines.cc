@@ -1,29 +1,30 @@
 #include "plugin.h"
+#include "../../math/vector3.h"
+#include <qevent.h>
 #include <iostream>
+#include <GL/gl.h>
 
 #define PLUGIN_NAME "PolyLine Plugin"
 #define PLUGIN_MENU "object/polylines"
 #define PLUGIN_ICON "icons/polyline.png"
 
-struct point {
-  point (const point &p) : x (p.x), y(p.y),  z( p.z) {}
-  point (double x, double y, double z) : x(x), y(y), z(z) {}
-  double x, y, z;
-};
+
+
 
 class PolyLine : public PluginObject
 {
 public:
   PolyLine ();
   ~PolyLine ();
-  void buttonDown (int button, double, double, double);
-  bool buttonUp (int button, double, double, double);
+  void buttonDown (QMouseEvent::ButtonState button, double, double, double);
+  bool buttonUp (QMouseEvent::ButtonState button, double, double, double);
   void endObject ();
-  bool doubleClick (int button, double, double, double);
+  bool doubleClick (QMouseEvent::ButtonState  button, double, double, double);
   bool hasPoint (double, double, double);
   void removePoint (double, double, double);
+  void display ();
 private:
-  std::vector<point *> pts;
+  std::list<Vec3d *> pts;
 };
 
 PolyLine::PolyLine ()
@@ -32,51 +33,73 @@ PolyLine::PolyLine ()
 }
 
 void
-PolyLine::buttonDown (int buttonDown, double x, double y, double z)
+PolyLine::buttonDown (QMouseEvent::ButtonState button, double x, double y, double z)
 {
 }
 
 bool
-PolyLine::buttonUp (int buttonUp, double x, double y, double z)
+PolyLine::buttonUp (QMouseEvent::ButtonState button, double x, double y, double z)
 {
   std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
-  pts.push_back (new point(x,y,z));
+  pts.push_back (new Vec3d(x,y,z));
   return true;
 }
 
 
 bool
-PolyLine::doubleClick (int buttonUp, double x, double y, double z)
+PolyLine::doubleClick (QMouseEvent::ButtonState button, double x, double y, double z)
 {
-  std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
-  pts.push_back (new point(x,y,z));
-  pts.push_back (new point(*pts[0]));
-  endObject ();
+  switch (button) {
+  case QMouseEvent::LeftButton:
+    std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
+    pts.push_back (new Vec3d(x,y,z));
+    //    pts.push_back (new Vec3d(*pts[0]));
+    endObject ();
+    return true;
+  case QMouseEvent::RightButton:
+    removePoint (x, y, z);
+    }
   return false;
 }
 
 
 void
 PolyLine::endObject ()
-{
-  
+{  
 }
 
 
 bool
-hasPoint (double, double, double)
+PolyLine::hasPoint (double, double, double)
 {
 }
 
 
 void
-removePoint (double, double, double)
+PolyLine::removePoint (double x, double y, double z)
 {
+  Vec3d tmp=Vec3d(x, y, z);
+  std::list<Vec3d *>::iterator i;
+  std::list<Vec3d *>::iterator end = pts.end ();
+  for (i=pts.begin(); i!=end; ++i)
+    if (tmp==**i)
+      pts.erase (i);
 }
 
 PolyLine::~PolyLine ()
 {
 }
 
+void
+PolyLine::display ()
+{
+  std::list<Vec3d *>::iterator i;
+  std::list<Vec3d *>::iterator end = pts.end ();
+  glBegin (GL_LINE);
+  for (i=pts.begin(); i!=end; ++i)
+    glVertex2f ((*i)->x, (*i)->y);
+  glEnd ();
+  
+}
 
 DECLARE_PLUGIN (PolyLine);

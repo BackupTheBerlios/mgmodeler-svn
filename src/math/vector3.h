@@ -160,5 +160,5 @@ template<class T>
 const T Vector3<T>::epsilon = std::numeric_limits<T>::epsilon();
 
 typedef Vector3<float> Vec3f;
-
+typedef Vector3<double> Vec3d;
 #endif
