@@ -60,16 +60,16 @@ MainWindow::createMenus ()
   QPopupMenu *menu_file = new QPopupMenu (this);
   menuBar ()-> insertItem ("&File", menu_file);
   
-  addTool (this, "Open File", QPixmap ((const char **)icon_fileopen), 
+  addTool (this, "Open File", QPixmap ("icons/fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
 	   NULL);
   menu_file->insertSeparator();
 
-  addTool (this, "Quit",((const char **)icon_exit) ,
+  addTool (this, "Quit",QPixmap ("icons/exit.png") ,
 	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
 	   NULL);
 
-  addTool (this, "Move 2d Window", ((const char **)icon_cursor),
+  addTool (this, "Move 2d Window", QPixmap ("icons/move.png"),
 	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
 	   NULL);
   
