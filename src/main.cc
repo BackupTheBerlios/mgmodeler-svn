@@ -25,7 +25,7 @@ main (int argc, char *argv[])
       mainWindow->move (10, 10);*/
   application.setMainWidget (mainWindow);
 
-  //  mainWindow->show ();
+  mainWindow->show ();
 
   return application.exec ();
 }

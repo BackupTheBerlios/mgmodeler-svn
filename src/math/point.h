@@ -2,6 +2,7 @@
 #define POINT_H
 
 #include <vector>
+#include "math/vector3.h"
 
 class Point {
  public:
@@ -63,6 +64,11 @@ class Point {
 
   Point& operator-=(const Vec3f& v) {
     coords-=v;
+    return *this;
+  }
+
+  Point& operator*=(const float f) {
+    coords*=f;
     return *this;
   }
 

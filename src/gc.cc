@@ -1,5 +1,6 @@
 #include "gc.h"
-#include "view3d.h"
+#include "math/point.h"
+#include "math/vector3.h"
 
 void
 GeneralizedCylinder::addPath (PluginObject *o) 
@@ -166,27 +167,29 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
       Face face;
       face.clear();
-      Point p(Vec3f (vsection[j].x*scale1,
-		     0,
-		     vsection[j].y*scale1));
+      Point p;
+      p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
+      p*=scale1;
       p+=pathrel1;
-      p.setNormal(vnormalsection[j]);
+      Vec3f n1(vnormalpath[j][0], 0, vnormalpath[j][1] );
+
+      Vec3f n2(vnormalpath[j+1][0], 0, vnormalpath[j+1][1]);
+
+      p.setNormal(n1);
       p.setColor(Vec3f(1,0,0));
       face.push_back (p);
 
-      p.setCoords(Vec3f(vsection[j].x * scale2,
-			0,
-			vsection[j].y * scale2));
+      p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
+      p*=scale2;
       p+=pathrel2;
-      p.setNormal(vnormalsection[j]);
+      p.setNormal(n1);
       p.setColor(Vec3f(0,1,0));
       face.push_back (p);
 
-      p.setCoords(Vec3f(vsection[j+1].x * scale2,
-			0,
-			vsection[j+1].y * scale2));
+      p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
+      p*=scale2;
       p+=pathrel2;
-      p.setNormal (vnormalsection[j+1]);
+      p.setNormal (n2);
       p.setColor(Vec3f(0,0,1));
       face.push_back(p);
 
@@ -194,27 +197,24 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
       face.clear ();
 
-      p.setCoords(Vec3f(vsection[j].x * scale1, 
-			0,
-			vsection[j].y * scale1));
+      p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
+      p*=scale1;
       p+=pathrel1;
-      p.setNormal(vnormalsection[j]);
+      p.setNormal(n1);
       p.setColor(Vec3f(1,1,0));
       face.push_back(p);
 
-      p.setCoords(Vec3f (vsection[j+1].x * scale2,
-			 0,
-			 vsection[j+1].y * scale2));
+      p.setCoords(Vec3f (vsection[j+1].x, 0, vsection[j+1].y));
+      p*=scale2;
       p+=pathrel2;
-      p.setNormal(vnormalsection[j+1]);
+      p.setNormal(n2);
       p.setColor(Vec3f(1,0,1));
       face.push_back(p);
 
-      p.setCoords(Vec3f(vsection[j+1].x * scale1,
-			0,
-			vsection[j+1].y * scale1));
+      p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
+      p*=scale1;
       p+=pathrel1;
-      p.setNormal(vnormalsection[j+1]);
+      p.setNormal(n2);
       p.setColor(Vec3f(0,1,1));
       face.push_back(p);
 

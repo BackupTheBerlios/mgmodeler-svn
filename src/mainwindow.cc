@@ -44,7 +44,12 @@ MainWindow::MainWindow ()
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
     }
-  show ();
+}
+
+void
+MainWindow::show ()
+{
+  QMainWindow::show();
   createMenus ();
 }
 
