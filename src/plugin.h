@@ -53,6 +53,9 @@ public:
   { }
 
   const PluginType getType () {return PLUGIN_IO;}
+  virtual void parse(const std::string &filename) = 0;
+  virtual const std::vector<Vec3f>& getPoints() = 0;
+  virtual const std::vector<std::vector<int> >& getFaces() = 0;
 };
 
 class PluginObject : public Plugin
@@ -102,12 +105,17 @@ public:
   static std::vector<Plugin *>::iterator begin () {return s_plugins.begin ();}
   static std::vector<Plugin *>::iterator end () {return s_plugins.end ();}
 
+  static std::vector<Plugin *>::iterator iobegin () {return s_io_plugins.begin ();}
+  static std::vector<Plugin *>::iterator ioend () {return s_io_plugins.end ();}
+
   static int pluginsCount () {return s_plugins.size ();}
 
   static Plugin *getPlugin (int i) {return s_plugins[i];}
+  static Plugin *getIOPlugin (int i) {return s_io_plugins[i];}
 
 private:
   static std::vector<Plugin *> s_plugins;
+  static std::vector<Plugin *> s_io_plugins;
 };
 
 

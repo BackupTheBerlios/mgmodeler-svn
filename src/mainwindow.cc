@@ -88,6 +88,16 @@ MainWindow::createMenus ()
   std::vector<Plugin *>::iterator i;
   int k = 0;
 
+  for (i = PluginManager::iobegin (); i != PluginManager::ioend (); ++i, ++k)
+    {
+      char str[2] = "0";
+      str[0] = k;
+      Plugin *p = *i;
+      addTool (this, p->getName ().c_str (), QPixmap(p-> getIcon ()),
+	       QKeySequence (), toolbar, menu_file, SLOT(menuPluginIOChoice()),
+	       str);
+    }
+  k=0;
   std::cout <<"PLUGINS COUNT = "<<PluginManager::pluginsCount ()<<"\n";
   
   for (i = PluginManager::begin (); i != PluginManager::end (); ++i, ++k)
@@ -138,6 +148,24 @@ MainWindow::menuPluginChoice ()
 
   m_view3d-> setCurrentPlugin (objp);
   setViewsMode (View3D::MODE_EDIT);
+}
+
+void
+MainWindow::menuPluginIOChoice ()
+{
+  PluginIO *objp = (PluginIO *)PluginManager::getIOPlugin 
+    (sender ()->name()[0]);
+
+  QString s = QFileDialog::getOpenFileName(
+		    "./",
+                    "csg (*.wrl)",
+                    this,
+                    "open file dialog",
+                    "Choose a file to open" );
+
+
+  objp->parse(s);
+  static_cast<View3DRotation *>(m_view3d)->current=objp;
 }
 
 void

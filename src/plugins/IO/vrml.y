@@ -4,7 +4,7 @@
 
 void yyerror(char *message);
 extern int linecount;
-int coordIndexes[256];
+int coordIndexes[120000];
 int cilength = 0;
 
 int yylex(void);
@@ -20,7 +20,10 @@ extern void addFace (int *vec, int length);
 
 %token <real> REAL
 %token <integer> INTEGER
-%token  INDEXFACESET WORD POINT COORDINDEX EBRACE OBRACE
+
+%type <real> value
+
+%token WORD POINT COORDINDEX EBRACE OBRACE
 
 
 %%
@@ -33,25 +36,30 @@ expression: | pointset expression
 	    | EBRACE expression
 	    | WORD expression
 {
-	fprintf(stderr, "parsing an expression\n");
 }
 ;
 
 pointset: POINT OBRACE points EBRACE
 {
-	fprintf(stderr, "found a pointset\n");
 }
 ;
 
 points: point | point points
 ;
 
-point: REAL REAL REAL
+point: value value value
 {
 	addPoint ($1, $2, $3);
-	fprintf(stderr, "found a point at (%f, %f, %f)\n", $1, $2, $3);
 }
 ;
+
+value: REAL | INTEGER
+{
+	$$ = $1;
+}
+;
+
+
 
 coordset: COORDINDEX OBRACE coords EBRACE
 {
@@ -70,14 +78,7 @@ coord: INTEGER
 }
 
 %%
-extern int yydebug;
-int main(int argc, char *argv[])
-{
-	yydebug=argc-1;
-	yyparse();
-	return 0;
-}
-
+int yydebug;
 /* This is an error function used by yacc, and must be defined */
 void yyerror(char *message)
 {

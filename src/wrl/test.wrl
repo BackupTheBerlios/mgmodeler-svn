@@ -1,0 +1,7 @@
+geometry IndexedFaceSet {
+  coord Coordinate {
+    point [ -0.365 0.411 -1.16 ]
+    coordIndex [ 0 1 2 -1 ]
+  }
+}
+

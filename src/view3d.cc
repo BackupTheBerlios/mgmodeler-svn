@@ -188,10 +188,10 @@ View3D::getPlugins ()
 // View3DRotation
 
 View3DRotation::View3DRotation (QWorkspace *parent)
-    :View3D (parent, "OpenGL 3D View")
+  :View3D (parent, "OpenGL 3D View"), current(0)
 {
   m_glwidget = new OpenglWidget (this, "OpenGL 3D View", false, true);
-  //m_parent = parent;
+
   setCentralWidget (m_glwidget);
   setMouseTracking (true);
   m_editable = false;
@@ -230,10 +230,10 @@ View3DRotation::parseMouseRelease (QMouseEvent *e)
 
 
 void 
-View3DRotation::drawPolygons (std::vector<std::vector<Vec3f> >& faces)
+View3DRotation::drawPolygons (const std::vector<std::vector<Vec3f> >& faces)
 {
-  std::vector<std::vector<Vec3f> >::iterator i;
-  std::vector<Vec3f>::iterator j;
+  std::vector<std::vector<Vec3f> >::const_iterator i;
+  std::vector<Vec3f>::const_iterator j;
   //  std::cout << "Drawing polygons ";
   int current = 0;
   for (i=faces.begin (); i!= faces.end (); i++, current++)
@@ -253,13 +253,49 @@ View3DRotation::drawPolygons (std::vector<std::vector<Vec3f> >& faces)
       }
       for (j = (*i).begin (); j!=(*i).end (); j++)
 	{
-	  //	  std::cout << ".";
+	  
 	  glVertex3f ((*j).x, (*j).y, (*j).z);
 	  
 	}
       glEnd ();
-      //      std::cout << std::endl;
     }
  
+}
+
+void 
+View3DRotation::drawPolygons (const std::vector<Vec3f>& points,
+			      const std::vector<std::vector<int> >& faces)
+{
+  std::vector<std::vector<int> >::const_iterator i;
+  std::vector<int>::const_iterator j;
+
+  glPushAttrib(~0);
+  glDisable(GL_LIGHTING); 
+  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+  //glEnable(GL_POLYGON_OFFSET_LINE);
+
+  int current = 0;
+  for (i=faces.begin (); i!= faces.end (); i++, current++)
+    {
+      glBegin (GL_POLYGON);
+      switch (current % 3) {
+      case 0:
+	glColor3f (1.f, 0.f, 0.f);
+	break;
+      case 1:
+	glColor3f (0.f, 1.f, 0.f);
+	break;
+      case 2:
+	glColor3f (0.f, 0.f, 1.f);
+	break;
+      }
+      for (j = (*i).begin (); j!=(*i).end (); j++)
+	{
+	  glVertex3f (points[(*j)].x, points[(*j)].y, points[(*j)].z);
+	  
+	}
+      glEnd ();
+    }
+  glPopAttrib();
 }
 

@@ -39,7 +39,7 @@ public:
 
   void setMode (eMode mode) {m_mode = mode;}
 
-protected:
+public:
 
   static PluginObject *s_plugin_current;
   PluginObject *m_plugin_active;
@@ -65,9 +65,12 @@ public:
   void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
 
-  static void drawPolygons (std::vector< std::vector<Vec3f> >&);
+  static void drawPolygons (const std::vector< std::vector<Vec3f> >&);
+  static void drawPolygons (const std::vector<Vec3f>&, 
+			    const std::vector< std::vector<int> >&);
 
-private:
+ public:
+  PluginIO *current;
 };
 
 #endif

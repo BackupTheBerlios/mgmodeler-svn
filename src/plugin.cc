@@ -10,6 +10,7 @@
 
 
 std::vector<Plugin *> PluginManager::s_plugins;
+std::vector<Plugin *> PluginManager::s_io_plugins;
 
 
 void
@@ -36,8 +37,14 @@ PluginManager::loadPlugin (std::string filename)
 
 
   std::cout<<"Name: "<<p->getName()<<", Type: "<<p->getType ()<<std::endl;
-  
-  s_plugins.push_back (p);
+
+  switch (p->getType()) {
+  case Plugin::PLUGIN_OBJECT:
+    s_plugins.push_back (p);
+    break;
+  case Plugin::PLUGIN_IO:
+    s_io_plugins.push_back (p);
+  }
 }
 
 void 

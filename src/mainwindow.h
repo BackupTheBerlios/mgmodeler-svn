@@ -30,7 +30,9 @@ private:
     void menuFileOpen ();
   void menuFileQuit ();
   void menuPluginChoice ();
+  void menuPluginIOChoice ();
   void menuSelect ();
+  
 };
 
 #endif /* MAINWINDOW_H */

@@ -69,11 +69,20 @@ OpenglWidget::paintGL ()
 
   View3D *parent = (View3D *)m_parent;
 
-  if (parent)
+  if (parent) {
     if (parent-> getActivePlugin ()) {
       parent-> getActivePlugin ()-> display ();
-    } else 
-      gc.display ();
+    } else {
+      if (!parent->m_editable) {
+	View3DRotation * rotation = dynamic_cast<View3DRotation *>(m_parent);
+	if (rotation->current) {
+	  rotation->drawPolygons(rotation->current->getPoints(),
+				 rotation->current->getFaces());
+	} else 
+	  gc.display ();
+      }
+    }
+  }
   
   swapBuffers ();
 }
