@@ -13,12 +13,12 @@ View3D::View3D (QWorkspace *parent, std::string name)
 }
 
 
-View3D::View3D (QWorkspace *parent, eAxe invaxe)
+View3D::View3D (QWorkspace *parent, eView view)
   : QMainWindow (parent, "OpenGL 2D View", 0)
 {
   m_glwidget = new OpenglWidget (this, "OpenGL 2D View", true, false);
   setCentralWidget (m_glwidget);
-  m_invaxe = invaxe;
+  m_view = view;
   m_cursor_x = m_cursor_y=0;
   m_editable = true;
   setMouseTracking (true);
@@ -31,18 +31,18 @@ View3D::setupView ()
 
   glLoadIdentity ();
   
-  switch (m_invaxe)
+  switch (m_view)
     {
-    case AXE_X:
-      setCaption ("OpenGL 2D View: YZ");
-      gluLookAt (-distance, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    case VIEW_PROFIL:
+      setCaption ("OpenGL 2D View: Profil");
+      gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
       break;
-    case AXE_Y:
-      setCaption ("OpenGL 2D View: XZ");
-      gluLookAt (0.0, -distance, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    case VIEW_SECTION:
+      setCaption ("OpenGL 2D View: Section");
+      gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
       break;
-    case AXE_Z:
-      setCaption ("OpenGL 2D View: XY");
+    case VIEW_WAY:
+      setCaption ("OpenGL 2D View: Way");
       gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);      
       break;
     default:

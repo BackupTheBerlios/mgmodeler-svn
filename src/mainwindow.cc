@@ -28,9 +28,9 @@ MainWindow::MainWindow ()
   throw () 
   : QMainWindow (0, APPLICATION_NAME) 
 {
-  eAxe a[3] = {AXE_X, AXE_Y, AXE_Z};
+  eView a[3] = {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY};
 
-  for (int i=0; i<MAX_2DVIEWS; i++)
+  for (int i=0; i<3; i++)
     {
       m_view2d[i] = new View3D (NULL, a[i%3]);
       m_view2d[i]-> resize (500, 400);

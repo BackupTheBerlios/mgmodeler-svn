@@ -9,13 +9,13 @@ class OpenglWidget;
 class Trackball;
 
 
-typedef enum {AXE_X, AXE_Y, AXE_Z} eAxe;
+typedef enum {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY} eView;
 
 class View3D : public QMainWindow 
 {
 public:
   View3D (QWorkspace *parent, std::string name);
-  View3D (QWorkspace *parent, eAxe invaxe);
+  View3D (QWorkspace *parent, eView view);
 
   virtual void setupView ();
   virtual void updateStatusBar (int x, int y);
@@ -25,7 +25,7 @@ public:
 
 protected:
 
-  eAxe m_invaxe;
+  eView m_view;
   OpenglWidget *m_glwidget;
 
   int m_cursor_x, m_cursor_y;
