@@ -14,28 +14,39 @@ class Plugin {
 public:
   enum PluginType {PLUGIN_OBJECT, PLUGIN_IO};
 
-  Plugin (const std::string& name)
-    :m_name (name)
+  Plugin (const std::string& name, const std::string& menu, 
+	  const std::string& filename)
+    :m_name (name), m_menu(menu), m_icon (filename)
   {
+    
   }
   
   virtual ~Plugin () {}
-
+  
   virtual const PluginType getType () = 0;
   const std::string& getName () {return m_name;}
+  const std::string& getMenu () {return m_menu;}
+  const std::string& getIcon () {return m_icon;}
 
+  void Destroy () {
+    delete this;
+  }
+  
   void *m_handle;
   FUNC_CI m_createinstance;
   
 protected:
   std::string m_name;
+  std::string m_menu;
+  std::string m_icon;
 };
 
 class PluginIO : public Plugin
 {
 public:
-  PluginIO (const std::string &name)
-    :Plugin (name)
+  PluginIO (const std::string& name, const std::string& menu, 
+	    const std::string& filename)
+    :Plugin (name, menu, filename)
   { }
 
   const PluginType getType () {return PLUGIN_IO;}
@@ -44,23 +55,23 @@ public:
 class PluginObject : public Plugin
 {
 public:
-  PluginObject (const std::string &name)
-    :Plugin (name)
+  PluginObject (const std::string& name, const std::string& menu,  
+		const std::string& filename)
+    :Plugin (name, menu, filename)
   { }
 
   const PluginType getType () {return PLUGIN_OBJECT;}
 
 
-  virtual void beginPlot (double x, double y, double z) = 0;
-  virtual void endPlot (double x, double y, double z) = 0;
+  virtual void buttonDown (int button, double x, double y, double z) = 0;
+  virtual bool buttonUp (int button, double x, double y, double z) = 0;
+  virtual bool doubleClick (int button, double x, double y, double z) = 0;
 
-  virtual void beginObject (std::string) = 0;
+  //  virtual void beginObject (std::string) = 0;
   virtual void endObject () = 0;
 
   virtual bool hasPoint (double x, double y, double z) = 0;
   virtual void removePoint (double x, double y, double z) = 0;
-
-  virtual void removeObject (double x, double y, double z) = 0;
 };
 
 class PluginManager
