@@ -77,17 +77,17 @@ MainWindow::createMenus ()
   menu_plugins-> insertItem ("&Import", menu_pg_import);
   menu_plugins-> insertItem ("&Export", menu_pg_export);
   
-  addTool (this, "Open File", QPixmap ("icons/fileopen.png"), 
+  addTool (this, "Open File", QPixmap ("fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
 	   NULL);
 
   menu_file->insertSeparator();
 
-  addTool (this, "Quit",QPixmap ("icons/exit.png") ,
+  addTool (this, "Quit",QPixmap ("exit.png") ,
 	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
 	   NULL);
 
-  addTool (this, "Move 2d Window", QPixmap ("icons/move.png"),
+  addTool (this, "Move 2d Window", QPixmap ("move.png"),
 	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
 	   NULL);
 
@@ -145,35 +145,35 @@ MainWindow::createMenus ()
 
   toolbar->addSeparator(); 
 
-  addTool (this, "Wireframe", QPixmap ("icons/wireframe.png"),
+  addTool (this, "Wireframe", QPixmap::fromMimeSource ("wireframe.png"),
 	   QKeySequence ("Ctrl+W"), toolbar, NULL, SLOT(menuWireframe ()),
 	   NULL);
 
-  addTool (this, "Fill", QPixmap ("icons/fill.png"),
+  addTool (this, "Fill", QPixmap::fromMimeSource ("fill.png"),
 	   QKeySequence ("Ctrl+F"), toolbar, NULL, SLOT(menuFill ()),
 	   NULL);
 
-  addTool (this, "Lighting", QPixmap ("icons/light.png"),
+  addTool (this, "Lighting", QPixmap::fromMimeSource ("light.png"),
 	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
 	   NULL);
 
-  addTool (this, "Normals", QPixmap ("icons/normals.png"),
+  addTool (this, "Normals", QPixmap::fromMimeSource ("normals.png"),
 	   QKeySequence ("Ctrl+N"), toolbar, NULL, SLOT(menuNormals ()),
 	   NULL);
 
-  addTool (this, "Switch Normals", QPixmap ("icons/snormals.png"),
+  addTool (this, "Switch Normals", QPixmap::fromMimeSource ("snormals.png"),
 	   QKeySequence ("Ctrl+S"), toolbar, NULL, SLOT(menuSwitchNormals ()),
 	   NULL);
 
   toolbar->addSeparator(); 
 
-  addTool (this, "Configure", QPixmap ("icons/configure.png"), 
+  addTool (this, "Configure", QPixmap::fromMimeSource ("configure.png"), 
 	   QKeySequence ("Ctrl-C"), toolbar, menu_plugins, SLOT(menuConfig()),
 	   NULL);
 
   toolbar->addSeparator(); 
 
-  addTool (this, "Manual", QPixmap ("icons/help.png"), 
+  addTool (this, "Manual", QPixmap::fromMimeSource ("help.png"), 
 	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
 	   NULL);
 }
