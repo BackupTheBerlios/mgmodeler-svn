@@ -19,6 +19,7 @@ class Nurbs : public PolyLine
 public:
   Nurbs();
   ~Nurbs();
+  void display();
 };
 
 Nurbs::Nurbs () : PolyLine (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON)
@@ -44,4 +45,4 @@ Nurbs::display ()
   glEnd ();
 }
 
-DECLARE_PLUGIN (PolyLine);
+DECLARE_PLUGIN (Nurbs);

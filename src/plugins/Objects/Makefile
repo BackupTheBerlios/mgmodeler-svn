@@ -1,13 +1,17 @@
 CXXFLAGS=-I$(QTDIR)/include -I ../.. -g
 LDFLAGS=-L$(QTDIR)/lib -shared
-BIN=../bin/polyline.so 
+BIN=../bin/polyline.so ../bin/nurbs.so
 
 all: $(BIN)
 
-$(BIN): polyline.o
-
+../bin/polyline.so: polyline.o
 	$(CXX) $(LDFLAGS) $(LIBS) -o $@ $^
+
+../bin/nurbs.so: nurbs.o
+	$(CXX) $(LDFLAGS) $(LIBS) -o $@ $^
+
 
 clean:
 	rm -f *~ *.o $(BIN)
-polylines.o: polyline.cc ../../plugin.h
+polyline.o: polyline.cc ../../plugin.h
+nurbs.o: nurbs.cc ../../plugin.h ../../math/vector3.h polyline.h

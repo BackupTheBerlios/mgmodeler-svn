@@ -20,8 +20,8 @@ PolyLine::PolyLine ()
 }
 
 PolyLine::PolyLine (const std::string& name, const std::string& menu,  
-		    const std::string& filename) {
-  ::PluginObject (name, menu, filename);
+		    const std::string& filename) :PluginObject (name, menu, filename)
+{
 }
 
 void
