@@ -4,6 +4,8 @@
 #include "view.h"
 #include "plugin.h"
 
+class MainWindow;
+
 class View2D : public View
 {
 public:
@@ -20,7 +22,7 @@ public:
     VIEW_PATH
   };
 
-  View2D (QWorkspace *parent, eView view);
+  View2D (QWorkspace *parent, eView view, MainWindow *wparent=NULL);
 
   void setupView ();
   void updateStatusBar (float x, float y);
@@ -49,6 +51,7 @@ public:
   int m_cursor_x, m_cursor_y;
   eMode m_mode;
   std::vector<PluginObject *> m_plugins;
+  MainWindow *m_win_parent;
 };
 
 #endif /* ! VIEW2D_H */

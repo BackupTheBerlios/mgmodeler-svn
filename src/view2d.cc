@@ -1,6 +1,7 @@
 #include "view2d.h"
 #include "plugin.h"
 #include "gc.h"
+#include "mainwindow.h"
 
 #include <qgl.h>
 #include <qstring.h>
@@ -8,10 +9,11 @@
 
 PluginObject *View2D::s_plugin_current = NULL;
 extern GeneralizedCylinder gc;
-View2D::View2D (QWorkspace *parent, eView view)
+View2D::View2D (QWorkspace *parent, eView view,  MainWindow *wparent)
   : View (parent, "OpenGL 2D View")
 {
   m_view = view;
+  m_win_parent = wparent;
   m_cursor_x = m_cursor_y=0;
   setMouseTracking (true);
   
@@ -90,29 +92,6 @@ View2D::parseMousePress (QMouseEvent *e)
 	
 	m_plugin_active->buttonDown (e->button (), e->state (), v);
       }
-
-  if (e->button () == QMouseEvent::LeftButton)
-    if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
-      {
-	printf("PUT\n");
-
-	std::vector<PluginObject *>::iterator i;
-	Vec3f v;
-	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
-
-	for (i = m_plugins.begin (); i!=m_plugins.end (); ++i)
-	  {
-	    if ((*i)->hasPoint (v))
-	      {
-		if (m_plugin_active)
-		  m_plugins.push_back (m_plugin_active);
-		m_plugin_active = *i;
-		m_mode = MODE_EDIT;
-		printf("Found\n");
-		return;
-	      }
-	  }
-      }
 }
 
 void
@@ -132,6 +111,29 @@ View2D::parseMouseRelease (QMouseEvent *e)
     if (m_mode == MODE_MOVE_WINDOW)
       {
 	endWindowMotion ();
+      }
+  
+  if (e->button () == QMouseEvent::LeftButton)
+    if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
+      {
+	printf("PUT\n");
+
+	std::vector<PluginObject *>::iterator i;
+	Vec3f v;
+	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
+
+	for (i = m_plugins.begin (); i!=m_plugins.end (); ++i)
+	  {
+	    if ((*i)->hasPoint (v))
+	      {
+		if (m_plugin_active)
+		  m_plugins.push_back (m_plugin_active);
+		m_plugin_active = *i;
+		printf("Found\n");
+		m_win_parent->setViewsMode (MODE_EDIT);
+		return;
+	      }
+	  }
       }
 }
 

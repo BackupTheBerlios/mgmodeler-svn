@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
 public:
   MainWindow () throw ();
   void show ();
+  void setViewsMode (View2D::eMode mode);
 protected:
   void createMenus ();
 
@@ -29,8 +30,7 @@ private:
 
   SubConfig *m_subconfig;
 
-  void setViewsMode (View2D::eMode mode);
-  
+ 
   signals:
   public slots:
     void view3dRedisplay ();
@@ -50,6 +50,8 @@ private:
   void menuConfig ();
   void menuSelect ();
   void windowsMenuActivated(int id);
+
+  friend class View2D;
 };
 
 #endif /* MAINWINDOW_H */

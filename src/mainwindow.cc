@@ -42,7 +42,7 @@ MainWindow::MainWindow ()
 
   for (int i=0; i<3; i++)
     {
-      m_view2d[i] = new View2D (mdi, a[i%3]);
+      m_view2d[i] = new View2D (mdi, a[i%3], this);
       m_view2d[i]-> updateStatusBar (0, 0);
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
