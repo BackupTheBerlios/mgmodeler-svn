@@ -241,8 +241,8 @@ Circle::load (std::istream &stream)
 void
 Circle::save (std::ostream &stream) const
 {
-  stream << center << std::endl;
-  stream << radius << std::endl;
+  stream << center.x << " " << center.y << " " << center.z << std::endl;
+  stream << radius.x << " " << radius.y << " " << radius.z << std::endl;
 }
 
 
