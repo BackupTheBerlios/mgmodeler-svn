@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #define PLUGIN_NAME "VRML Import Plugin"
-#define PLUGIN_MENU "import/Vrml"
+#define PLUGIN_MENU "Vrml"
 #define PLUGIN_ICON "plugins/IO/vrml.png"
 
 
@@ -40,7 +40,7 @@ addFace(int *vec, int len)
 class VRMLImport : public PluginIO {
 public:
   VRMLImport () : PluginIO (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON) {}
-  void parse(const std::string &filename) {
+  void importData(const std::string &filename) {
     points.clear ();
     faces.clear ();
     FILE *input = fopen(filename.c_str(), "r");
@@ -63,6 +63,7 @@ private:
   std::vector<Vec3f> points;
   std::vector<std::vector<int> > faces;
 };
+
 extern "C" Plugin *CreateInstance () {
 return dynamic_cast<Plugin *>(new VRMLImport ());
 }

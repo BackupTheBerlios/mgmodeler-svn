@@ -41,7 +41,8 @@ PluginManager::loadPlugin (std::string filename)
   case Plugin::PLUGIN_OBJECT:
     s_plugins.push_back (p);
     break;
-  case Plugin::PLUGIN_IO:
+  case Plugin::PLUGIN_IO_IMPORT:
+  case Plugin::PLUGIN_IO_EXPORT:
     s_io_plugins.push_back (p);
   }
 }

@@ -18,7 +18,7 @@ typedef Plugin * (*FUNC_CI) ();
 
 class Plugin {
 public:
-  enum PluginType {PLUGIN_OBJECT, PLUGIN_IO};
+  enum PluginType {PLUGIN_OBJECT, PLUGIN_IO_IMPORT, PLUGIN_IO_EXPORT};
 
   Plugin (const std::string& name, const std::string& menu, 
 	  const std::string& filename)
@@ -51,14 +51,20 @@ class PluginIO : public Plugin
 {
 public:
   PluginIO (const std::string& name, const std::string& menu, 
-	    const std::string& filename)
+	    const std::string& filename, 
+	    const PluginType type=PLUGIN_IO_IMPORT)
     :Plugin (name, menu, filename)
-  { }
+  {io_type = type;}
 
-  const PluginType getType () {return PLUGIN_IO;}
-  virtual void parse(const std::string &filename) = 0;
-  virtual const std::vector<Vec3f>& getPoints() = 0;
-  virtual const std::vector<std::vector<int> >& getFaces() = 0;
+  const PluginType getType () {return io_type;}
+
+  virtual void importData(const std::string &filename) {}
+  virtual void exportData(const std::string &filename) {}
+
+  virtual const std::vector<Vec3f>& getPoints() {}
+  virtual const std::vector<std::vector<int> >& getFaces() {}
+
+  PluginType io_type;
 };
 
 class PluginObject : public Plugin
@@ -126,7 +132,7 @@ private:
 
 #define DECLARE_PLUGIN(CLASS)\
 extern "C" Plugin *CreateInstance () {\
-return new CLASS ();\
+return dynamic_cast<Plugin *> (new CLASS ());\
 }
 
 

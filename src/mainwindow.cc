@@ -105,17 +105,15 @@ MainWindow::createMenus ()
       char str[2] = "0";
       str[0] = k;
       Plugin *p = *i;
-      QString menu_name = QString (p-> getMenu ()).section ('/',0,0);
-      QString menu_target = QString (p->getMenu ()).section('/',1,1);
       QPopupMenu *pg_target_menu = NULL;
       
-      if (menu_name == QString ("import"))
+      if (p->getType () == Plugin::PLUGIN_IO_IMPORT)
 	pg_target_menu = menu_pg_import;
 
-      if (menu_name == QString ("export"))
+      if (p->getType () == Plugin::PLUGIN_IO_EXPORT)
 	pg_target_menu = menu_pg_export;
 
-      addTool (this, p->getName ().c_str (), 
+      addTool (this, p->getMenu ().c_str (), 
 	       QPixmap (p-> getIcon ()),
 	       QKeySequence (), NULL, pg_target_menu, 
 	       SLOT(menuPluginIOChoice()), str);
@@ -230,15 +228,30 @@ MainWindow::menuPluginIOChoice ()
   PluginIO *objp = (PluginIO *)PluginManager::getIOPlugin 
     (sender ()->name()[0]);
 
-  QString s = QFileDialog::getOpenFileName
-    ( "./", "csg (*.wrl)", this, "open file dialog", "Choose a file to open" );
+  QString s;
 
-  if (s.isEmpty ())
-    return;
+  switch (objp->getType ())
+    {
+    case Plugin::PLUGIN_IO_IMPORT:
+      s = QFileDialog::getOpenFileName ( "./", "csg (*.wrl)", 
+	  this, "open file dialog", "Choose a file to open" );
 
-  objp->parse(s);
-  
-  static_cast<View3D *>(m_view3d)->current=objp;
+      if (!s.isEmpty ())
+	{
+	  objp->importData(s);
+	  static_cast<View3D *>(m_view3d)->current=objp;
+	}
+      break;
+    case Plugin::PLUGIN_IO_EXPORT:
+      s = QFileDialog::getSaveFileName ( "./", "csg (*.wrl)", 
+	  this, "open file dialog", "Choose a file for writting" );
+
+      if (!s.isEmpty ())
+	{
+	  objp->exportData (s); 
+	}
+      break;
+    }
 }
 
 void

@@ -1,5 +1,5 @@
 pluginsdir=@libdir@/@PACKAGE_NAME@-@VERSION@
-plugins_LTLIBRARIES=vrmlimport.la
+plugins_LTLIBRARIES=vrmlimport.la vrmlexport.la
 
 INCLUDES=-I../../src
 
@@ -8,6 +8,9 @@ AM_YFLAGS=-d
 BUILT_SOURCES=parser.h
 vrmlimport_la_SOURCES=vrmlimport.cc parser.y lexer.l
 vrmlimport_la_LDFLAGS=-module -avoid-version
+
+vrmlexport_la_SOURCES=vrmlexport.cc
+vrmlexport_la_LDFLAGS=-module -avoid-version
 
 mostlyclean-local:
 	@-rm -f *~
