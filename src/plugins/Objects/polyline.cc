@@ -291,7 +291,9 @@ PolyLine::evaluate (std::vector<Vec3f>& res)
 void
 PolyLine::evaluateTimeline (std::vector<float>& t)
 {
-  float dist = 0.0f;
+  float miny = std::numeric_limits<float>::max();
+  float maxy = std::numeric_limits<float>::min();
+
   std::list<Vec3f *>::iterator i;
   std::list<Vec3f *>::iterator end;
   
@@ -300,22 +302,20 @@ PolyLine::evaluateTimeline (std::vector<float>& t)
   if (pts.empty ())
     return;
 
-  i = pts.begin ();
+
   end = pts.end ();
 
-  while (i != end) {
-    std::list<Vec3f *>::iterator first = i++;
-    t.push_back (dist);
-    if (i != end) {
-      float dx = ((*i)->x-(*first)->x);
-      float dy = ((*i)->y-(*first)->y);
-      float l = sqrt (dx * dx + dy * dy);
-      dist += l;
-    }
+  for (i = pts.begin (); i != end; ++i) {
+    float y = (*i)->y;
+    t.push_back (y);
+    if (miny>y)
+      miny = y;
+    if (maxy<y)
+      maxy = y;
   }
 
   for (int i=0;i<t.size (); i++)
-    t[i]/=dist;  
+    t[i] = (t[i] - miny)/ (maxy-miny);  
 }
 
 void
