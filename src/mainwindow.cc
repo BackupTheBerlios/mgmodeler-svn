@@ -261,15 +261,26 @@ MainWindow::menuPluginIOChoice ()
 	}
       break;
     case Plugin::PLUGIN_IO_EXPORT:
+      std::vector<Face> f = m_view3d->getFaces ();
+
+      if (!f.size ())
+	{
+	  QMessageBox::
+	    critical 
+	    (this, "Error", 
+	     std::string 
+	     ("You must compute a generalized cylinder before saving"));
+	  return ;
+	}
+
       s = QFileDialog::getSaveFileName ( "./", "csg (*.wrl)", 
-	  this, "open file dialog", "Choose a file for writting" );
+					 this, "open file dialog", 
+					 "Choose a file for writting" );
 
       if (!s.isEmpty ())
 	{
-	  int ret = objp->exportData (s); 
-	  if (!ret)
-	    ;
-	  else
+	  int ret = objp->exportData (s, f); 
+	  if (ret)
 	    checkIOError (s, ret);
 	}
     }

@@ -13,12 +13,10 @@
 #include "mainwindow.h"
 #include "gc.h"
 
-extern GeneralizedCylinder gc;
-
 void SubConfig::SubPath_valueChanged( int u)
 {
     MainWindow *p = dynamic_cast<MainWindow *>(parent());
-    gc.setResolution(GeneralizedCylinder::PATH,  u);
+    View::gc.setResolution(GeneralizedCylinder::PATH,  u);
     p->view3dRedisplay ();
 }
 
@@ -26,7 +24,7 @@ void SubConfig::SubPath_valueChanged( int u)
 void SubConfig::SubSection_valueChanged( int u)
 {
     MainWindow *p = dynamic_cast<MainWindow *>(parent());
-    gc.setResolution(GeneralizedCylinder::SECTION,  u);
+    View::gc.setResolution(GeneralizedCylinder::SECTION,  u);
     p->view3dRedisplay ();
 }
 
@@ -34,6 +32,6 @@ void SubConfig::SubSection_valueChanged( int u)
 void SubConfig::SubProfil_valueChanged( int u)
 {
     MainWindow *p = dynamic_cast<MainWindow *>(parent());
-    gc.setResolution(GeneralizedCylinder::PROFILE,  u);
+    View::gc.setResolution(GeneralizedCylinder::PROFILE,  u);
     p->view3dRedisplay ();
 }

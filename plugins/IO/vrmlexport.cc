@@ -15,7 +15,8 @@ public:
 			   PLUGIN_IO_EXPORT)
   {}
 
-  int exportData (const std::string& filename )
+  int exportData (const std::string& filename,
+		  const std::vector<Face>& faces)
   {
     FILE *file = fopen (filename.c_str (), "w");
     if (!file)
@@ -23,14 +24,15 @@ public:
 
     fprintf (file, "DEF noname Transform {\n  translation 0. 0. 0.\n");
     fprintf (file, "  scale 0. 0. 0.\n  children [\n");
-    fprintf (file, "  geometry IndexedFaceSet { \n    solid TRUE\n");
-    fprintf (file, "  coord DEF coord_noname Coordinate {\n    point [\n");
+    fprintf (file, "    geometry IndexedFaceSet { \n    solid TRUE\n");
+    fprintf (file, 
+	     "      coord DEF coord_noname Coordinate {\n        point [\n");
     // COORDS
-    fprintf (file, "    ]");
-    fprintf (file, "  }");
-    fprintf (file, "  coordIndex [\n");
+    fprintf (file, "        ]\n");
+    fprintf (file, "      }\n");
+    fprintf (file, "      coordIndex [\n");
     // INDEX
-    fprintf (file, "  ]\n}\n");
+    fprintf (file, "      ]\n    }\n  ]\n}\n");
     fclose (file);
     return 0;
   }

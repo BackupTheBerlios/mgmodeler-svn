@@ -3,6 +3,7 @@
 
 #include <qworkspace.h>
 #include "view.h"
+#include "gc.h"
 
 class View3D : public View
 {
@@ -19,6 +20,13 @@ public:
   
   void setCurrentPlugin (PluginIO *p);
   PluginIO *getCurrentPlugin () { return current; }
+  
+  std::vector<Face> getFaces () 
+    {
+      std::vector<Face> f;
+      gc.compute (f);
+      return f;
+    }
 
   void redisplay ();
 
@@ -27,6 +35,7 @@ public:
   void setWireframe ();
   void toggleNormals ();
   void switchNormals ();
+
   /* FIXME */
 public:
   PluginIO *current;

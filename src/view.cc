@@ -5,6 +5,8 @@
 #include <qmainwindow.h>
 #include <string>
 
+GeneralizedCylinder View::gc;
+
 View::View (QWorkspace *parent, std::string name)
   :QMainWindow (parent, name.c_str (), 0)
 {

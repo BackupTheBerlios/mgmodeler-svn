@@ -2,6 +2,7 @@
 #define PLUGIN_H
 
 #include "math/vector3.h"
+#include "math/point.h"
 
 #include <vector>
 #include <string>
@@ -59,7 +60,8 @@ public:
   const PluginType getType () {return io_type;}
 
   virtual int importData(const std::string &filename) {return -1;}
-  virtual int exportData(const std::string &filename) {return -1;}
+  virtual int exportData(const std::string &filename, const std::vector<Face>&)
+    {return -1;}
 
   virtual const std::vector<Vec3f>& getPoints() {}
   virtual const std::vector<std::vector<int> >& getFaces() {}

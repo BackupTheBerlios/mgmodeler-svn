@@ -2,13 +2,10 @@
 #include "openglwidget.h"
 #include "trackball.h"
 #include "plugin.h"
-#include "gc.h"
 
 #include <qgl.h>
 #include <qstring.h>
 #include <iostream>
-
-GeneralizedCylinder gc;
 
 View3D::View3D (QWorkspace *parent, const std::string& name)
   : View (parent, name), current(0), normale_scale(1)
