@@ -216,6 +216,7 @@ void MainWindow::setViewsMode (View2D::eMode mode)
 void
 MainWindow::menuFileNew ()
 {
+  View::getGC ().clear ();
 }
 
 void
