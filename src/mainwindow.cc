@@ -141,6 +141,18 @@ MainWindow::createMenus ()
     /*    menu_window->setItemChecked
 	  ( id, mdi->activeWindow() == windows.at(i) );*/
   }  
+
+  addTool (this, "Wireframe", QPixmap ("icons/wireframe.png"),
+	   QKeySequence ("Ctrl+W"), toolbar, NULL, SLOT(menuWireframe ()),
+	   NULL);
+
+  addTool (this, "Fill", QPixmap ("icons/fill.png"),
+	   QKeySequence ("Ctrl+F"), toolbar, NULL, SLOT(menuFill ()),
+	   NULL);
+
+  addTool (this, "Lighting", QPixmap ("icons/light.png"),
+	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
+	   NULL);
 }
 
 
@@ -216,7 +228,26 @@ MainWindow::menuWindowMove ()
 void
 MainWindow::menuHelp ()
 {
-  //  QAssistantClient *helpclient = 
-  //  new QAssistantClient (QString ("help/"), this );
+  // QAssistantClient *helpclient = 
+  // new QAssistantClient (QString ("help/"), this );
   system ("assistant -profile help/index.dcf&");
 }
+
+void
+MainWindow::menuLighting ()
+{
+  m_view3d-> setLighting ();
+}
+
+void
+MainWindow::menuFill ()
+{
+  m_view3d-> setFillMode ();
+}
+
+void
+MainWindow::menuWireframe ()
+{
+  m_view3d-> setWireframe ();
+}
+

@@ -21,6 +21,10 @@ public:
   PluginIO *getCurrentPlugin () { return current; }
 
   void redisplay ();
+
+  void setLighting ();
+  void setFillMode ();
+  void setWireframe ();
   /* FIXME */
 public:
   PluginIO *current;

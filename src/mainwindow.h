@@ -29,12 +29,16 @@ private:
   
   signals:
   private slots:
+    
     void menuFileOpen ();
   void menuFileQuit ();
   void menuPluginChoice ();
   void menuPluginIOChoice ();
   void menuWindowMove ();
   void menuHelp ();
+  void menuLighting ();
+  void menuFill ();
+  void menuWireframe ();
   void windowsMenuActivated(int id);
 };
 

@@ -46,6 +46,9 @@ public:
 
   void moveWindow (int relx, int  rely);
 
+  void setLighting ();
+  void setWireframe (bool);
+
 private:
   void mousePressEvent (QMouseEvent *e);
   void mouseMoveEvent (QMouseEvent *e);
@@ -72,6 +75,9 @@ private:
   float m_trackball_zoom;
   bool m_trackball_enable;
   static const float TRACKBALL_ZOOM_DEF = 0.5;
+
+  bool m_lighting;
+  bool m_wireframe;
 };
 
 #endif

@@ -61,3 +61,22 @@ View3D::redisplay ()
     m_glwidget->drawPolygons (f);
   }
 }
+
+
+void 
+View3D::setLighting ()
+{
+  m_glwidget->setLighting ();
+}
+
+void 
+View3D::setFillMode ()
+{
+  m_glwidget->setWireframe (false);
+}
+
+void 
+View3D::setWireframe ()
+{
+  m_glwidget->setWireframe (true);
+}

@@ -14,6 +14,8 @@ OpenglWidget::OpenglWidget (QWidget *parent, const char *name,
   m_update_projection = true;
   setMouseTracking (true);
   m_trackball_enable = trackball;
+  m_lighting = false;
+  m_wireframe = false;
   if (m_trackball_enable)
     {
       m_trackball = new Trackball (100, 100);
@@ -245,8 +247,11 @@ OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
   std::vector<std::vector<int> >::const_iterator i;
   std::vector<int>::const_iterator j;
 
-  glEnable(GL_LIGHTING); 
-  glEnable(GL_LIGHT0);
+  if (m_lighting)
+    {
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+    }
 
   int current = 0;
   for (i=faces.begin (); i!= faces.end (); i++, current++)
@@ -278,19 +283,24 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 {
   std::vector<std::vector<Vec3f> >::const_iterator pi;
   std::vector<std::vector<Vec3f> >::const_iterator ni;
-  std::cout << "faces.size == " << faces.size() <<std::endl;
-  std::cout << "normals.size == " << normals.size() <<std::endl;
+  //std::cout << "faces.size == " << faces.size() <<std::endl;
+  //std::cout << "normals.size == " << normals.size() <<std::endl;
   assert(faces.size()==normals.size());
   std::vector<Vec3f>::const_iterator pj;
   std::vector<Vec3f>::const_iterator nj;
-  //  std::cout << "Drawing polygons ";
+  GLfloat position[] = {1., 1., 10., 1.};
+
   glPushMatrix ();
   glLoadIdentity();
-  GLfloat position[] = {1., 1., 10., 1.};
-  glLightfv(GL_LIGHT0, GL_POSITION, position);
-  glEnable(GL_LIGHTING); 
-  glEnable(GL_LIGHT0);
-  glShadeModel (GL_SMOOTH);
+
+  if (m_lighting)
+    {
+      glLightfv(GL_LIGHT0, GL_POSITION, position);
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+      glShadeModel (GL_SMOOTH);
+    }
+
   glPopMatrix ();
   int current = 0;
   for (pi=faces.begin (),
@@ -317,8 +327,6 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 	{
 	  glNormal3f ((*nj).x, (*nj).y, (*nj).z);
 	  glVertex3f ((*pj).x, (*pj).y, (*pj).z);
-	  
-	  
 	}
       glEnd ();
     }
@@ -332,18 +340,23 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
   std::vector<Face>::const_iterator iend=faces.end();
   std::vector<Point>::const_iterator j;
   std::vector<Point>::const_iterator jend;
-
-  /*GLfloat position[] = {1., 1., 10., 1.};
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
-  glEnable(GL_LIGHTING); 
-  glEnable(GL_LIGHT0);
-  glShadeModel (GL_SMOOTH);
-
-  glEnable(GL_LIGHTING); 
-  glEnable(GL_LIGHT0);*/
+  GLfloat position[] = {1., 1., 10., 1.};
+  
   glPushAttrib(~0);
-  glDisable(GL_LIGHTING); 
-  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+
+  if (m_lighting)
+    {
+      glLightfv(GL_LIGHT0, GL_POSITION, position);
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+      glShadeModel (GL_SMOOTH);
+      
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+    }
+    
+  if (m_wireframe)  
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
   /*  glEnable(GL_POLYGON_OFFSET_LINE); 
       glPolygonOffset(m_PolygonOffset,-1.0f);*/
 
@@ -363,9 +376,9 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
 	glVertex3fv(&coords[0]);
       }
       glEnd ();
-      std::cout << "E";
+      //std::cout << "E";
     }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 
   glBegin (GL_LINES);
   for (i=faces.begin(); i!=iend; ++i) {
@@ -392,4 +405,19 @@ OpenglWidget::moveWindow (int relx, int rely)
 {
   m_motion_x += relx / 500.0;
   m_motion_y += rely / 500.0;
+}
+
+
+void 
+OpenglWidget::setLighting ()
+{
+  m_lighting = !m_lighting;
+  updateGL ();
+}
+
+void 
+OpenglWidget::setWireframe (bool flag)
+{
+  m_wireframe = flag;
+  updateGL ();
 }
