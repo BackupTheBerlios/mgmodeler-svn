@@ -47,7 +47,6 @@ PolyLine::buttonUp (QMouseEvent::ButtonState button,
 {
   switch (button) {
   case QMouseEvent::LeftButton:
-    std::cout << (int)(state & QMouseEvent::ShiftButton) << std::endl;
     if (!(int)(state & QMouseEvent::ShiftButton)) {
       if (!should_close)
 	pts.push_back (new Vec3f(v));
