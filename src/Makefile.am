@@ -29,7 +29,7 @@ nodist_MGModeler_SOURCES=mainwindow_moc.cc icons.cc
 
 mainwindow_moc.cc: mainwindow.h
 images_noprefix=exit.png fill.png help.png normals.png wireframe.png \
-        filenew.png fileopen.png handbook.png light.png move.png tile.png \
+        filenew.png fileopen.png filesave.png handbook.png light.png move.png tile.png \
 	snormals.png configure.png select.png compute.png
 images=$(addprefix ../icons/, $(images_noprefix))
 

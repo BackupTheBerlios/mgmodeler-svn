@@ -312,6 +312,7 @@ MainWindow::menuPluginIOChoice ()
     (sender ()->name()[0]);
 
   QString s;
+  std::vector<Face> f;
 
   switch (objp->getType ())
     {
@@ -329,8 +330,7 @@ MainWindow::menuPluginIOChoice ()
 	}
       break;
     case Plugin::PLUGIN_IO_EXPORT:
-      std::vector<Face> f = m_view3d->getFaces ();
-
+      f = m_view3d->getFaces ();
       if (!f.size ())
 	{
 	  QMessageBox::
@@ -351,6 +351,9 @@ MainWindow::menuPluginIOChoice ()
 	  if (ret)
 	    checkIOError (s, ret);
 	}
+      break;
+    default:
+      break;
     }
 }
 

@@ -32,6 +32,13 @@ class GeneralizedCylinder {
   void removeProfile (PluginObject *);
   void cfgDialog ();
   void setResolution(Curve, int u);
+  
+  void clear () 
+    { 
+      path.clear (); 
+      section.clear (); 
+      profile.clear (); 
+    }
 
   std::vector<Face>& getFaces () {return m_faces;}
 
