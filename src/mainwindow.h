@@ -34,6 +34,7 @@ private:
   void menuPluginChoice ();
   void menuPluginIOChoice ();
   void menuWindowMove ();
+  void menuHelp ();
   void windowsMenuActivated(int id);
 };
 

@@ -1,7 +1,7 @@
 all: MGModeler
 CXX=g++
 CXXFLAGS=-I$(QTDIR)/include -Wall -I. -g -fPIC -DPIC -I$(QTDIR)/include/qt
-LDFLAGS=-lGL -lGLU -L$(QTDIR)/lib -lqt-mt -ldl
+LDFLAGS=-lGL -lGLU -L$(QTDIR)/lib -lqt-mt -ldl -lqassistantclient
 BIN=MGModeler
 
 

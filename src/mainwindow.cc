@@ -1,7 +1,6 @@
 #include "mainwindow.h"
-#include "icons.h"
 #include "plugin.h"
-
+#include <qassistantclient.h>
 #include <qaction.h>
 #include <qpopupmenu.h>
 #include <qmenubar.h>
@@ -58,11 +57,21 @@ MainWindow::createMenus ()
 {
   QToolBar *toolbar = new QToolBar (this, "ToolBar");
   QPopupMenu *menu_file = new QPopupMenu (this);
+  QPopupMenu *menu_help = new QPopupMenu (this);
+  QPopupMenu *menu_window = new QPopupMenu (this);
+
   menuBar ()-> insertItem ("&File", menu_file);
+  menuBar ()-> insertItem ("&Windows", menu_window);
+  menuBar ()-> insertItem ("&Help", menu_help);
   
   addTool (this, "Open File", QPixmap ("icons/fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
 	   NULL);
+
+  addTool (this, "Manual", QPixmap ("icons/help.png"), 
+	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
+	   NULL);
+
   menu_file->insertSeparator();
 
   addTool (this, "Quit",QPixmap ("icons/exit.png") ,
@@ -86,7 +95,6 @@ MainWindow::createMenus ()
 	       str);
     }
   k=0;
-  std::cout <<"PLUGINS COUNT = "<<PluginManager::pluginsCount ()<<"\n";
   
   for (i = PluginManager::begin (); i != PluginManager::end (); ++i, ++k)
     {
@@ -99,8 +107,6 @@ MainWindow::createMenus ()
     }
 
 
-  QPopupMenu *menu_window = new QPopupMenu (this);
-  menuBar ()-> insertItem ("&Windows", menu_window);
   int cascadeId = menu_window->insertItem("&Cascade", mdi, SLOT(cascade() ) );
   int tileId = menu_window->insertItem("&Tile", mdi, SLOT(tile() ) );
   mdi->tile ();
@@ -188,6 +194,11 @@ MainWindow::windowsMenuActivated(int id)
 void
 MainWindow::menuWindowMove ()
 {
-  std::cout<<"SELECT\n";
   setViewsMode (View2D::MODE_MOVE_WINDOW);
+}
+
+void
+MainWindow::menuHelp ()
+{
+  system ("assistant -profile help/index.dcf&");
 }

@@ -1,0 +1,25 @@
+<assistantconfig version="3.2.0">
+
+    <profile>
+        <property name="name">MG Modeler Manual</property>
+        <property name="title">MG Modeler Manual</property>
+        <property name="applicationicon">logo.png</property>
+        <property name="startpage">./manual.html</property>
+        <property name="aboutmenutext">About MG Modeler Manual</property>
+        <property name="abouturl">./about.txt</property>
+    </profile>
+
+    <DCF ref="index.html" icon="../icons/handbook.png" 
+	               title="MG Modeler Manual">
+        <section ref="./manual.html" title="MG Modeler Manual">
+            <keyword ref="./manual.html#about">About</keyword>
+            <keyword ref="./manual.html#license">License</keyword>
+            <keyword ref="./manual.html#install">Installing</keyword>
+            <keyword ref="./manual.html#launching">Launching</keyword>
+            <keyword ref="./manual.html#gui">Interface</keyword>
+            <keyword ref="./manual.html#plugins">Plugins</keyword>
+
+        </section>
+   </DCF>
+
+</assistantconfig>

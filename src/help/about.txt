@@ -1,0 +1,5 @@
+MG Modeler by Arcila Thomas and Dalla Rosa Damien 2004
+
+License: GNU General Public License www.gnu.org
+
+Homepage: mgmodeler.berlios.de
