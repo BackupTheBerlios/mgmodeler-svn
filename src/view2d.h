@@ -4,6 +4,8 @@
 #include "view.h"
 #include "plugin.h"
 
+#include <list>
+
 class MainWindow;
 
 class View2D : public View
@@ -35,7 +37,7 @@ public:
   void parseMouseDoubleClick (QMouseEvent *e);
   void redisplay ();
   static void setCurrentPlugin (PluginObject *p);
-  const std::vector<PluginObject *>& getPlugins();
+  const std::list<PluginObject *>& getPlugins();
 
   PluginObject *getActivePlugin () { return m_plugin_active; }
 
@@ -58,7 +60,7 @@ public:
   int m_mouse_move_x, m_mouse_move_y;
   int m_cursor_x, m_cursor_y;
   eMode m_mode;
-  std::vector<PluginObject *> m_plugins;
+  std::list<PluginObject *> m_plugins;
   MainWindow *m_win_parent;
 };
 

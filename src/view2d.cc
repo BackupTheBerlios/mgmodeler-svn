@@ -57,7 +57,7 @@ View2D::updateStatusBar (float x, float y)
 void 
 View2D::addPluginObject (PluginObject *obj)
 {
-  std::vector<PluginObject *>::iterator i;
+  std::list<PluginObject *>::iterator i;
 
   if (!obj)
     return;
@@ -130,8 +130,8 @@ View2D::parseMouseRelease (QMouseEvent *e)
   if (e->button () == QMouseEvent::LeftButton)
     if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
       {
-	std::vector<PluginObject *>::iterator i;
-	std::vector<PluginObject *>::iterator end=m_plugins.end();
+	std::list<PluginObject *>::iterator i;
+	std::list<PluginObject *>::iterator end=m_plugins.end();
 	Vec3f v;
 	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
 
@@ -192,7 +192,7 @@ View2D::setCurrentPlugin (PluginObject *p)
   s_plugin_current = p;
 }
 
-const std::vector<PluginObject *>&
+const std::list<PluginObject *>&
 View2D::getPlugins ()
 {
   return m_plugins;
@@ -201,8 +201,8 @@ View2D::getPlugins ()
 void
 View2D::redisplay ()
 {
-  std::vector<PluginObject *>::iterator i;
-  std::vector<PluginObject *>::iterator end=m_plugins.end();
+  std::list<PluginObject *>::iterator i;
+  std::list<PluginObject *>::iterator end=m_plugins.end();
   
   glPushAttrib (GL_ENABLE_BIT);
   glDisable (GL_DEPTH_TEST);
@@ -284,8 +284,8 @@ View2D::load (std::istream& stream)
 void
 View2D::save (std::ostream& stream) const
 {
-  std::vector<PluginObject *>::const_iterator i;
-  std::vector<PluginObject *>::const_iterator end=m_plugins.end ();
+  std::list<PluginObject *>::const_iterator i;
+  std::list<PluginObject *>::const_iterator end=m_plugins.end ();
   int size = m_plugins.size ();
   if (m_plugin_active)
     size ++;

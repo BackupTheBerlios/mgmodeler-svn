@@ -32,7 +32,6 @@ private:
 
   SubConfig *m_subconfig;
 
- 
   signals:
   public slots:
     void view3dRedisplay ();
