@@ -4,8 +4,6 @@
 #include <qgl.h>
 #include <iostream>
 
-const float OpenglWidget::TRACKBALL_ZOOM_DEF;
-
 OpenglWidget::OpenglWidget (QWidget *parent, const char *name, 
 			    bool ortho, bool trackball)
   :QGLWidget (parent, name), m_trackball_zoom (TRACKBALL_ZOOM_DEF)
@@ -28,7 +26,7 @@ OpenglWidget::initializeGL ()
 {
   glClearColor (0.0, 0.0, 0.0, 0.0);
   glMatrixMode (GL_MODELVIEW);
-  //updateGL ();
+  glEnable (GL_DEPTH_TEST);
 }
 
 void 
@@ -49,7 +47,6 @@ OpenglWidget::resizeGL (int w, int h)
   m_update_modelview = true;
   m_update_projection = true;
 
-  //updateGL ();
 }
 
 void 
@@ -100,6 +97,25 @@ OpenglWidget::mousePressEvent (QMouseEvent *e) {
   }
 }
 
+void
+OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
+  //View3D *parent = (View3D *)m_parent;
+  //parent-> parseMousePress (e);
+
+  switch (e->button ()) {
+  case QMouseEvent::LeftButton:
+    if (m_trackball_enable)
+      {
+	m_trackball->stopRotation ();
+	m_update_modelview = true;
+	updateGL ();
+      }
+    break;
+  default:
+    break;
+  }
+}
+
 
 void
 OpenglWidget::mouseMoveEvent (QMouseEvent *e) {
@@ -114,6 +130,19 @@ OpenglWidget::mouseMoveEvent (QMouseEvent *e) {
 	updateGL ();
       }
   
+}
+
+void
+OpenglWidget::wheelEvent (QWheelEvent * e)
+{ 
+  e->accept ();
+  if (e->delta ()<0)
+    m_trackball_zoom *= 0.9;
+  else
+    m_trackball_zoom *= 1.1;
+  
+  m_update_modelview = true;
+  updateGL ();
 }
 
 
@@ -147,5 +176,6 @@ OpenglWidget::SyncContext ()
 	glLoadIdentity ();
 	gluLookAt (0, 0, 2, 0, 0, 0, 0, 1, 0);
 	glMultMatrixf ((float *)modelview[0]);
+	glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
       }
 }
