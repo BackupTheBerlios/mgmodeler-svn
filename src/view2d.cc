@@ -139,9 +139,9 @@ View2D::parseMouseRelease (QMouseEvent *e)
 	  {
 	    if ((*i)->hasPoint (v))
 	      {
-		addPluginObject (m_plugin_active);
+		PluginObject *obj = m_plugin_active;
 		m_plugin_active = (*i);
-		printf("Found\n");
+		addPluginObject (obj);
 		m_win_parent->setViewsMode (MODE_EDIT);
 		return;
 	      }
@@ -213,7 +213,6 @@ View2D::redisplay ()
 
   if (m_plugin_active) {
     glColor3f(0, 0, 0);
-    printf("0x%x\n", m_plugin_active);
     m_plugin_active -> display ();
     m_plugin_active -> drawNormals ();
   }
