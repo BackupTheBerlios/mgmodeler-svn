@@ -11,9 +11,6 @@
 #define PLUGIN_MENU "object/polylines"
 #define PLUGIN_ICON "plugins/Objects/nurbs.png"
 
-
-
-
 class Nurbs : public PolyLine
 {
 public:
@@ -36,7 +33,6 @@ static void nurbsError(GLenum errorCode)
 
    estring = gluErrorString(errorCode);
    fprintf (stderr, "Nurbs Error: %s\n", estring);
-   //   exit (0);
 }
 
 void
@@ -51,7 +47,7 @@ Nurbs::display ()
   float *ctlpoints;
   int nctlpoints;
   int pos;
-  int rep = 3;
+  int deg = 2;
 
   std::cout << "nurbs" << std::endl;
  
@@ -61,27 +57,45 @@ Nurbs::display ()
   gluNurbsCallback(nurbs, GLU_ERROR, 
 		   (GLvoid (*)()) nurbsError);
 
-  nknots = nctlpoints = pts.size ();
-  knots = new float[nknots*rep];
-  ctlpoints = new float[3*nknots*rep];
+  nknots = nctlpoints = pts.size ()+(deg)*2;
+  knots = new float[nknots];
+  ctlpoints = new float[3*nknots];
   
   knotsstep = 1.;
+  int c;  
+  pos=0;
+
+  for (c = 0, i=pts.begin(); c < deg - 1; c++) {
+    knots[pos] = pos;
+    ctlpoints[3*pos] = (*i)->x;
+    ctlpoints[3*pos+1] = (*i)->y;
+    ctlpoints[3*pos+2] = 1.0;
+    pos++;
+  }
   
-  for (i=pts.begin(), pos = 0; i!=end; ++i) {
-    for (int j=0;j<rep; j++) {
-      knots[pos] = pos;
-      ctlpoints[3*pos] = (*i)->x;
-      ctlpoints[3*pos+1] = (*i)->y;
-      ctlpoints[3*pos+2] = 1.0;
-      pos++;
-    }
+  for (i=pts.begin(); i!=end; ++i) {
+    //  for (int j=0;j<rep; j++) {
+    knots[pos] = pos;
+    ctlpoints[3*pos] = (*i)->x;
+    ctlpoints[3*pos+1] = (*i)->y;
+    ctlpoints[3*pos+2] = 1.0;
+    pos++;
+    //    }
     std::cout << pos << " (" << ctlpoints[3*pos] << ", " << ctlpoints[3*pos+1]
 	      << ", " << ctlpoints[3*pos+2] << ")<" << knots[pos] << ">\n";
+  }
+  std::list<Vec3d *>::reverse_iterator r = pts.rbegin();
+  for (c = 0; c < deg - 1; c++) {
+    knots[pos] = pos;
+    ctlpoints[3*pos] = (*r)->x;
+    ctlpoints[3*pos+1] = (*r)->y;
+    ctlpoints[3*pos+2] = 1.0;
+    pos++;
   }
 
 
   gluBeginCurve (nurbs);
-  gluNurbsCurve (nurbs,nknots*rep, knots, sizeof(float)*3, ctlpoints, rep,  GL_MAP1_VERTEX_3); 
+  gluNurbsCurve (nurbs,nknots, knots, 3, ctlpoints, deg + 1,  GL_MAP1_VERTEX_3);
   gluEndCurve (nurbs);
   drawPoints ();
 }

@@ -5,7 +5,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define PLUGIN_NAME "Cicle Plugin"
+#define PLUGIN_NAME "Circle Plugin"
 #define PLUGIN_MENU "object/circles"
 #define PLUGIN_ICON "plugins/Objects/circle.png"
 

@@ -152,7 +152,6 @@ View3D::parseMouseDoubleClick (QMouseEvent *e)
     {
       double x, y, z;
       unProject (e->x(), e->y(), &x ,&y, &z);
-      
       if (m_plugin_active)
 	m_plugin_active->doubleClick (e->button(), x, y, z);
     }

@@ -1,6 +1,8 @@
 #ifndef POLYLINES_H
 #define POLYLINES_H
 
+#include "math/vector3.h"
+
 class PolyLine : public PluginObject
 {
 public:
@@ -20,10 +22,14 @@ public:
   void mouseMove (double x, double y, double z);
   void removePoint (double, double, double);
   void display ();
-  void drawPoints ();
-protected:
+  void drawPoints (std::list<Vec3d *>::iterator nearest);
+  double distanceToSegment (const Vec3d& pt, const Vec3d& a, const Vec3d& b);
+ protected:
   std::list<Vec3d *> pts;
   Vec3d *selected;
+  Vec3d cursor;
+ private:
+  bool should_close;
 };
 
 #endif /* POLYLINES_H */

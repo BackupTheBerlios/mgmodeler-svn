@@ -13,10 +13,8 @@
 #define PLUGIN_ICON "plugins/Objects/polyline.png"
 
 
-
-
 PolyLine::PolyLine ()
-  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0)
+  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0), should_close (false)
 {
 }
 
@@ -29,7 +27,7 @@ void
 PolyLine::buttonDown (QMouseEvent::ButtonState button, double x, double y, double z)
 {
   switch (button) {
-  case QMouseEvent::LeftButton:
+  case QMouseEvent::MidButton:
     selected = getPoint (x, y, z);    
     if (selected)
       std::cout << PLUGIN_NAME " : dragging point " << *selected << std::endl;
@@ -43,35 +41,46 @@ bool
 PolyLine::buttonUp (QMouseEvent::ButtonState button, double x, double y, double z)
 {
   switch (button) {
-  case (QMouseEvent::LeftButton):
+  case QMouseEvent::LeftButton:
     if (!selected) {
       std::cout << PLUGIN_NAME " : adding point "<< x << " " << y << " " 
 		<< z << std::endl;
-      pts.push_back (new Vec3d(x,y,z));
-      return false;
-    } else {
+      if (!should_close)
+	pts.push_back (new Vec3d(x,y,z));
+      else
+	pts.push_back (new Vec3d(**pts.begin()));
+    }
+    break;
+  case QMouseEvent::ShiftButton:
+    std::cout << "with shift pressed" << std::endl;
+    break;
+  case QMouseEvent::MidButton:
+    if (selected) {
       std::cout << PLUGIN_NAME " : dropping point to " << x << ", " << y
 		<< ", " << z << std::endl;
       selected->setValues (x, y, z);
       selected = 0;
-      return false;
     }
-    break;    
-  case (QMouseEvent::RightButton):
+
+    break;
+  case QMouseEvent::RightButton:
     std::cout << PLUGIN_NAME "try to remove " << x << ", " << y << ", " << z << std::endl;
     removePoint (x, y, z);
   default:
     break;
   }
-
+  should_close=false;
   return true;
 }
 
 void
 PolyLine::mouseMove (double x, double y, double z) 
 {
+  std::list<Vec3d *>::iterator i;
+  std::list<Vec3d *>::iterator end = pts.end ();
   if (selected)
     selected->setValues (x, y, z);
+  cursor.setValues (x, y, z);
 }
 
 bool
@@ -79,10 +88,8 @@ PolyLine::doubleClick (QMouseEvent::ButtonState button, double x, double y, doub
 {
   switch (button) {
   case QMouseEvent::LeftButton:
-    std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
-    pts.push_back (new Vec3d(x,y,z));
-    pts.push_back (new Vec3d(**(pts.begin())));
-    endObject ();
+    std::cout << PLUGIN_NAME " : closing" << std::endl;
+    should_close = true;
     return true;
   }
   return false;
@@ -152,7 +159,7 @@ PolyLine::~PolyLine ()
 }
 
 void
-PolyLine::drawPoints ()
+PolyLine::drawPoints (std::list<Vec3d *>::iterator nearest)
 {
   std::list<Vec3d *>::iterator i;
   std::list<Vec3d *>::iterator end = pts.end ();
@@ -161,11 +168,27 @@ PolyLine::drawPoints ()
   glColor3f (1.0, 0.0, 0.0);
   glBegin (GL_POINTS);
   
-  for (i=pts.begin(); i!=end; ++i)
-    glVertex2f ((*i)->x, (*i)->y);
+  for (i=pts.begin(); i!=end; ++i) {
+    if (i == nearest) {
+      glColor3f (1.0, 1.0, 0.0);
+      glVertex2f ((*i)->x, (*i)->y);
+      ++i;
+      glVertex2f ((*i)->x, (*i)->y);
+      glColor3f (1.0, 0.0, 0.0);
+    } else
+      glVertex2f ((*i)->x, (*i)->y);
+  }
 
   glEnd ();
   glPopAttrib ();
+
+  for (i=pts.begin(); i!=end;) {
+    std::list<Vec3d *>::iterator first = i++;
+    if (i != end)
+      distanceToSegment (Vec3d ((*i)->x, (*i)->y, 0),
+			 **first, **i);
+  }
+
 }
 
 void
@@ -173,13 +196,47 @@ PolyLine::display ()
 {
   std::list<Vec3d *>::iterator i;
   std::list<Vec3d *>::iterator end = pts.end ();
+  std::list<Vec3d *>::iterator nearest;
+  double mindist = std::numeric_limits<double>::max ();
 
   glBegin (GL_LINE_STRIP);
-  for (i=pts.begin(); i!=end; ++i) {
-    glVertex2f ((*i)->x, (*i)->y); 
+  for (i=pts.begin(); i!=end;) {
+    std::list<Vec3d *>::iterator first = i++;
+    glVertex2f ((*first)->x, (*first)->y); 
+    if (i != end) {
+      double dist = distanceToSegment (Vec3d (cursor.x, cursor.y, 0),
+				       **first, **i);
+      if (dist < mindist) {
+	mindist = dist;
+	nearest = first;
+      }
+    }
   }
   glEnd ();
-  drawPoints ();
+
+  drawPoints (nearest);
 }
+
+double
+PolyLine::distanceToSegment (const Vec3d& p, const Vec3d& f, const Vec3d& g) 
+{
+  double a, b;
+  double c, d;
+  double dx = (g.x - f.x);
+  double dy = (g.y - f.y);
+  double x, y;
+
+  a =  dy / dx ;
+  b = dy - a * dx;
+
+  c = -1/a;
+  d = p.y - c * p.x;
+
+  x = (d - b) / (a - c);
+  y = a * x + b;
+
+  return hypot (x, y);
+}
+
 
 DECLARE_PLUGIN (PolyLine);
