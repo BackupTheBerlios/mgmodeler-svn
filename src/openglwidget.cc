@@ -218,6 +218,8 @@ OpenglWidget::SyncContext ()
       else
 	{
 	  glLoadIdentity ();
+	  //  gluLookAt (m_motion_x, m_motion_y, 2.0, 
+	  //m_motion_x, m_motion_y, 0.0,   0.0, 1.0, 0.0);
 	  glTranslatef (m_motion_x, m_motion_y, 0.0);
 	}
     }
@@ -234,13 +236,13 @@ OpenglWidget::unProject (const Vec3f& i, Vec3f& o)
   glGetDoublev (GL_MODELVIEW_MATRIX, mv);
   glGetDoublev (GL_PROJECTION_MATRIX, pj);
   glGetIntegerv (GL_VIEWPORT, vp);
-  
-  gluUnProject (i.x, i.y, 0,
+
+  gluUnProject (i.x, vp[3] - i.y, 0,
               mv, pj, vp,
               &x, &y, &z);
+
   o.x = x;
-  /* FIXME */
-  o.y = -y;
+  o.y = y;
   o.z = z;
 }
 

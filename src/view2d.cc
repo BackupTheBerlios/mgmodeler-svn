@@ -41,12 +41,6 @@ View2D::setupView ()
       std::cout << "Warning Invalid Axe"<<std::endl;
       break;
     }
-
-  //QWidget *glwidget = getOpenglWidget ();
-
-  //glwidget->move (0, 0);
-  //glwidget->resize (20, 20);
-
 }
 
 void
@@ -56,10 +50,7 @@ View2D::updateStatusBar (float x, float y)
   
   statusBar() ->message (QString().setNum (x)+QString(" ")+
 			 QString().setNum (y));
-  
 }
-
-
 
 void
 View2D::parseMousePress (QMouseEvent *e)
@@ -180,7 +171,10 @@ View2D::redisplay ()
 {
   std::vector<PluginObject *>::iterator i;
   std::vector<PluginObject *>::iterator end=m_plugins.end();
- 
+  
+  glPushAttrib (GL_ENABLE_BIT);
+  glDisable (GL_DEPTH_TEST);
+
   for (i = m_plugins.begin (); i!=end; ++i)
     (*i)->display ();
 
@@ -189,6 +183,8 @@ View2D::redisplay ()
     m_plugin_active -> display ();
     m_plugin_active -> drawNormals ();
   }
+
+  glPopAttrib ();
 }
 
 void
