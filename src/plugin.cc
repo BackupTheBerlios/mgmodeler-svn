@@ -55,11 +55,9 @@ PluginManager::loadPlugins (const QStringList& searchpath)
 {
   for (QStringList::ConstIterator it = searchpath.begin(); 
        it != searchpath.end(); ++it) {
-    std::cout << "searching in "<< *it << std::endl;
     QDir  dir(*it, "*.so");
     QStringList plugs=dir.entryList();
     for (QStringList::ConstIterator pit = plugs.begin(); pit != plugs.end(); ++pit) {
-      std::cout << " loading " << QDir(*it).absPath()+"/"+*pit << std::endl;
       loadPlugin (QDir(*it).absPath()+"/"+*pit);
     }
   }

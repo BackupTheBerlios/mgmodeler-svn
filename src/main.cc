@@ -19,7 +19,6 @@ main (int argc, char *argv[])
       spath+="../plugins/IO/.libs";
       spath+="plugins/IO/.libs";
       spath+=QStringList::split (":", MODULES_DIR);
-      std::cout << "searching plugins from " << spath.join(", ") << std::endl;
       PluginManager::loadPlugins (spath);
     }
   catch (std::runtime_error e)
