@@ -14,12 +14,12 @@
 
 
 PolyLine::PolyLine ()
-  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0), should_close (false), need_recompute(true)
+  :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), selected(0),  need_recompute(true), should_close (false)
 {
 }
 
 PolyLine::PolyLine (const std::string& name, const std::string& menu,  
-		    const std::string& filename) :PluginObject (name, menu, filename), selected(0), should_close(false)
+		    const std::string& filename) :PluginObject (name, menu, filename), selected(0), need_recompute(true), should_close(false)
 {
 }
 
@@ -118,6 +118,8 @@ PolyLine::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState
     std::cout << PLUGIN_NAME " : closing" << std::endl;
     should_close = true;
     return true;
+  default:
+    break;
   }
   return false;
 }
@@ -349,7 +351,7 @@ PolyLine::evaluateTimeline (std::vector<float>& t) const
       maxy = y;
   }
 
-  for (int i=0;i<t.size (); i++)
+  for (unsigned int i=0;i<t.size (); i++)
     t[i] = (t[i] - miny)/ (maxy-miny);  
 }
 
@@ -379,7 +381,7 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals) const
   }
 
   Vec3f last (normals[0]);
-  for (int c=0; c<normals.size(); c++) {
+  for (unsigned int c=0; c<normals.size(); c++) {
     Vec3f tmp = last;
     last = normals[c];
     normals[c] = (normals[c]+tmp)/2;

@@ -35,7 +35,7 @@ public:
   std::list<Vec3f *> pts;
   Vec3f *selected;
   Vec3f cursor;
-  bool need_recompute;
+  mutable bool need_recompute;
  private:
   bool should_close;
 };

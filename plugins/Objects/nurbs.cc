@@ -248,8 +248,6 @@ Nurbs::compute () const
       ctlpoints.push_back (ctlnormals[i]);*/
   std::cout << "WARNING RECOMPUTING\n" << std::endl;
 
-  glPushMatrix ();
-  glLoadIdentity();
   points.clear ();
   normals.clear ();
   timeline.clear ();
@@ -294,7 +292,7 @@ Nurbs::compute () const
     t+=tstep;
     
   }
-  glPopMatrix ();
+  need_recompute=false;
 }
 
 float
@@ -302,7 +300,8 @@ Nurbs::evaluate (std::vector<Vec3f>& res) const
 {
   std::vector<Vec3f> tmp;
   float len = PolyLine::evaluate (tmp);
-  compute ();
+  if (need_recompute)
+    compute ();
   res = points;
   return len;
 }
