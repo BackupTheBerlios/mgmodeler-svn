@@ -249,8 +249,6 @@ Nurbs::compute () const
 
   assert (resolution);
 
-  std::cout << "WARNING RECOMPUTING\n" << std::endl;
-
   points.clear ();
   normals.clear ();
   timeline.clear ();

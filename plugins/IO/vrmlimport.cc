@@ -45,7 +45,6 @@ public:
     faces.clear ();
     FILE *input = fopen(filename.c_str(), "r");
     if (!input)
-      //throw "error while opening vrml file";
       return -2;
     ::points=&points;
     ::faces=&faces;
@@ -66,6 +65,4 @@ private:
   std::vector<std::vector<int> > faces;
 };
 
-extern "C" Plugin *CreateInstance () {
-return dynamic_cast<Plugin *>(new VRMLImport ());
-}
+DECLARE_PLUGIN (VRMLImport);

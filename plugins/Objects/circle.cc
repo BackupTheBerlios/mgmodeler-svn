@@ -13,10 +13,13 @@ class Circle : public PluginObject {
 public:
   Circle ();
   ~Circle ();
-  void buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v);
-  bool buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v);
+  void buttonDown (QMouseEvent::ButtonState button, 
+		   QMouseEvent::ButtonState state, const Vec3f& v);
+  bool buttonUp (QMouseEvent::ButtonState button, 
+		 QMouseEvent::ButtonState state, const Vec3f& v);
   void endObject ();
-  bool doubleClick (QMouseEvent::ButtonState  button, QMouseEvent::ButtonState state, const Vec3f& v);
+  bool doubleClick (QMouseEvent::ButtonState  button, 
+		    QMouseEvent::ButtonState state, const Vec3f& v);
   bool hasPoint (const Vec3f& v);
   void removePoint (const Vec3f& v);
   void display () const;
@@ -41,7 +44,6 @@ Circle::Circle ()
   :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), drawing(false),
    r(1.0)
 {  
-  std::cout << PLUGIN_NAME << std::endl;
 }
 
 void
@@ -49,7 +51,6 @@ Circle::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState st
 {
   center = radius = v;
   drawing = true;
-  std::cout << PLUGIN_NAME" : setting center to " << center << std::endl;
 }
 
 bool
@@ -59,8 +60,6 @@ Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState stat
   case QMouseEvent::LeftButton:
     radius = v;
     r = (radius - center).length ();
-    std::cout << PLUGIN_NAME" : setting radius control point to " << radius 
-	      << std::endl;
     drawing = false;
     return false;
     break;
@@ -68,7 +67,7 @@ Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState stat
   case QMouseEvent::RightButton:
     removePoint (v);
   default:
-    std::cout << "blabla" << std::endl;
+    break;
   }
 
   return true;
@@ -104,7 +103,6 @@ Circle::endObject ()
 bool
 Circle::hasPoint (const Vec3f& v)
 {
-  //  float epsilon = std::numeric_limits<typeof(center.x)>::epsilon();
   float epsilon = 0.075;
   if (std::abs(center.x-v.x) < epsilon && 
       std::abs(center.y-v.y) < epsilon)

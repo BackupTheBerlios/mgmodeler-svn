@@ -5,21 +5,18 @@
 void
 GeneralizedCylinder::addPath (PluginObject *o) 
 {
-  std::cout << __PRETTY_FUNCTION__ << std::endl;
   path.push_back (o);
 }
 
 void
 GeneralizedCylinder::addSection (PluginObject *o) 
 {
-  std::cout << __PRETTY_FUNCTION__ << std::endl;
   section.push_back (o);
 }
 
 void
 GeneralizedCylinder::addProfile (PluginObject *o) 
 {
-  std::cout << __PRETTY_FUNCTION__ << std::endl;
   profile.push_back (o);
 }
 
@@ -57,7 +54,6 @@ class Path {
 public:
   Path (const PluginObject *init) : binormal(0, 0, 1) {
     length=init->evaluate(path);
-    std::cout << "length = " << length << std::endl;
     init->evaluateNormals(normals);
   }
   
@@ -65,14 +61,11 @@ public:
   }
 
   const Vec3f interpolate (const std::vector<Vec3f>& which, float where) const {
-    if (where<0.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+    if (where<0.0f)
       where = 0.0f;
-    }
-    if (where>1.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+    
+    if (where>1.0f)
       where = 1.0f;
-    }
     
     where *= which.size ()-1;
     float inte;
@@ -101,11 +94,9 @@ public:
     Point res;
     rotate (tangent, normal, p.getCoords(), res.getCoords());
     translate = interpolate(path, where);
-    if (translate.z!=0.0) {
-      //      std::cout << "WARNING interpolate(path[where]) == " << translate.z << "\n";
+    if (translate.z!=0.0)
       translate.z=0;
-    }
-
+    
     rotate (tangent, normal, p.getNormal(), res.getNormal());
 
     return res;
@@ -143,18 +134,13 @@ public:
     for (j=bounds.begin(); j!=jend; ++j) {
       j->min/=last;
       j->max/=last;
-      std::cout << "[" << j->min << ", " << j->max << "]\n";
     }
   }
   int changeReference (float where, Point& p, Vec3f& translate) const {
-    if (where<0.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+    if (where<0.0f)
       where = 0.0f;
-    }
-    if (where>1.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+    if (where>1.0f)
       where = 1.0f;
-    }
     
     for (unsigned int i=0; i<bounds.size (); i++) {
       if (where >= bounds[i].min && where<= bounds[i].max) {
@@ -200,23 +186,17 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
   std::list<PluginObject *>::iterator iendprofile = profile.end ();
   std::list<PluginObject *>::iterator iendsection = section.end ();
 
-  std::cout<< "GC COMPUTE\n";
-
   if (ipath == iendpath || iprofile == iendprofile || isection == iendsection)
     return;
 
   v.clear ();
-
-  std::cout << "GCSTART" << std::endl;
 
   while (ipath!=iendpath) {
     (*ipath)->setResolution (rPath);
     wpath.add (Path(*ipath));
     ++ipath;
   }
-  std::cout << "-----------\n";
   wpath.computeBounds ();
-  std::cout << "-----------\n";
 
   (*iprofile)->setResolution(rProfile);
   (*iprofile)->evaluate (vprofile);
@@ -305,7 +285,6 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
 void
 GeneralizedCylinder::setResolution(Curve c, int u) {
-  std::cout << "changing " << c << " to " << u << std::endl; 
   switch (c) {
   case PROFILE:
     rProfile = u;

@@ -1,5 +1,5 @@
 DEFS="-DDATADIR=\"${pkgdatadir}\"" \
-  -DMODULES_DIR=\"@datadir@/@PACKAGE_NAME@-@VERSION@:@datadir@/@PACKAGE_NAME@\"
+  -DMODULES_DIR=\"@libdir@/@PACKAGE_NAME@-@VERSION@:@libdir@/@PACKAGE_NAME@\"
 INCLUDES=-I../$(top_srcdir)/
 
 EXTRA_DIST=subconfig.ui

@@ -15,7 +15,6 @@ main (int argc, char *argv[])
     {
       QStringList spath;
       spath+="../plugins/Objects/.libs";
-      spath+="../lib/MGModeler-0.1/";
       spath+="plugins/Objects/.libs";
       spath+="../plugins/IO/.libs";
       spath+="plugins/IO/.libs";
