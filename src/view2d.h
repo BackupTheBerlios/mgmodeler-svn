@@ -40,6 +40,7 @@ public:
   void setMode (eMode mode) {m_mode = mode;}
   void updateStatusBar (const Vec3f& v);
  private:
+  void addPluginObject (PluginObject *obj);
   void beginWindowMotion (int x, int y);
   void parseWindowMotion (int x, int y);
   void endWindowMotion ();

@@ -54,6 +54,20 @@ View2D::updateStatusBar (float x, float y)
 			 QString().setNum (y));
 }
 
+void 
+View2D::addPluginObject (PluginObject *obj)
+{
+  std::vector<PluginObject *>::iterator i;
+
+  if (!obj)
+    return;
+  
+  for (i = m_plugins.begin (); i!=m_plugins.end (); ++i)
+    if ((*i) == obj)
+	return;
+  m_plugins.push_back (obj);
+}
+
 void
 View2D::parseMousePress (QMouseEvent *e)
 {
@@ -61,7 +75,7 @@ View2D::parseMousePress (QMouseEvent *e)
     if (s_plugin_current)
       {
 	if (m_plugin_active)
-	  m_plugins.push_back (m_plugin_active);
+	  addPluginObject (m_plugin_active);
 	m_plugin_active = (PluginObject *)
 	  s_plugin_current-> m_createinstance ();
 	switch (m_view) {
@@ -116,19 +130,17 @@ View2D::parseMouseRelease (QMouseEvent *e)
   if (e->button () == QMouseEvent::LeftButton)
     if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
       {
-	printf("PUT\n");
-
 	std::vector<PluginObject *>::iterator i;
+	std::vector<PluginObject *>::iterator end=m_plugins.end();
 	Vec3f v;
 	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
 
-	for (i = m_plugins.begin (); i!=m_plugins.end (); ++i)
+	for (i = m_plugins.begin (); i!=end; ++i)
 	  {
 	    if ((*i)->hasPoint (v))
 	      {
-		if (m_plugin_active)
-		  m_plugins.push_back (m_plugin_active);
-		m_plugin_active = *i;
+		addPluginObject (m_plugin_active);
+		m_plugin_active = (*i);
 		printf("Found\n");
 		m_win_parent->setViewsMode (MODE_EDIT);
 		return;
@@ -196,10 +208,12 @@ View2D::redisplay ()
   glDisable (GL_DEPTH_TEST);
 
   for (i = m_plugins.begin (); i!=end; ++i)
-    (*i)->display ();
+    if ((*i)!=m_plugin_active)
+      (*i)->display ();
 
   if (m_plugin_active) {
     glColor3f(0, 0, 0);
+    printf("0x%x\n", m_plugin_active);
     m_plugin_active -> display ();
     m_plugin_active -> drawNormals ();
   }
