@@ -5,14 +5,24 @@ LDFLAGS=-lGL -lGLU -L$(QTDIR)/lib -lqt-mt -ldl -lqassistantclient
 BIN=MGModeler
 
 
-$(BIN): view.o view2d.o view3d.o openglwidget.o mainwindow.o mainwindow_moc.o main.o plugin.o trackball.o gc.o
+$(BIN): view.o view2d.o view3d.o openglwidget.o mainwindow.o mainwindow_moc.o main.o plugin.o trackball.o gc.o subconfig.o subconfig_moc.o
 
 	$(CXX) $(LDFLAGS) $(LIBS) -o $@ $^
 
 mainwindow_moc.cc: mainwindow.h
 	$(QTDIR)/bin/moc $^ > $@
+
+subconfig_moc.cc: subconfig.h
+	$(QTDIR)/bin/moc $^ > $@
+	
+subconfig.h: subconfig.ui
+	$(QTDIR)/bin/uic $^ -o $@
+
+subconfig.cc: subconfig.h subconfig.ui
+	$(QTDIR)/bin/uic -impl $^ -o $@
+	
 clean:
-	rm -f *~ *.o $(BIN)
+	rm -f *~ *.o *_moc.cc $(BIN)
 mainwindow_moc.o: mainwindow_moc.cc mainwindow.h
 mainwindow.o : mainwindow.cc mainwindow.h view.h view2d.h view2d.h
 plugin.o: plugin.cc plugin.h
@@ -22,3 +32,4 @@ openglwidget.o: openglwidget.cc openglwidget.h
 trackball.o: trackball.cc trackball.h math/vector3.h math/matrix.h \
   math/matrix4.h math/quaternion.h math/vector3.h math/matrix.h
 gc.o: gc.cc gc.h plugin.h
+subconfig.o: subconfig.cc subconfig.h

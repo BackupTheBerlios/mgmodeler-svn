@@ -32,6 +32,8 @@ MainWindow::MainWindow ()
 			View2D::VIEW_PATH};
 
 
+  m_subconfig = new SubConfig (this, "Subdivision Config", true);
+
   m_view3d = new View3D (mdi);
   m_view3d-> show ();
   m_view3d-> setupView ();
@@ -155,18 +157,24 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
 	   NULL);
 
-  toolbar->addSeparator(); 
-
-  addTool (this, "Manual", QPixmap ("icons/help.png"), 
-	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
-	   NULL);
-
   addTool (this, "Normals", QPixmap ("icons/normals.png"),
 	   QKeySequence ("Ctrl+N"), toolbar, NULL, SLOT(menuNormals ()),
 	   NULL);
 
   addTool (this, "Switch Normals", QPixmap ("icons/snormals.png"),
 	   QKeySequence ("Ctrl+S"), toolbar, NULL, SLOT(menuSwitchNormals ()),
+	   NULL);
+
+  toolbar->addSeparator(); 
+
+  addTool (this, "Configure", QPixmap ("icons/configure.png"), 
+	   QKeySequence ("Ctrl-C"), toolbar, menu_plugins, SLOT(menuConfig()),
+	   NULL);
+
+  toolbar->addSeparator(); 
+
+  addTool (this, "Manual", QPixmap ("icons/help.png"), 
+	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
 	   NULL);
 }
 
@@ -213,15 +221,14 @@ MainWindow::menuPluginIOChoice ()
   PluginIO *objp = (PluginIO *)PluginManager::getIOPlugin 
     (sender ()->name()[0]);
 
-  QString s = QFileDialog::getOpenFileName(
-		    "./",
-                    "csg (*.wrl)",
-                    this,
-                    "open file dialog",
-                    "Choose a file to open" );
+  QString s = QFileDialog::getOpenFileName
+    ( "./", "csg (*.wrl)", this, "open file dialog", "Choose a file to open" );
 
+  if (s.isEmpty ())
+    return;
 
   objp->parse(s);
+  
   static_cast<View3D *>(m_view3d)->current=objp;
 }
 
@@ -286,3 +293,8 @@ MainWindow::menuSwitchNormals ()
   m_view3d->redisplay ();
 }
 
+void
+MainWindow::menuConfig ()
+{
+  m_subconfig->show ();
+}

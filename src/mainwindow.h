@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
 #include <stdexcept>
 #include <exception>
 #include <qmainwindow.h>
@@ -11,6 +12,7 @@
 
 #include "view2d.h"
 #include "view3d.h"
+#include "subconfig.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -24,6 +26,8 @@ private:
   QWorkspace *mdi;
   View2D *m_view2d[MAX_2DVIEWS];
   View3D *m_view3d;
+
+  SubConfig *m_subconfig;
 
   void setViewsMode (View2D::eMode mode);
   
@@ -41,6 +45,7 @@ private:
   void menuWireframe ();
   void menuNormals ();
   void menuSwitchNormals ();
+  void menuConfig ();
   void windowsMenuActivated(int id);
 };
 

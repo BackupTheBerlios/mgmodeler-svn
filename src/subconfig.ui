@@ -1,0 +1,220 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>SubConfig</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>SubConfig</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>287</width>
+            <height>197</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Subdivision Configuration</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>160</y>
+                <width>280</width>
+                <height>29</height>
+            </rect>
+        </property>
+        <hbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <spacer>
+                <property name="name">
+                    <cstring>Horizontal Spacing2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonOk</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;OK</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+                <property name="default">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>buttonCancel</cstring>
+                </property>
+                <property name="text">
+                    <string>&amp;Cancel</string>
+                </property>
+                <property name="accel">
+                    <string></string>
+                </property>
+                <property name="autoDefault">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </hbox>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>SubGroup</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>280</width>
+                <height>150</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Subdivision</string>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>20</y>
+                    <width>67</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Path:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>60</y>
+                    <width>66</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Profile:</string>
+            </property>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel2_2</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>110</y>
+                    <width>66</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Section:</string>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>SubPath</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>80</x>
+                    <y>20</y>
+                    <width>67</width>
+                    <height>19</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>SubSection</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>80</x>
+                    <y>60</y>
+                    <width>67</width>
+                    <height>19</height>
+                </rect>
+            </property>
+        </widget>
+        <widget class="QSpinBox">
+            <property name="name">
+                <cstring>SubProfil</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>80</x>
+                    <y>110</y>
+                    <width>67</width>
+                    <height>19</height>
+                </rect>
+            </property>
+        </widget>
+    </widget>
+</widget>
+<images>
+    <image name="image0">
+        <data format="PNG" length="1439">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000056649444154388d8d95794c136618c61f0a3d390a8c6394ab58a0dc60010f0e81aa0327a019a8f38a4337dd126736b744dd4c264b86ce6c994e84b8cd63539439075e33b2214aa450280ce48840395ace8e96d28bd296b6dffe9a714ea6cf5fdffbe57b7f79be376fded701cf97c3b28cec505f6f5796751e748b751eaa69cd4cbbb85e0ec0b240cebf01cf5eac589d1bbd2431e12b6757d71c2f4f2f8485f2c06432a0d36bd1d9ddd3dfdcd872e8667565d58bc08e4f07016171018be3a31a3233331384192bd0dbdf87b4941484f1b888898c407acaf257e6897d93d168ee1b1c58d5ebb36e435e42ceb68d60c5259b64c31d3668ad4f1c0b040256c29294534c1693cfa433bd22f9e1e17406c3413e320200c85eb90a82c5b11035b7a2fac675ab6a6aaab27f1a2a07ffe52bb7ae4d8a6d7a3486bb27ce4d9aa7c411f6f5ef31acca59ab4554a286302777b358d2460821e4c2a54a32281b21841052f1f3afe4f837a7c8b98b5748c5b56ab27d639e343175851000fc0b4f96d6f7aa49f99d0ee21952647143620e0044179597a7ee3d7f1e0028343a3dc68dcd060044f04331a3d60000d46a35f8e1e1103588a0959cc0be82684e9c51320d0066d3dc80d164862bd3197314ca751ddaeec2ebad80a551fe9b3204c19b11b78fe7e81de8af0b090ad91d19c1c7d0f008182c3a6a6a6b2d0fea1fda86e4f2ce7169f711aea533392383ef6120819c5ba29e4a633fe992d9a8ebf66dc9f459bc3c2668de2f359927e0bdbfb76049b05a3fefd478a341e1c874749cb2d848169dca0c6e696dc5c3a6c6dedada07db0c7ac3b777dac45ff6b6b63573d9cede41eebab4572392f9b4fed61a49c01195b39bf6edd169834f34d797be63ddb2c80dc2585fabcd8eef2f8b302a12cb9da452a9d595c37963bc74328f005a494ffb1f5a994cff74b70c4ed0ca4492b13dbb9267dd8333d67cc6995051776d488f8e0a74437995185d354d7067d189563beba091c9071946fd89fff4f142da9fe171363b376a67e95f6f429090886c813fee774fa2fc5825747f8a3e9a83f11e1d5406607f6c40a7ee65b910a626ae4d2afc80145734918ea14972a1ae8b84e77c41dca9c28a97863c2b46fae148de96d38f4edeec24d20915f9ad758008b6961277e7b51d2c44b25f08a0a41f8ea46715a78253f4e43123ab784dfcae33ca2af12051a8b5a4b1778ca4ec3e4b5cd8ebc7bc90c85f88e5f4cfc123a7a4303389773996cfa1f60e4fc99b7be28ecfce9a5d97c6724b8eee798db2c8cf05c30a0d0e9dbe87d1dfeb901f2a7d7cb9ada7ef055e3d6885c5d7ba47d40622199820355d23e4f34a31c9faf80a5168cc84104206141ab27a7f05f1e21492337b85a4ba38cd981bc20c5ff0f70080f8226e414654e8a3a129bc7bf82a0e165f0593ea88d4780eaed4756164c688dd476fa1f1a7dbba652eedf224de3842380c6608d733ef7f4bc189e438dc6e94521bab1ba06c6fbd64b09acacd0cfa810f7764e5d749a4f8b1ba05b2bb75fa7995323f20429b32a1702e898a99859f0f2d1fc0d70b3a76f6f41cbf53f68b785a223e68b0dedf0e3435f6cb543ff48d4c63519037640f5b74500ee45a505faf9f75ea51a86cb099b4f0f3764aca0e750f5bd0b1b46ca78106da2a0b2c7300405f512c0c0a703f12e6c7867ede0627165d6d40470b00982d947ee58cdd6c369ae95c5f4716cf979985018df4b96000b0c032e792fa89bf7f90dfc582d793b3b293b9a051ac28bdd1099bc1c802bc1980d2a4d652260c7376a5cd660b60336d707571c807f0dd826000701bee9eb23128179a6ac46cd1bdd68419bd89a294cae1a0545499a0d40040ddd8982e9ae737f978c81ea031106867ada3cf2bc542b3c209488b7306359006c3b417346229a44fd6ce3b293ec7e88e4e078c16fb3146b3e2d332c0fe2ce06f17b374d7dd4c4fbd0000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>SubConfig</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>SubConfig</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
