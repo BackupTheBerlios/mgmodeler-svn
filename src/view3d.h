@@ -26,12 +26,15 @@ public:
   virtual void parseMouseMove (QMouseEvent *e);
   void setCurrentPlugin (PluginObject *p);
   const std::vector<PluginObject *>& getPlugins();
+
   enum mode {
     EDIT_MODE,
     OBJECT_MODE
   };
+
 protected:
-  PluginObject *m_current;
+  static PluginObject *s_plugin_current;
+  PluginObject *m_plugin_active;
   eView m_view;
   OpenglWidget *m_glwidget;
 

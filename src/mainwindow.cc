@@ -39,7 +39,7 @@ MainWindow::MainWindow ()
       m_view2d[i]-> move (150+(i%2)*520, 10 + (i/2) * 440);
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
-      m_view2d[i]-> setCurrentPlugin (static_cast<PluginObject *>(PluginManager::getPlugin (0)->m_createinstance()));
+      //m_view2d[i]-> setCurrentPlugin (static_cast<PluginObject *>(PluginManager::getPlugin (0)->m_createinstance()));
     }
 
   m_view3d = new View3DRotation (NULL);
@@ -104,6 +104,10 @@ MainWindow::menuFileQuit ()
 void
 MainWindow::menuPluginChoice ()
 {
-  Plugin *p = PluginManager::getPlugin (sender ()-> name  ()[0]);
-  std::cout<<"Plugin: "<< p->getName ()<<"\n";
+  PluginObject *objp = (PluginObject *)PluginManager::getPlugin 
+    (sender ()-> name  ()[0]);
+  
+  std::cout<<"Plugin: "<< objp->getName ()<<"\n";
+
+  m_view3d-> setCurrentPlugin (objp);
 }

@@ -7,6 +7,7 @@
 #include <qstring.h>
 #include <iostream>
 
+PluginObject *View3D::s_plugin_current = NULL;
 
 View3D::View3D (QWorkspace *parent, std::string name)
   :QMainWindow (parent, name.c_str (), 0)
@@ -23,6 +24,8 @@ View3D::View3D (QWorkspace *parent, eView view)
   m_cursor_x = m_cursor_y=0;
   m_editable = true;
   setMouseTracking (true);
+
+  m_plugin_active = NULL;
 }
 
 void
@@ -67,8 +70,18 @@ View3D::updateStatusBar (int x, int y)
 void
 View3D::parseMousePress (QMouseEvent *e)
 {
-  assert (m_current);
-  m_current->buttonDown (e->button(), e->x(), e->y (), 0);
+  if (e->button () == QMouseEvent::LeftButton)
+    if (s_plugin_current)
+      {
+	//TODO push old
+	m_plugin_active = (PluginObject *)
+	  s_plugin_current-> m_createinstance ();
+	s_plugin_current = NULL;
+	//std::cout<<"NEW PLUGIN IN EDIT MODE\n";
+      }
+
+  if (m_plugin_active)
+    m_plugin_active->buttonDown (e->button(), e->x(), e->y (), 0);
 }
 
 void
@@ -87,7 +100,7 @@ View3D::parseMouseMove (QMouseEvent *e)
 void
 View3D::setCurrentPlugin (PluginObject *p) 
 {
-  m_current = p;
+  s_plugin_current = p;
 }
 
 const std::vector<PluginObject *>&

@@ -4,6 +4,8 @@
 #include <exception>
 #include <qmainwindow.h>
 
+#include <vector>
+
 #define APPLICATION_NAME "MGModeler"
 #define MAX_2DVIEWS 3
 
