@@ -24,13 +24,13 @@ public:
   std::list<Vec3f *>::iterator getPointIterator (const Vec3f& v);
   void mouseMove (QMouseEvent::ButtonState state, const Vec3f& v);
   void removePoint (const Vec3f& v);
-  void display ();
-  void drawPoints (std::list<Vec3f *>::iterator nearest);
-  float distanceToSegment (const Vec3f& pt, const Vec3f& a, const Vec3f& b);
-  void evaluate (std::vector<Vec3f>& res);
-  void evaluateTimeline (std::vector<float>& time);
-  void evaluateNormals (std::vector<Vec3f>& time);
-  void drawNormals ();
+  void display () const;
+  void drawPoints (const std::list<Vec3f *>::const_iterator& nearest) const;
+  float distanceToSegment (const Vec3f& pt, const Vec3f& a, const Vec3f& b) const;
+  float evaluate (std::vector<Vec3f>& res) const;
+  void evaluateTimeline (std::vector<float>& time) const;
+  void evaluateNormals (std::vector<Vec3f>& time) const;
+  void drawNormals () const;
  protected:
   std::list<Vec3f *> pts;
   Vec3f *selected;

@@ -80,11 +80,11 @@ public:
 
   virtual bool hasPoint (const Vec3f& v) = 0;
   virtual void removePoint (const Vec3f& v) = 0;
-  virtual void display () = 0;
-  virtual void evaluate (std::vector<Vec3f>& res) = 0;
-  virtual void evaluateNormals (std::vector<Vec3f>& normals) = 0;
-  virtual void evaluateTimeline (std::vector<float>& time) = 0;
-  virtual void drawNormals () = 0;
+  virtual void display () const = 0;
+  virtual float evaluate (std::vector<Vec3f>& res) const = 0;
+  virtual void evaluateNormals (std::vector<Vec3f>& normals) const  = 0;
+  virtual void evaluateTimeline (std::vector<float>& time) const = 0;
+  virtual void drawNormals () const = 0;
   void setResolution (int res) {
     assert (res>0);
     resolution = res;

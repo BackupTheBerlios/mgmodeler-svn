@@ -181,10 +181,10 @@ PolyLine::~PolyLine ()
 }
 
 void
-PolyLine::drawPoints (std::list<Vec3f *>::iterator nearest)
+PolyLine::drawPoints (const std::list<Vec3f *>::const_iterator& nearest) const
 {
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end = pts.end ();
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end = pts.end ();
   glPushAttrib (GL_CURRENT_BIT);
   glPointSize (4.0f);
   glColor3f (1.0, 0.0, 0.0);
@@ -206,11 +206,11 @@ PolyLine::drawPoints (std::list<Vec3f *>::iterator nearest)
 }
 
 void
-PolyLine::drawNormals ()
+PolyLine::drawNormals () const
 {
   int c;
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end = pts.end ();
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end = pts.end ();
   std::vector<Vec3f> normals;
   evaluateNormals (normals);
   if (normals.empty())
@@ -229,11 +229,11 @@ PolyLine::drawNormals ()
 }
 
 void
-PolyLine::display ()
+PolyLine::display () const
 {
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end = pts.end ();
-  std::list<Vec3f *>::iterator nearest;
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end = pts.end ();
+  std::list<Vec3f *>::const_iterator nearest;
   float mindist = std::numeric_limits<float>::max ();
 
   i = pts.begin ();
@@ -242,7 +242,7 @@ PolyLine::display ()
 
   glBegin (GL_LINE_STRIP);
   while (i!=end) {
-    std::list<Vec3f *>::iterator first = i++;
+    std::list<Vec3f *>::const_iterator first = i++;
     if (first == end)
       break;
     glVertex2f ((*first)->x, (*first)->y); 
@@ -261,7 +261,7 @@ PolyLine::display ()
 }
 
 float
-PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g) 
+PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g) const 
 {
   float a, b;
   float c, d;
@@ -291,29 +291,41 @@ PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g)
   return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
 }
 
-void
-PolyLine::evaluate (std::vector<Vec3f>& res)
+float
+PolyLine::evaluate (std::vector<Vec3f>& res) const
 {
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end;
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end;
+  float length = 0;
+
   res.clear ();
   if (pts.empty ())
-    return;
+    return 0;
 
   end = pts.end ();
+  i = pts.begin ();
+  while (i != end) {
+    std::list<Vec3f *>::const_iterator first = i++;
 
-  for (i = pts.begin (); i != end; ++i)
-    res.push_back (**i);
+    if (i != end) {
+      float dx = ((*first)->x-(*i)->x);
+      float dy = ((*first)->y-(*i)->y);
+      length += hypot (dx, dy);
+    }
+    res.push_back (**first);
+  }
+  
+  return length;
 }
 
 void
-PolyLine::evaluateTimeline (std::vector<float>& t)
+PolyLine::evaluateTimeline (std::vector<float>& t) const
 {
   float miny = std::numeric_limits<float>::max();
   float maxy = std::numeric_limits<float>::min();
 
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end;
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end;
   
   t.clear ();
 
@@ -337,11 +349,11 @@ PolyLine::evaluateTimeline (std::vector<float>& t)
 }
 
 void
-PolyLine::evaluateNormals (std::vector<Vec3f>& normals) 
+PolyLine::evaluateNormals (std::vector<Vec3f>& normals) const
 {
   Vec3f z (0, 0, 1);
-  std::list<Vec3f *>::iterator i;
-  std::list<Vec3f *>::iterator end = pts.end ();
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end = pts.end ();
 
   normals.clear ();
   if (pts.size()<2)
@@ -350,7 +362,7 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
   i = pts.begin ();
 
   while (i != end) {
-    std::list<Vec3f *>::iterator first = i++;
+    std::list<Vec3f *>::const_iterator first = i++;
 
     if (i != end) {
       float dx = ((*first)->x-(*i)->x);

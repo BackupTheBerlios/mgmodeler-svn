@@ -16,35 +16,35 @@ class Nurbs : public PolyLine
 public:
   Nurbs();
   ~Nurbs();
-  void display();
-  std::list<Vec3f *>::iterator buildCtlPointsVector(const std::list<Vec3f *>& ,
-						    std::vector<Vec3f>&);
-  void evaluate (std::vector<Vec3f>& res);
-  void evaluateTimeline (std::vector<float>& time);
-  void evaluateNormals (std::vector<Vec3f>& normals);
+  void display() const;
+  float evaluate (std::vector<Vec3f>& res) const;
+  void evaluateTimeline (std::vector<float>& time) const;
+  void evaluateNormals (std::vector<Vec3f>& normals) const;
   struct nurbs_callback {
     GLenum currenttype;
     Vec3f currentVertex;
     Vec3f currentNormal;
     std::vector<Vec3f>* res;
     std::vector<Vec3f>* norm;
-    Nurbs *pthis;
+    const Nurbs *pthis;
   };
 
-  void nurbsError (GLenum errorCode);
-  void beginCallBack (GLenum type, void *data);
-  void vertexCallBack (GLfloat *vtx, void *data);
-  void normalCallBack (GLfloat *nml, void *data);
-  void endCallBack (void *data);
-  void drawNormals ();
+  void nurbsError (GLenum errorCode) const;
+  void beginCallBack (GLenum type, void *data) const;
+  void vertexCallBack (GLfloat *vtx, void *data) const;
+  void normalCallBack (GLfloat *nml, void *data) const;
+  void endCallBack (void *data) const;
+  void drawNormals () const;
 private:
 
   bool recompute;
-  void buildNodalVector (int order, int size, std::vector<float>& knots);
-  std::vector<Vec3f> points;
-  std::vector<Vec3f> normals;
-  std::vector<float> timeline;
-  void compute ();
+  std::list<Vec3f *>::const_iterator buildCtlPointsVector(const std::list<Vec3f *>& ,
+						    std::vector<Vec3f>&) const;
+  void buildNodalVector (int order, int size, std::vector<float>& knots) const;
+  mutable std::vector<Vec3f> points;
+  mutable std::vector<Vec3f> normals;
+  mutable std::vector<float> timeline;
+  void compute () const;
 };
 
 Nurbs::Nurbs () : PolyLine (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON),
@@ -56,7 +56,7 @@ Nurbs::~Nurbs()
 }
 
 void
-Nurbs::nurbsError(GLenum errorCode)
+Nurbs::nurbsError(GLenum errorCode) const
 {
    const GLubyte *estring;
 
@@ -65,7 +65,7 @@ Nurbs::nurbsError(GLenum errorCode)
 }
 
 void
-Nurbs::buildNodalVector (int ordre, int size, std::vector<float>& knots)
+Nurbs::buildNodalVector (int ordre, int size, std::vector<float>& knots) const
 {
   std::vector<float>::iterator i;
   std::vector<float>::iterator iend;
@@ -88,17 +88,17 @@ Nurbs::buildNodalVector (int ordre, int size, std::vector<float>& knots)
   }
 }
 
-std::list<Vec3f *>::iterator
+std::list<Vec3f *>::const_iterator
 Nurbs::buildCtlPointsVector (const std::list<Vec3f *>& source,
-		      std::vector<Vec3f>& ctlpoints)
+		      std::vector<Vec3f>& ctlpoints) const
 {
-  std::list<Vec3f *>::iterator p;
-  std::list<Vec3f *>::iterator pend = pts.end ();
+  std::list<Vec3f *>::const_iterator p;
+  std::list<Vec3f *>::const_iterator pend = pts.end ();
 
-  std::vector<Vec3f>::iterator j;
-  std::vector<Vec3f>::iterator jend;
+  std::vector<Vec3f>::const_iterator j;
+  std::vector<Vec3f>::const_iterator jend;
 
-  std::list<Vec3f *>::iterator nearest;
+  std::list<Vec3f *>::const_iterator nearest;
 
 
   float mindist = std::numeric_limits<float>::max ();
@@ -113,7 +113,7 @@ Nurbs::buildCtlPointsVector (const std::list<Vec3f *>& source,
 
   while (p != pend) {
     ctlpoints.push_back (Vec3f (**p));
-    std::list<Vec3f *>::iterator first = p++;
+    std::list<Vec3f *>::const_iterator first = p++;
 
     if (first == pend)
       break;
@@ -137,40 +137,40 @@ Nurbs::buildCtlPointsVector (const std::list<Vec3f *>& source,
 static void
 nurbsError (GLenum errorCode, const void *data ) 
 {
-  Nurbs *n = ((struct Nurbs::nurbs_callback *)(data))->pthis;
+  const Nurbs *n = ((struct Nurbs::nurbs_callback *)(data))->pthis;
   n->nurbsError (errorCode);
 }
 static void
 beginCallBack (GLenum type, void *data) 
 {
-  Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
+  const Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
   n->beginCallBack (type, data);
 }
 static void
 vertexCallBack (GLfloat *vtx, void *data)
 {
-   Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
+   const Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
    n->vertexCallBack (vtx, data);
 }
 static void
 normalCallBack (GLfloat *nml, void *data)
 {
-   Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
+   const Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
    n->normalCallBack (nml, data);
 }
 static void
 endCallBack (void *data)
 {
-   Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
+   const Nurbs *n = ((struct Nurbs::nurbs_callback *)data)->pthis;
    n->endCallBack (data);
 }
 
 void
-Nurbs::display ()
+Nurbs::display () const
 {
   std::vector<float> knots;
   std::vector<Vec3f> ctlpoints;
-  std::list<Vec3f *>::iterator nearest;
+  std::list<Vec3f *>::const_iterator nearest;
   
   int deg = 1;
   int ordre;
@@ -202,7 +202,7 @@ Nurbs::display ()
 }
 
 void
-Nurbs::beginCallBack (GLenum type, void *data) {
+Nurbs::beginCallBack (GLenum type, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   switch (type) {
   case GL_LINES:
@@ -222,21 +222,21 @@ Nurbs::beginCallBack (GLenum type, void *data) {
   }
 }
 void
-Nurbs::vertexCallBack (GLfloat *vtx, void *data) {
+Nurbs::vertexCallBack (GLfloat *vtx, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   std::cout << "p";
   ncb->res->push_back (ncb->currentVertex = Vec3f (vtx[0], vtx[1], vtx[2]));
 }
 
 void
-Nurbs::normalCallBack (GLfloat *nml, void *data) {
+Nurbs::normalCallBack (GLfloat *nml, void *data) const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   std::cout << "n";
   ncb->norm->push_back (ncb->currentNormal = Vec3f (nml[0], nml[1], nml[2]));
 }
 
 void
-Nurbs::endCallBack (void *data) {
+Nurbs::endCallBack (void *data)  const {
   struct nurbs_callback *ncb = (struct nurbs_callback *)data;
   if (ncb->currenttype == GL_LINE_LOOP) {
     std::cout << "(+np)";
@@ -247,7 +247,7 @@ Nurbs::endCallBack (void *data) {
 }
 
 void
-Nurbs::compute ()
+Nurbs::compute () const
 {
 
   std::vector<float> knots;
@@ -317,15 +317,18 @@ Nurbs::compute ()
   glPopMatrix ();
 }
 
-void
-Nurbs::evaluate (std::vector<Vec3f>& res)
+float
+Nurbs::evaluate (std::vector<Vec3f>& res) const
 {
+  std::vector<Vec3f> tmp;
+  float len = PolyLine::evaluate (tmp);
   compute ();
   res = points;
+  return len;
 }
 
 void
-Nurbs::evaluateTimeline (std::vector<float>& t)
+Nurbs::evaluateTimeline (std::vector<float>& t) const
 {
   compute ();
   float miny = std::numeric_limits<float>::max();
@@ -356,14 +359,14 @@ Nurbs::evaluateTimeline (std::vector<float>& t)
 }
 
 void
-Nurbs::evaluateNormals (std::vector<Vec3f>& n)
+Nurbs::evaluateNormals (std::vector<Vec3f>& n) const
 {
   compute();
   n = normals;
 }
 
 void
-Nurbs::drawNormals ()
+Nurbs::drawNormals () const
 {
   int c;
   std::vector<Vec3f> pts;

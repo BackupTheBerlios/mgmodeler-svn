@@ -19,13 +19,13 @@ public:
   bool doubleClick (QMouseEvent::ButtonState  button, QMouseEvent::ButtonState state, const Vec3f& v);
   bool hasPoint (const Vec3f& v);
   void removePoint (const Vec3f& v);
-  void display ();
-  void drawPoints ();
+  void display () const;
+  void drawPoints () const;
   void mouseMove (QMouseEvent::ButtonState state, const Vec3f& v);
-  void evaluate (std::vector<Vec3f>& res);
-  void evaluateTimeline (std::vector<float>& time);
-  void evaluateNormals (std::vector<Vec3f>& normals);
-  void drawNormals ();
+  float evaluate (std::vector<Vec3f>& res) const;
+  void evaluateTimeline (std::vector<float>& time) const;
+  void evaluateNormals (std::vector<Vec3f>& normals) const;
+  void drawNormals () const;
 private:
   Vec3f center;
   Vec3f radius;
@@ -122,7 +122,7 @@ Circle::~Circle ()
 
 
 void
-Circle::drawPoints ()
+Circle::drawPoints () const
 {
   glPushAttrib (GL_CURRENT_BIT);
   glPointSize (4.0f);
@@ -135,7 +135,7 @@ Circle::drawPoints ()
 }
 
 void
-Circle::display ()
+Circle::display () const
 {
   double r = hypot (radius.x - center.x, radius.y - center.y);
   double astep = M_PI/16.;
@@ -150,8 +150,8 @@ Circle::display ()
   drawPoints ();
 }
 
-void
-Circle::evaluate (std::vector<Vec3f>& res)
+float
+Circle::evaluate (std::vector<Vec3f>& res) const
 {
   
   res.clear ();
@@ -163,10 +163,11 @@ Circle::evaluate (std::vector<Vec3f>& res)
 			  center.y + r * sin (a), 0));
     a += astep;
   }
+  return r*2*M_PI;
 }
 
 void
-Circle::evaluateTimeline (std::vector<float>& timeline)
+Circle::evaluateTimeline (std::vector<float>& timeline) const
 {
   timeline.clear ();
   assert (resolution);
@@ -182,7 +183,7 @@ Circle::evaluateTimeline (std::vector<float>& timeline)
 }
 
 void
-Circle::evaluateNormals (std::vector<Vec3f>& normals)
+Circle::evaluateNormals (std::vector<Vec3f>& normals) const
 {
   normals.clear ();
   assert (resolution);
@@ -198,7 +199,7 @@ Circle::evaluateNormals (std::vector<Vec3f>& normals)
 }
 
 void
-Circle::drawNormals ()
+Circle::drawNormals () const
 {
   int c;
   std::vector<Vec3f> pts;

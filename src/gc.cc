@@ -53,70 +53,124 @@ GeneralizedCylinder::setNormalScale(float ns)
   normale_scale=ns;
 }
 
-namespace {
-  Vec3f
-  interpolatepath (const std::vector<Vec3f>& path, float y) 
-  {
-    // assert (y>=0.f && y<=1.0f);
-    if (y<0.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << y << std::endl;
-      y = 0.0f;
+class Path {
+public:
+  Path (const PluginObject *init) : binormal(0, 0, 1) {
+    length=init->evaluate(path);
+    std::cout << "length = " << length << std::endl;
+    init->evaluateNormals(normals);
+  }
+  
+  ~Path () {
+  }
+
+  const Vec3f interpolate (const std::vector<Vec3f>& which, float where) const {
+    if (where<0.0f) {
+      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+      where = 0.0f;
     }
-    if (y>1.0f) {
-      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << y << std::endl;
-      y = 1.0f;
+    if (where>1.0f) {
+      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+      where = 1.0f;
     }
     
-    std::cout << "y=" << y << "  ";
-    y *= path.size ()-1;
+    where *= which.size ()-1;
     float inte;
-    float fract = std::modf(y, &inte);
+    float fract = std::modf(where, &inte);
     unsigned int a = (int)inte;
 
-    std::cout << "a = " << a << ", size = " << path.size() << std::endl;
-    assert (a<path.size() && a>=0);
-    if (inte == y)
-      return path[a];
-    if (fract < std::numeric_limits<float>::epsilon())
-      return path[a];
-    return Vec3f (path[a].x + (path[a+1].x - path[a].x) * fract,
-		  path[a].y + (path[a+1].y - path[a].y) * fract,
+    assert (a<which.size() && a>=0);
+    if (inte == where || fract < std::numeric_limits<float>::epsilon())
+      return Vec3f(which[a]);
+    return Vec3f (which[a].x + (which[a+1].x - which[a].x) * fract,
+		  which[a].y + (which[a+1].y - which[a].y) * fract,
 		  0); 
   }
-
-  void
-  changeRepere (const Vec3f& tangent, const Vec3f& normal, 
-		const Vec3f& binormal, const Vec3f& in, Vec3f& out)
-  {
+  
+  void rotate (const Vec3f& tangent, const Vec3f& normal, const Vec3f& in, Vec3f& out) const {
     out.x = in.x*normal.x + in.y*normal.y + in.z*normal.z;
-    out.y  = in.x*tangent.x + in.y*tangent.y + in.z*tangent.z;
+    out.y = in.x*tangent.x + in.y*tangent.y + in.z*tangent.z;
     out.z = in.x*binormal.x + in.y*binormal.y + in.z*binormal.z;
   }
+  
+  Vec3f changeReference (float where, Point& p) const {
+    Vec3f normal(interpolate(normals, where));
+    normal.normalize();
+    const Vec3f tangent(normal.y, -normal.x, 0);
 
-  void 
-  pointToPath (const Vec3f& tangent, const Vec3f& normal,
-	       const Vec3f& binormal, Point& p) {
-    Vec3f coords=p.getCoords();
-    Vec3f norm=p.getNormal();
-    changeRepere (tangent, normal, binormal, coords, p.getCoords());
-    changeRepere (tangent, normal, binormal, norm, p.getNormal());
+    Vec3f res;
+    rotate (tangent, normal, p.getCoords(), res);
+    Vec3f pos = interpolate(path, where);
+    if (pos.z!=0.0) {
+      std::cout << "WARNING interpolate(path[where]) == " << pos.z << "\n";
+      pos.z=0;
+    }
+
+    p.setCoords(res);
+    rotate (tangent, normal, p.getNormal(), res);
+    p.setNormal (res);
+    return pos;
   }
-}
+  friend class WholePath;
+private:  
+  Vec3f binormal;
+  float length;
+  std::vector<Vec3f> path;
+  std::vector<Vec3f> normals;
+};
+
+class WholePath {
+  struct bound {
+    bound(float min, float max) : min(min), max(max) {}
+    float min, max;
+  };
+public:
+  void add(const Path& p) {
+    paths.push_back (p);
+  }
+  void computeBounds () {
+    float last = 0;
+    std::vector<Path>::const_iterator i;
+    std::vector<Path>::const_iterator iend = paths.end();
+    for (i=paths.begin(); i!=iend; ++i) {
+      bound b(last, last+i->length);
+      last+=i->length;
+      bounds.push_back(b);
+    }
+
+    std::vector<bound>::iterator j;
+    std::vector<bound>::iterator jend = bounds.end();
+    assert (last);
+    for (j=bounds.begin(); j!=jend; ++j) {
+      j->min/=last;
+      j->max/=last;
+      std::cout << "[" << j->min << ", " << j->max << "]\n";
+    }
+  }
+  Vec3f changeReference (float where, Point& p) const {
+    return Vec3f(0,0,0);
+  }
+  
+private:
+  std::vector<Path> paths;
+  std::vector<bound> bounds;
+};
+
 void
 GeneralizedCylinder::compute (std::vector<Face>& v)
 {
   v.clear ();
 
-  std::vector<Vec3f> vpath;
-  std::vector<Vec3f> vnormalpath;
-  std::vector<Vec3f> vtangentpath;
+  std::vector<Path> vpath;
+  WholePath wpath;
+
   std::vector<Vec3f> vprofile;
   std::vector<Vec3f> vnormalprofile;
   std::vector<float> vtimeprofile;
   std::vector<Vec3f> vsection;
   std::vector<Vec3f> vnormalsection;
   
-  std::list<PluginObject *>::iterator ipath = path.begin ();
+  std::list<PluginObject *>::const_iterator ipath = path.begin ();
   std::list<PluginObject *>::iterator iprofile = profile.begin ();
   std::list<PluginObject *>::iterator isection = section.begin ();
   
@@ -129,8 +183,15 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
   std::cout << "GCSTART" << std::endl;
 
-  (*ipath)->evaluate (vpath);
-  (*ipath)->evaluateNormals (vnormalpath);
+  vpath.push_back (Path(*ipath));
+
+  while (ipath!=iendpath) {
+    wpath.add (Path(*ipath));
+    ++ipath;
+  }
+  std::cout << "-----------\n";
+  wpath.computeBounds ();
+  std::cout << "-----------\n";
 
   (*iprofile)->evaluate (vprofile);
   (*iprofile)->evaluateNormals (vnormalprofile);
@@ -140,26 +201,9 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
   (*isection)->evaluateNormals (vnormalsection);
 
   for (unsigned int i = 0; i < vprofile.size () - 1; i++) {
-    std::cout << "---------------" << i << "-------------------\n";
     float scale1 = vprofile[i].x;
     float scale2 = vprofile[i+1].x;
     
-    Vec3f normale1 = interpolatepath (vnormalpath, vtimeprofile[i]);
-    Vec3f normale2 = interpolatepath (vnormalpath, vtimeprofile[i+1]);
-    normale1.normalize();
-    normale2.normalize();
-    Vec3f tangent1(normale1.y, -normale1.x, 0);
-    Vec3f tangent2(normale2.y, -normale2.x, 0);
-    tangent1.normalize();
-    tangent2.normalize();
-    Vec3f position1 = interpolatepath (vpath, vtimeprofile[i]);
-    Vec3f position2 = interpolatepath (vpath, vtimeprofile[i+1]);
-
-    std::cout << "position1(" << position1 << ")\n";
-    std::cout << "position2(" << position2 << ")\n";
-
-    position1.z= position2.z= 0;
-    Vec3f binormal(0, 0, 1);
 
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
       Face face;
@@ -175,27 +219,26 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      std::cout << "p(" << p.getCoords() << "), n(" << normale1 << "), t(" << tangent1 << "), b(" << binormal << ")\n";
-      pointToPath(tangent1, normale1, binormal, p);
+      Vec3f pos=vpath[0].changeReference (vtimeprofile[i], p);
       std::cout << "p'" << p.getCoords() << ")\n" ;
       p*=scale1;
-      p+=position1;
+      p+=pos;
       face.push_back (p);
 
       p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      pointToPath(tangent2, normale2, binormal, p);
+      pos=vpath[0].changeReference (vtimeprofile[i+1], p);
       p*=scale2;
-      p+=position2;
+      p+=pos;
       face.push_back (p);
 
       p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal (n2);
       p.setColor(n2);
-      pointToPath(tangent2, normale2, binormal, p);
+      pos=vpath[0].changeReference (vtimeprofile[i+1], p);
       p*=scale2;
-      p+=position2;
+      p+=pos;
       face.push_back(p);
 
       v.push_back (face);
@@ -204,25 +247,25 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      pointToPath(tangent1, normale1, binormal, p);
+      pos=vpath[0].changeReference (vtimeprofile[i], p);
       p*=scale1;
-      p+=position1;
+      p+=pos;
       face.push_back(p);
 
       p.setCoords(Vec3f (vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal(n2);
       p.setColor(n2);
-      pointToPath(tangent2, normale2, binormal, p);
+      pos=vpath[0].changeReference(vtimeprofile[i+1], p);
       p*=scale2;
-      p+=position2;
+      p+=pos;
       face.push_back(p);
 
       p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal(n2);
       p.setColor(n2);
-      pointToPath (tangent1, normale1, binormal, p);
+      pos=vpath[0].changeReference(vtimeprofile[i], p);
       p*=scale1;
-      p+=position1;
+      p+=pos;
       face.push_back(p);
 
       v.push_back(face);

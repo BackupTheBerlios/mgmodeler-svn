@@ -235,9 +235,11 @@ MainWindow::menuWindowMove ()
 void
 MainWindow::menuHelp ()
 {
-  //QAssistantClient *helpclient = 
-  // new QAssistantClient (QString ("help/"), this );
+  /*    QAssistantClient *helpclient = 
+	new QAssistantClient (QDir("help/").absPath(), this );*/
   system ("assistant -profile help/index.dcf&");
+  /*QString docsPath = QDir("help/").absPath();
+    helpclient->showPage( QString("%1/index.dcf").arg(docsPath) );*/
 }
 
 void
