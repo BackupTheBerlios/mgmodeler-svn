@@ -73,10 +73,9 @@ MainWindow::createMenus ()
       char str[2] = "0";
       str[0] = k;
       Plugin *p = *i;
-      addTool (this, p->getName ().c_str (), QPixmap(p-> getMenu ()),
+      addTool (this, p->getName ().c_str (), QPixmap(p-> getIcon ()),
 	       QKeySequence (), toolbar, NULL, 
 	       SLOT(menuPluginChoice()), str);
-      std::cout<<"PLUGIN\n";
     }
 }
 
@@ -101,5 +100,5 @@ MainWindow::menuFileQuit ()
 void
 MainWindow::menuPluginChoice ()
 {
-  
+  std::cout<<"HELLO\n";
 }
