@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 public:
   MainWindow () throw ();
-  
+  void show ();
 protected:
   void createMenus ();
 

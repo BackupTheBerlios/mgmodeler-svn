@@ -22,7 +22,7 @@ public:
   void display ();
   void drawPoints ();
   void mouseMove (QMouseEvent::ButtonState state, float x, float y, float z);
-
+  void evaluate (int resolution, std::vector<Vec3f>& res);
 private:
   Vec3f center;
   Vec3f radius;
@@ -142,6 +142,23 @@ Circle::display ()
   }
   glEnd ();
   drawPoints ();
+}
+
+void
+Circle::evaluate (int resolution, std::vector<Vec3f>& res)
+{
+  res.clear ();
+
+  double r = hypot (radius.x - center.x, radius.y - center.y);
+  double astep = M_PI/(resolution/2);;
+  double a = 0;
+  
+  for (int i=0; i <= resolution; i++) {
+    res.push_back (Vec3f (center.x + r * cos (a),
+		center.y + r * sin (a), 0));
+    a += astep;
+  }
+  
 }
 
 DECLARE_PLUGIN (Circle);

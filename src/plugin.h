@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <exception>
 #include <qevent.h>
+#include "math/vector3.h"
 
 class Plugin;
 
@@ -74,6 +75,7 @@ public:
   virtual bool hasPoint (float x, float y, float z) = 0;
   virtual void removePoint (float x, float y, float z) = 0;
   virtual void display () = 0;
+  virtual void evaluate (int resolution, std::vector<Vec3f>& res) = 0;
 };
 
 class PluginManager

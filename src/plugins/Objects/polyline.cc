@@ -245,7 +245,7 @@ PolyLine::display ()
 float
 PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g) 
 {
-  /*  float a, b;
+  float a, b;
   float c, d;
   float dx = (g.x - f.x);
   float dy = (g.y - f.y);
@@ -278,8 +278,35 @@ PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g)
 
   std::cout << "  intersect: (" << x << ", " << y << ")" << std::endl;
 
-  return hypot (p.x - x, p. y - y);*/
-  return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
+  return hypot (p.x - x, p. y - y);
+  //  return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
+}
+
+void
+PolyLine::evaluate (int resolution, std::vector<Vec3f>& res) {
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end = pts.end ();
+  res.clear ();
+
+  i = pts.begin ();
+  if (i == end)
+    return;
+
+  while (i!=end) {
+    std::list<Vec3f *>::iterator first = i++;
+    if (first == end)
+      break;
+    if (i != end) {
+      Vec3f f(**first);
+      Vec3f step(((*i)->x-(*first)->x)/(double)resolution,
+		 ((*i)->y-(*first)->y)/(double)resolution, 0);
+      for (int j = 0; j <= resolution; j++) {
+	res.push_back (f);
+	f+=step;
+      }
+    }
+  }
+  glEnd ();
 }
 
 
