@@ -52,14 +52,14 @@ GeneralizedCylinder::setNormalScale(float ns)
 
 class Path {
 public:
-  Path (const PluginObject *init) : binormal(0, 0, 1) {
+  Path (const PluginObject *init) {
     length=init->evaluate(path);
     init->evaluateNormals(normals);
   }
   
   ~Path () {
   }
-
+  
   const Vec3f interpolate (const std::vector<Vec3f>& which, float where) const {
     if (where<0.0f)
       where = 0.0f;
@@ -79,13 +79,13 @@ public:
 		  which[a].y + (which[a+1].y - which[a].y) * fract,
 		  0); 
   }
-  
-  void rotate (const Vec3f& tangent, const Vec3f& normal, const Vec3f& in, Vec3f& out) const {
+    
+  static void rotate (const Vec3f& tangent, const Vec3f& normal, const Vec3f& in, Vec3f& out) {
     out.x = in.x*normal.x + in.y*normal.y + in.z*normal.z;
     out.y = in.x*tangent.x + in.y*tangent.y + in.z*tangent.z;
     out.z = in.x*binormal.x + in.y*binormal.y + in.z*binormal.z;
   }
-  
+
   Point changeReference (float where, const Point& p, Vec3f& translate) const {
     Vec3f normal(interpolate(normals, where));
     normal.normalize();
@@ -94,20 +94,23 @@ public:
     Point res;
     rotate (tangent, normal, p.getCoords(), res.getCoords());
     translate = interpolate(path, where);
-    if (translate.z!=0.0)
+
+    if (translate.z!=0.0) 
       translate.z=0;
-    
+
     rotate (tangent, normal, p.getNormal(), res.getNormal());
 
     return res;
   }
   friend class WholePath;
 private:  
-  Vec3f binormal;
+  static Vec3f binormal;
   float length;
   std::vector<Vec3f> path;
   std::vector<Vec3f> normals;
 };
+
+Vec3f Path::binormal(0, 0, 1);
 
 class WholePath {
   struct bound {
@@ -200,6 +203,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
   (*iprofile)->setResolution(rProfile);
   (*iprofile)->evaluate (vprofile);
+  (*iprofile)->evaluateNormals (vnormalprofile);
   (*iprofile)->evaluateTimeline (vtimeprofile);
 
   int last = 0;
@@ -212,17 +216,27 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       (*isection)->evaluate (vsection);
       (*isection)->evaluateNormals (vnormalsection);
       
+      Vec3f tangent1(vnormalprofile[i].y,
+		     -vnormalprofile[i].x, 0);
+      Vec3f tangent2(vnormalprofile[i+1].y,
+		     -vnormalprofile[i+1].x, 0);
 
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
       Face face;
       Point p;
 
-      Vec3f n1(vnormalsection[j].x, vnormalsection[j].z,
+      Vec3f np1(vnormalsection[j].x, vnormalsection[j].z,
 	       vnormalsection[j].y);
-      n1*=normale_scale;
-      Vec3f n2(vnormalsection[j+1].x, vnormalsection[j+1].z,
+      np1*=normale_scale;
+      Vec3f np2(vnormalsection[j+1].x, vnormalsection[j+1].z,
 	       vnormalsection[j+1].y);
-      n2*=normale_scale;
+      np2*=normale_scale;
+      
+      Vec3f n1(np1),n2(np2);
+      /*      Path::rotate (tangent1, vnormalprofile[i], np1, n2);
+	      Path::rotate (tangent2, vnormalprofile[i+1], np2, n1);*/
+      n1.normalize ();
+      n2.normalize ();
 
       p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);

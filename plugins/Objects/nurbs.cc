@@ -50,7 +50,6 @@ private:
 Nurbs::Nurbs () : PolyLine (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON),
 		  recompute(false)
 {
-  std::cout << PLUGIN_NAME << std::endl;
 }
 
 Nurbs::~Nurbs()

@@ -15,17 +15,17 @@ SUFFIXES = .ui
 
 pkgincludemathdir=@includedir@/@PACKAGE_NAME@/math
 pkgincludemath_HEADERS=math/vector3.h math/quaternion.h math/matrix4.h \
-        math/matrix.h
+        math/matrix.h math/point.h
 include_HEADERS=plugin.h
 
 
 BUILT_SOURCES=mainwindow_moc.cc icons.cc subconfig_moc.cc subconfig.cc \
-	subconfig.h subconfig.ui.h
+	subconfig.h
 bin_PROGRAMS=MGModeler
 MGModeler_SOURCES=gc.cc mainwindow.cc openglwidget.cc plugin.h view2d.cc \
 		  view3d.h gc.h mainwindow.h openglwidget.h trackball.cc \
 		  view2d.h view.cc main.cc plugin.cc trackball.h view3d.cc \
-		  view.h subconfig.cc subconfig_moc.cc
+		  view.h subconfig.cc subconfig_moc.cc subconfig.ui.h
 
 nodist_MGModeler_SOURCES=mainwindow_moc.cc icons.cc
 
