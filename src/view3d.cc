@@ -1,5 +1,6 @@
 #include "view3d.h"
 #include "openglwidget.h"
+#include "trackball.h"
 
 #include <qgl.h>
 #include <qstring.h>
@@ -15,8 +16,7 @@ View3D::View3D (QWorkspace *parent, std::string name)
 View3D::View3D (QWorkspace *parent, eAxe invaxe)
   : QMainWindow (parent, "OpenGL 2D View", 0)
 {
-  m_glwidget = new OpenglWidget (this, "OpenGL 2D View");
-  m_glwidget->setOrthoView (true);
+  m_glwidget = new OpenglWidget (this, "OpenGL 2D View", true, false);
   setCentralWidget (m_glwidget);
   m_invaxe = invaxe;
   m_cursor_x = m_cursor_y=0;
@@ -86,7 +86,7 @@ View3D::parseMouseMove (QMouseEvent *e)
 View3DRotation::View3DRotation (QWorkspace *parent)
   :View3D (parent, "OpenGL 3D View")
 {
-  m_glwidget = new OpenglWidget (this, "OpenGL 3D View");
+  m_glwidget = new OpenglWidget (this, "OpenGL 3D View", false, true);
   setCentralWidget (m_glwidget);
   setMouseTracking (true);
   m_editable = false;

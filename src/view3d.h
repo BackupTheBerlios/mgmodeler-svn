@@ -6,6 +6,7 @@
 #include <qstatusbar.h>
 
 class OpenglWidget;
+class Trackball;
 
 
 typedef enum {AXE_X, AXE_Y, AXE_Z} eAxe;
@@ -43,6 +44,7 @@ public:
   void parseMousePress (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
 
+private:
 };
 
 #endif
