@@ -404,8 +404,10 @@ OpenglWidget::setLighting ()
   makeCurrent();
   if (m_lighting)
     {
+      glPushMatrix ();
       glLoadIdentity ();
       glLightfv(GL_LIGHT0, GL_POSITION, position);
+      glPopMatrix ();
       glEnable(GL_LIGHTING); 
       glEnable(GL_LIGHT0);
       glShadeModel (GL_SMOOTH);
