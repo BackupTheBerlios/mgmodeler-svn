@@ -19,6 +19,9 @@ public:
   virtual void parseMouseMove (QMouseEvent *e) = 0;
   virtual void parseMouseDoubleClick (QMouseEvent *e) = 0;
   virtual void redisplay () = 0;
+  virtual void Init () {}
+
+  void display () {m_glwidget->updateGL ();}
 
   static GeneralizedCylinder& getGC () {return gc;}
   

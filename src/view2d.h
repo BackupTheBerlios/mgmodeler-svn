@@ -24,6 +24,8 @@ public:
 
   View2D (QWorkspace *parent, eView view, MainWindow *wparent=NULL);
 
+  void Init () {m_plugins.clear (); m_plugin_active = NULL;}
+
   void setupView ();
   void updateStatusBar (float x, float y);
 
@@ -41,11 +43,14 @@ public:
   void updateStatusBar (const Vec3f& v);
   void save(std::ostream&) const;
   void load(std::istream&);
+
  private:
+
   void addPluginObject (PluginObject *obj);
   void beginWindowMotion (int x, int y);
   void parseWindowMotion (int x, int y);
   void endWindowMotion ();
+
   static PluginObject *s_plugin_current;
   PluginObject *m_plugin_active;
   eView m_view;

@@ -38,6 +38,7 @@ class GeneralizedCylinder {
       path.clear (); 
       section.clear (); 
       profile.clear (); 
+      m_faces.clear ();
     }
 
   std::vector<Face>& getFaces () {return m_faces;}

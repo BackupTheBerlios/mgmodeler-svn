@@ -208,15 +208,19 @@ MainWindow::createMenus ()
 void MainWindow::setViewsMode (View2D::eMode mode)
 {
   for (int i=0; i<3; i++)
-    {
-      m_view2d[i]-> setMode (mode);
-    }
+    m_view2d[i]-> setMode (mode);
 }
 
 void
 MainWindow::menuFileNew ()
 {
   View::getGC ().clear ();
+  for (int i=0; i<3; i++)
+    {
+      m_view2d[i]-> Init ();
+      m_view2d[i]-> display ();
+    }
+  m_view3d->display ();
 }
 
 void
@@ -435,5 +439,5 @@ void
 MainWindow::menuCompute ()
 {
   View::getGC ().compute ();
-  m_view3d->redisplay ();
+  m_view3d->display ();
 }

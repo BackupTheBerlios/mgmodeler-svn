@@ -27,7 +27,7 @@ public:
       gc.compute (f);
       return f;
     }
-
+  
   void redisplay ();
 
   void setLighting ();
