@@ -47,6 +47,11 @@ GeneralizedCylinder::cfgDialog ()
 {
 }
 
+void
+GeneralizedCylinder::setNormalScale(float ns)
+{
+  normale_scale=ns;
+}
 
 namespace {
   Vec3f
@@ -171,9 +176,10 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
       Vec3f n1(vnormalsection[j].x, vnormalsection[j].z,
 	       vnormalsection[j].y);
-
+      n1*=normale_scale;
       Vec3f n2(vnormalsection[j+1].x, vnormalsection[j+1].z,
 	       vnormalsection[j+1].y);
+      n2*=normale_scale;
 
       p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);

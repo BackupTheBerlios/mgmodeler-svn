@@ -40,6 +40,7 @@ private:
   void menuFill ();
   void menuWireframe ();
   void menuNormals ();
+  void menuSwitchNormals ();
   void windowsMenuActivated(int id);
 };
 

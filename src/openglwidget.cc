@@ -234,6 +234,7 @@ OpenglWidget::SyncContext ()
 	  glMultMatrixf ((float *)modelview[0]);
 	  glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
 	  glEnable(GL_AUTO_NORMAL);
+	  glEnable(GL_NORMALIZE);
 	}
       else
 	{
@@ -410,7 +411,6 @@ void
 OpenglWidget::setLighting ()
 {
   m_lighting = !m_lighting;
-
   updateGL ();
 }
 

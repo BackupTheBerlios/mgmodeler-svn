@@ -154,8 +154,12 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
 	   NULL);
   addTool (this, "Normals", QPixmap ("icons/normals.png"),
-	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuNormals ()),
+	   QKeySequence ("Ctrl+N"), toolbar, NULL, SLOT(menuNormals ()),
 	   NULL);
+  addTool (this, "Switch Normals", QPixmap ("icons/snormals.png"),
+	   QKeySequence ("Ctrl+S"), toolbar, NULL, SLOT(menuSwitchNormals ()),
+	   NULL);
+
 }
 
 
@@ -231,7 +235,7 @@ MainWindow::menuWindowMove ()
 void
 MainWindow::menuHelp ()
 {
-  // QAssistantClient *helpclient = 
+  //QAssistantClient *helpclient = 
   // new QAssistantClient (QString ("help/"), this );
   system ("assistant -profile help/index.dcf&");
 }
@@ -240,18 +244,21 @@ void
 MainWindow::menuLighting ()
 {
   m_view3d-> setLighting ();
+  m_view3d->redisplay ();
 }
 
 void
 MainWindow::menuFill ()
 {
   m_view3d-> setFillMode ();
+  m_view3d->redisplay ();
 }
 
 void
 MainWindow::menuWireframe ()
 {
   m_view3d-> setWireframe ();
+  m_view3d->redisplay ();
 }
 
 
@@ -259,5 +266,13 @@ void
 MainWindow::menuNormals ()
 {
   m_view3d-> toggleNormals ();
+  m_view3d->redisplay ();
+}
+
+void
+MainWindow::menuSwitchNormals ()
+{
+  m_view3d-> switchNormals ();
+  m_view3d->redisplay ();
 }
 

@@ -11,7 +11,7 @@
 GeneralizedCylinder gc;
 
 View3D::View3D (QWorkspace *parent, const std::string& name)
-  : View (parent, name), current(0)
+  : View (parent, name), current(0), normale_scale(1)
 {
   setMouseTracking (true);
   m_glwidget->setOrthoView (false);
@@ -85,4 +85,11 @@ void
 View3D::toggleNormals ()
 {
   m_glwidget->toggleNormals();
+}
+
+void
+View3D::switchNormals ()
+{
+  normale_scale = -normale_scale;
+  gc.setNormalScale(normale_scale);
 }

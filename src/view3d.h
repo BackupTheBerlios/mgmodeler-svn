@@ -26,9 +26,11 @@ public:
   void setFillMode ();
   void setWireframe ();
   void toggleNormals ();
+  void switchNormals ();
   /* FIXME */
 public:
   PluginIO *current;
+  int normale_scale;
 };
 
 #endif

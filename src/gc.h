@@ -11,7 +11,10 @@ class GeneralizedCylinder {
   std::list<PluginObject *> path;
   std::list<PluginObject *> profile;
   std::list<PluginObject *> section;
+  float normale_scale;
  public:
+  GeneralizedCylinder() : normale_scale(1) {}
+  void setNormalScale (float f);
   void addPath (PluginObject *);
   void addProfile (PluginObject *);
   void addSection (PluginObject *);
