@@ -42,6 +42,21 @@ public:
       }
     fprintf (file, "        ]\n");
     fprintf (file, "      }\n");
+    //Normals
+    fprintf (file, "      Normal { vector [\n");
+    for (i=faces.begin ();i!= faces.end (); ++i)
+      {
+	fprintf(file, "       %f %f %f,\n", (*i)[0].getNormal ()[0], 
+		(*i)[0].getNormal ()[2], -(*i)[0].getNormal ()[1]);
+	fprintf(file, "       %f %f %f,\n", (*i)[1].getNormal ()[0], 
+		(*i)[1].getNormal ()[2], -(*i)[1].getNormal ()[1]);
+	fprintf(file, "       %f %f %f,\n", (*i)[2].getNormal ()[0], 
+		(*i)[2].getNormal ()[2], -(*i)[2].getNormal ()[1]);
+
+      }
+    fprintf (file, "        ]\n");
+    fprintf (file, "      }\n");
+    fprintf (file, "      NormalBinding { value PER_VERTEX_INDEXED }\n");
     fprintf (file, "      coordIndex [\n");
     // INDEX
     for (int j =0; j<k; j+=3)
