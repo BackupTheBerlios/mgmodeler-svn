@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "view3d.h"
 #include "icons.h"
+#include "plugin.h"
 
 #include <qaction.h>
 #include <qpopupmenu.h>
@@ -10,10 +11,11 @@
 #include <iostream>
 
 void
-addTool (QObject *parent, char *text, QPixmap icon, 
-	 QKeySequence key, QToolBar *toolbar, QPopupMenu *menu, char *slot)
+addTool (QObject *parent, const char *text, QPixmap icon, 
+	 QKeySequence key, QToolBar *toolbar, QPopupMenu *menu, char *slot,
+	 char *name)
 {
-  QAction *action = new QAction (text, icon, text, key, parent, text);
+  QAction *action = new QAction (text, icon, text, key, parent, name);
   if (menu)
     action->addTo (menu);
   if (toolbar)
@@ -53,11 +55,29 @@ MainWindow::createMenus ()
   menuBar ()-> insertItem ("File", menu_file);
   
   addTool (this, "Open File", QPixmap ((const char **)icon_fileopen), 
-	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()));
+	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
+	   NULL);
   menu_file->insertSeparator();
 
   addTool (this, "Quit",((const char **)icon_exit) ,
-	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()));
+	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
+	   NULL);
+
+  std::vector<Plugin *>::iterator i;
+  int k = 0;
+
+  std::cout <<"PLUGINS COUNT = "<<PluginManager::pluginsCount ()<<"\n";
+  
+  for (i = PluginManager::begin (); i != PluginManager::end (); ++i, ++k)
+    {
+      char str[2] = "0";
+      str[0] = k;
+      Plugin *p = *i;
+      addTool (this, p->getName ().c_str (), QPixmap(p-> getMenu ()),
+	       QKeySequence (), toolbar, NULL, 
+	       SLOT(menuPluginChoice()), str);
+      std::cout<<"PLUGIN\n";
+    }
 }
 
 void
@@ -76,4 +96,10 @@ void
 MainWindow::menuFileQuit ()
 {
   close ();
+}
+
+void
+MainWindow::menuPluginChoice ()
+{
+  
 }

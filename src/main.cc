@@ -8,7 +8,7 @@ main (int argc, char *argv[])
 {
 
   QApplication application(argc, argv);
-  MainWindow mainWindow;
+  MainWindow *mainWindow;
   
   try 
     {
@@ -20,9 +20,11 @@ main (int argc, char *argv[])
       abort ();
     }  
 
-  mainWindow.resize (120, 300);
-  application.setMainWidget (&mainWindow);
-  mainWindow.show ();
+  mainWindow = new MainWindow ();
+
+  mainWindow->resize (120, 300);
+  application.setMainWidget (mainWindow);
+  mainWindow->show ();
 
   return application.exec ();
 }

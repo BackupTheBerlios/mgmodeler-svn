@@ -20,11 +20,12 @@ protected:
 private:
   View3D *m_view2d[MAX_2DVIEWS];
   View3D *m_view3d;
-
+  
   signals:
     private slots:
     void menuFileOpen ();
   void menuFileQuit ();
+  void menuPluginChoice ();
 };
 
 #endif /* MAINWINDOW_H */

@@ -88,6 +88,11 @@ public:
   static void loadPlugins (std::string basedir)
     throw (std::runtime_error);
 
+  static std::vector<Plugin *>::iterator begin () {return s_plugins.begin ();}
+  static std::vector<Plugin *>::iterator end () {return s_plugins.end ();}
+
+  static int pluginsCount () {return s_plugins.size ();}
+
 private:
   static std::vector<Plugin *> s_plugins;
 };
