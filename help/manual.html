@@ -1,62 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
+<meta name="generator" content=
+"HTML Tidy for Linux (vers 1st August 2004), see www.w3.org">
 <title>Manuel de MG Modeler</title>
 </head>
-
-<center><h1><u> Manuel de MG Modeler</u></h1><br><br></center>
-
-<a href="#about">A propos de MG Modeler</a><br><br>
-<a href="#license">License</a><br><br>
-<a href="#install">Installer MG Modeler</a><br><br>
-<a href="#launching">Lancer MG Modeler</a><br><br>
-<a href="#gui">Interface</a><br><br>
-<a href="#plugins">Plugins</a><br><br>
-
-<br><hr><br>
-
-<a name="about"></a>
-<center><h3><u>A propos de MG Modeler</u></h1><br><br></center>
-MGModeler a était écrit par Arcila Thomas et Dalla Rosa damien, il est
-hébergé sur www.berlios.de, la page du logiciel est http://developer.berlios.de/projects/mgmodeler/
-<br><hr><br>
-
-<a name="license"></a>
-<center><h3><u>License</u></h1><br><br></center>
-MG Modeler est sous licence GPL<br><br>
-<center><img src="gnu-head-sm.jpg"></img></center><br>
-<center><a href="gpl.html">Cliquez ici pour lire la licence GPL</a></center><br>
-<br><hr><br>
-
-<a name="install"></a>
-<center><h3><u>Installer MG Modeler</u></h1><br><br></center>
-MGModeler utilise automake et autotools.<br><br>
-<b><u>Installation à partir des sources:</b></u><br><br>
-Aprés avoir décompressé l'archive il faut ce placer dans le répertoire
-et taper ./configure puis make et enfin make install. Il est possible
-de changer le répertoire de destination pour les binaires grace à
-l'option --prefix=path de configure.
-<br><br>
-<b><u>Installation à partir du svn:</b></u><br><br>
-Pour récupérer les sources il suffit de taper svn checkout
-svn://svn.berlios.de/mgmodeler. Pour compiler ce placer dans mgmodeler
-puis taper ./bootstrap.sh, ensuite taper les mêmes commandes que pour
-l'installation depuis l'archive (./configure, ...). 
-<br><hr><br>
-<a name="launching"></a>
-<center><h3><u>Lancer MG Modeler</u></h1><br><br></center>
-Pour cela il suffit de ce placer dans le répertoire $prefix/bin et de
-taper ./MGModeler.
-<br><hr><br>
-<a name="gui"></a>
-<center><h3><u>Interface de MG Modeler</u></h1><br><br></center>
-La fonction de chaque boutton de la barre d'outils est affichée si on
-laisse la souris dessus par l'intermédiaire d'une étiquette. Lors de
-l'édition d'objets le boutton du milieu de la souris sert à déplacer
-un point (points en rouge) sauf pour les cercles, dans la mesure ou il
-suffit de cliquer avec le bouton gauche pour redéssiner ailleur le
-cercle. Le boutton de droite sert à supprimer un point et shift +
-boutton gauche permet de rajouter un points entre deux autres. Dans la
-vue 3d la molète sert pour le zoom et le boutton gauche pour tourner
-autour du modèle.
-<br><hr><br>
+<body>
+<center>
+<h1><u>Manuel de MG Modeler</u></h1>
+<br>
+<br></center>
+<a href="#about">A propos de MG Modeler</a><br>
+<br>
+<a href="#license">License</a><br>
+<br>
+<a href="#install">Installer MG Modeler</a><br>
+<br>
+<a href="#launching">Lancer MG Modeler</a><br>
+<br>
+<a href="#gui">Interface</a><br>
+<br>
+<a href="#plugins">Plugins</a><br>
+<br>
+<br>
+<hr>
+<br>
+<a name="about" id="about"></a>
+<center>
+<h3><u>A propos de MG Modeler</u></h3>
+<br>
+<br></center>
+MGModeler a &eacute;tait &eacute;crit par Arcila Thomas et Dalla
+Rosa damien, il est h&eacute;berg&eacute; sur www.berlios.de, la
+page du logiciel est
+http://developer.berlios.de/projects/mgmodeler/<br>
+<hr>
+<br>
+<a name="license" id="license"></a>
+<center>
+<h3><u>License</u></h3>
+<br>
+<br></center>
+MG Modeler est sous licence GPL<br>
+<br>
+<center><img src="gnu-head-sm.jpg"></center>
+<br>
+<center><a href="gpl.html">Cliquez ici pour lire la licence
+GPL</a></center>
+<br>
+<br>
+<hr>
+<br>
+<a name="install" id="install"></a>
+<center>
+<h3><u>Installer MG Modeler</u></h3>
+<br>
+<br></center>
+MGModeler utilise automake et autotools.<br>
+<br>
+<b><u>Installation &agrave; partir des sources:</u></b><br>
+<br>
+Apr&eacute;s avoir d&eacute;compress&eacute; l'archive il faut ce
+placer dans le r&eacute;pertoire et taper ./configure puis make et
+enfin make install. Il est possible de changer le r&eacute;pertoire
+de destination pour les binaires grace &agrave; l'option
+--prefix=path de configure.<br>
+<br>
+<b><u>Installation &agrave; partir du svn:</u></b><br>
+<br>
+Pour r&eacute;cup&eacute;rer les sources il suffit de taper svn
+checkout svn://svn.berlios.de/mgmodeler. Pour compiler ce placer
+dans mgmodeler puis taper ./bootstrap.sh, ensuite taper les
+m&ecirc;mes commandes que pour l'installation depuis l'archive
+(./configure, ...).<br>
+<hr>
+<br>
+<a name="launching" id="launching"></a>
+<center>
+<h3><u>Lancer MG Modeler</u></h3>
+<br>
+<br></center>
+Pour cela il suffit de ce placer dans le r&eacute;pertoire
+$prefix/bin et de taper ./MGModeler.<br>
+<hr>
+<br>
+<a name="gui" id="gui"></a>
+<center>
+<h3><u>Interface de MG Modeler</u></h3>
+<br>
+<br></center>
+La fonction de chaque boutton de la barre d'outils est
+affich&eacute;e si on laisse la souris dessus par
+l'interm&eacute;diaire d'une &eacute;tiquette. Lors de
+l'&eacute;dition d'objets le boutton du milieu de la souris sert
+&agrave; d&eacute;placer un point (points en rouge) sauf pour les
+cercles, dans la mesure ou il suffit de cliquer avec le bouton
+gauche pour red&eacute;ssiner ailleur le cercle. Le boutton de
+droite sert &agrave; supprimer un point et shift + boutton gauche
+permet de rajouter un points entre deux autres. Dans la vue 3d la
+mol&egrave;te sert pour le zoom et le boutton gauche pour tourner
+autour du mod&egrave;le.<br>
+<hr>
+<br>
+</body>
 </html>
