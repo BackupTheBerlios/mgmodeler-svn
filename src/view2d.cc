@@ -207,12 +207,13 @@ View2D::redisplay ()
   glPushAttrib (GL_ENABLE_BIT);
   glDisable (GL_DEPTH_TEST);
 
+  glColor3f (0., 0., 0.);
   for (i = m_plugins.begin (); i!=end; ++i)
     if ((*i)!=m_plugin_active)
       (*i)->display ();
 
   if (m_plugin_active) {
-    glColor3f(0, 0, 0);
+    glColor3f(0, 1., 0);
     m_plugin_active -> display ();
     m_plugin_active -> drawNormals ();
   }

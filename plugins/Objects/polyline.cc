@@ -199,7 +199,7 @@ PolyLine::drawPoints (const std::list<Vec3f *>::const_iterator& nearest) const
   
   for (i=pts.begin(); i!=end; ++i) {
     if (i == nearest) {
-      glColor3f (1.0, 1.0, 0.0);
+      glColor3f (1.0, 0.0, 0.0);
       glVertex2f ((*i)->x, (*i)->y);
       ++i;
       glVertex2f ((*i)->x, (*i)->y);

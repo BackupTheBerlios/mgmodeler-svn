@@ -316,7 +316,6 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
        pi!= faces.end (); ++pi, ++ni, current++)
     {
       glBegin (GL_POLYGON);
-      glColor3f( 1,1,1);
       assert((*pi).size() == (*ni).size());
       for (pj = (*pi).begin (),
 	     nj = (*ni).begin(); pj!=(*pi).end (); ++pj, ++nj)
