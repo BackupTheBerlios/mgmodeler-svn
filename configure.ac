@@ -33,6 +33,7 @@ AC_HEADER_STDC
 
 dnl Check for dlopen support
 AC_DISABLE_STATIC
+AC_LIBTOOL_DLOPEN
 case "$target" in
 	*-*-cygwin* | *-*-mingw32*)
         	AC_LIBTOOL_WIN32_DLL
