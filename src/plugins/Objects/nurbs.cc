@@ -262,8 +262,8 @@ Nurbs::compute ()
 
   assert (resolution);
 
-  for (int i=0;i<ctlnormals.size (); i++)
-    ctlpoints.push_back (ctlnormals[i]);
+  /*  for (int i=0;i<ctlnormals.size (); i++)
+      ctlpoints.push_back (ctlnormals[i]);*/
 
 
   glPushMatrix ();
@@ -300,7 +300,7 @@ Nurbs::compute ()
     gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
 		   &ctlpoints[0][0], ordre,  GL_MAP1_VERTEX_3);
     gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
-		   &ctlpoints[0][0], ordre,  GL_MAP1_NORMAL);
+		   &ctlnormals[0][0], ordre,  GL_MAP1_NORMAL);
 
     gluEndCurve (nurbs);
   }
