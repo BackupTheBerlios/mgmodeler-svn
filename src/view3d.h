@@ -30,7 +30,7 @@ public:
   virtual void parseMousePress (QMouseEvent *e);
   virtual void parseMouseRelease (QMouseEvent *e);
   virtual void parseMouseMove (QMouseEvent *e);
-
+  virtual void parseMouseDoubleClick (QMouseEvent *e);
   void setCurrentPlugin (PluginObject *p);
   const std::vector<PluginObject *>& getPlugins();
 

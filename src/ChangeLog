@@ -1,0 +1,8 @@
+2004-11-18    <pumpkins>
+	* small (no drawing) support for circles
+	* support for moving, removing points
+	* polyline support for doubleclick
+	* mousemove event support
+	* polyline: haspoint has been divided in getPoint and getPointIterator
+	* remove some debug messages ("azertyui" and stuff)
+	

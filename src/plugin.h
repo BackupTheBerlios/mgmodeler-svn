@@ -68,6 +68,7 @@ public:
   virtual bool buttonUp (QMouseEvent::ButtonState button, double x, double y, double z) = 0;
   virtual bool doubleClick (QMouseEvent::ButtonState button, double x, double y, double z) = 0;
 
+  virtual void mouseMove (double x, double y, double z) = 0;
   //  virtual void beginObject (std::string) = 0;
   virtual void endObject () = 0;
 

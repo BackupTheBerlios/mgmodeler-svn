@@ -135,12 +135,27 @@ View3D::parseMouseMove (QMouseEvent *e)
       unProject (e->x(), e->y(), &x ,&y, &z);
   
       if (m_mode == MODE_EDIT)
-	//TODO CALL PLUGIN CALLBACK
+	if (m_plugin_active)
+	  m_plugin_active->mouseMove (x, y, z);
+
 	;
     
       updateStatusBar (e->x (), e->y ());
     }
   
+}
+
+void
+View3D::parseMouseDoubleClick (QMouseEvent *e)
+{
+  if (m_mode == MODE_EDIT)
+    {
+      double x, y, z;
+      unProject (e->x(), e->y(), &x ,&y, &z);
+      
+      if (m_plugin_active)
+	m_plugin_active->doubleClick (e->button(), x, y, z);
+    }
 }
 
 void

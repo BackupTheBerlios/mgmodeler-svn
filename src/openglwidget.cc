@@ -94,10 +94,14 @@ OpenglWidget::mousePressEvent (QMouseEvent *e) {
 }
 
 void
-OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
-  //View3D *parent = (View3D *)m_parent;
-  //parent-> parseMousePress (e);
+OpenglWidget::mouseDoubleClickEvent (QMouseEvent *e)
+{
+  View3D *parent = (View3D *)m_parent;
+  parent-> parseMouseDoubleClick (e);
+}
 
+void
+OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
   View3D *parent = (View3D *)m_parent;
   parent-> parseMouseRelease (e);
 
@@ -122,6 +126,7 @@ void
 OpenglWidget::mouseMoveEvent (QMouseEvent *e) {
   View3D *parent = (View3D *)m_parent;
   parent-> parseMouseMove (e);
+  updateGL ();
   
   if (e-> state ()&QMouseEvent::LeftButton)
     if (m_trackball_enable)
