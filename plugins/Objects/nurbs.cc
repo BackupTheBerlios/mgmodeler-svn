@@ -1,5 +1,5 @@
 #include "plugin.h"
-#include "../../math/vector3.h"
+#include "math/vector3.h"
 #include <qevent.h>
 #include <iostream>
 #include <GL/gl.h>
