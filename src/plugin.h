@@ -93,6 +93,8 @@ public:
 
   static int pluginsCount () {return s_plugins.size ();}
 
+  static Plugin *getPlugin (int i) {return s_plugins[i];}
+
 private:
   static std::vector<Plugin *> s_plugins;
 };

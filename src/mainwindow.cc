@@ -100,5 +100,6 @@ MainWindow::menuFileQuit ()
 void
 MainWindow::menuPluginChoice ()
 {
-  std::cout<<"HELLO\n";
+  Plugin *p = PluginManager::getPlugin (sender ()-> name  ()[0]);
+  std::cout<<"Plugin: "<< p->getName ()<<"\n";
 }
