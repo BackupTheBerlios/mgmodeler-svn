@@ -222,14 +222,16 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
   (*iprofile)->evaluate (vprofile);
   (*iprofile)->evaluateTimeline (vtimeprofile);
 
-  (*isection)->setResolution(rSection);
-  (*isection)->evaluate (vsection);
-  (*isection)->evaluateNormals (vnormalsection);
   int last = 0;
   for (unsigned int i = 0; i < vprofile.size () - 1; i++) {
     float scale1 = vprofile[i].x;
     float scale2 = vprofile[i+1].x;
-    
+    std::list<PluginObject *>::iterator isection = section.begin ();
+    for (; isection!=iendsection; ++isection) {
+      (*isection)->setResolution(rSection);
+      (*isection)->evaluate (vsection);
+      (*isection)->evaluateNormals (vnormalsection);
+      
 
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
       Face face;
@@ -296,6 +298,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       face.push_back(p);
 
       v.push_back(face);
+    }
     }
   }
 }
