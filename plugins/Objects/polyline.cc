@@ -10,7 +10,7 @@
 
 #define PLUGIN_NAME "PolyLine"
 #define PLUGIN_MENU "Polylines"
-#define PLUGIN_ICON "plugins/Objects/polyline.png"
+#define PLUGIN_ICON "polyline.png"
 
 
 PolyLine::PolyLine ()

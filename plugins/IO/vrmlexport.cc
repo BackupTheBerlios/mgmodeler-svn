@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 #define PLUGIN_NAME "VRML Export Plugin"
-#define PLUGIN_MENU "ExportToVrml"
-#define PLUGIN_ICON "plugins/IO/vrmlout.png"
+#define PLUGIN_MENU "Vrml Export"
+#define PLUGIN_ICON "vrmlout.png"
 
 class VRMLExport : public PluginIO 
 {

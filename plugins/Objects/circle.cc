@@ -7,7 +7,7 @@
 
 #define PLUGIN_NAME "Circle"
 #define PLUGIN_MENU "Circles"
-#define PLUGIN_ICON "plugins/Objects/circle.png"
+#define PLUGIN_ICON "circle.png"
 
 class Circle : public PluginObject {
 public:

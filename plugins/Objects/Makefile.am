@@ -1,5 +1,12 @@
 pluginsdir=@libdir@/@PACKAGE_NAME@-@VERSION@
+iconesdir=@datadir@/@PACKAGE_NAME@
 plugins_LTLIBRARIES=01_polyline.la 02_circle.la 03_nurbs.la
+
+icones=circle.png  nurbs.png  polyline.png
+
+pkgdata_DATA=${icones}
+EXTRA_DIST=${icones}
+
 
 INCLUDES=-I../../src
 

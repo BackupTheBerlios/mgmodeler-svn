@@ -130,8 +130,9 @@ MainWindow::createMenus ()
 	pg_target_menu = menu_pg_export;
 
       addTool (this, p->getMenu ().c_str (), 
-	       QPixmap (p-> getIcon ()),
-	       QKeySequence (), NULL, pg_target_menu, 
+	       QPixmap (std::string (DATADIR)+
+			std::string ("/")+p-> getIcon ()),
+	       QKeySequence (), toolbar, pg_target_menu, 
 	       SLOT(menuPluginIOChoice()), str);
     }
 
@@ -141,7 +142,8 @@ MainWindow::createMenus ()
       str[0] = k;
       Plugin *p = *i;
       addTool (this, p->getMenu ().c_str (), 
-	       QPixmap (p-> getIcon ()),
+	       QPixmap (std::string (DATADIR)+
+			std::string ("/")+p-> getIcon ()),
 	       QKeySequence (), toolbar, menu_pg_objects,
 	       SLOT(menuPluginChoice()), str);
     }

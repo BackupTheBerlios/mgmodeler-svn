@@ -1,5 +1,10 @@
 pluginsdir=@libdir@/@PACKAGE_NAME@-@VERSION@
+iconesdir=@datadir@/@PACKAGE_NAME@
 plugins_LTLIBRARIES=vrmlimport.la vrmlexport.la
+icones=vrml.png vrmlout.png
+
+pkgdata_DATA=${icones}
+EXTRA_DIST=${icones}
 
 INCLUDES=-I../../src
 

@@ -9,7 +9,7 @@
 
 #define PLUGIN_NAME "Nurbs"
 #define PLUGIN_MENU "Nurbs"
-#define PLUGIN_ICON "plugins/Objects/nurbs.png"
+#define PLUGIN_ICON "nurbs.png"
 
 class Nurbs : public PolyLine
 {
