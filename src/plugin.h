@@ -114,7 +114,7 @@ public:
   
     
  protected:
-  int resolution;
+  mutable int resolution;
 };
 
 class PluginManager

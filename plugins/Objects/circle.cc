@@ -158,9 +158,11 @@ Circle::display () const
 float
 Circle::evaluate (std::vector<Vec3f>& res) const
 {
-  
+  int s = resolution;
   res.clear ();
   assert (resolution);
+  if (s<3)
+    s=3;
   double astep = M_PI/(resolution/2.);
   double a = 0;
   for (int i=0; i <= resolution; i++) {

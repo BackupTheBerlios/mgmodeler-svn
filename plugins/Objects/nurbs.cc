@@ -236,7 +236,10 @@ Nurbs::compute () const
   std::vector<float> knots;
   std::vector<Vec3f> ctlpoints;
   std::vector<Vec3f> ctlnormals;
+  int oldres=resolution;
+  resolution=1;
   PolyLine::evaluateNormals (ctlnormals);
+  resolution=oldres;
   struct nurbs_callback ncb;
   ncb.res = &points;
   ncb.norm = &normals;
@@ -246,8 +249,6 @@ Nurbs::compute () const
 
   assert (resolution);
 
-  /*  for (int i=0;i<ctlnormals.size (); i++)
-      ctlpoints.push_back (ctlnormals[i]);*/
   std::cout << "WARNING RECOMPUTING\n" << std::endl;
 
   points.clear ();
