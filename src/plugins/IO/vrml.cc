@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #define PLUGIN_NAME "VRML Import Plugin"
-#define PLUGIN_MENU "import/vrml"
+#define PLUGIN_MENU "import/Vrml"
 #define PLUGIN_ICON "plugins/IO/vrml.png"
 
 

@@ -9,7 +9,7 @@
 #include "polyline.h"
 
 #define PLUGIN_NAME "PolyLine Plugin"
-#define PLUGIN_MENU "object/polylines"
+#define PLUGIN_MENU "Polylines"
 #define PLUGIN_ICON "plugins/Objects/polyline.png"
 
 

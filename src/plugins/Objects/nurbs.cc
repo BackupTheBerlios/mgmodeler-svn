@@ -8,7 +8,7 @@
 #include "polyline.h"
 
 #define PLUGIN_NAME "Nurbs Plugin"
-#define PLUGIN_MENU "object/polylines"
+#define PLUGIN_MENU "Nurbs"
 #define PLUGIN_ICON "plugins/Objects/nurbs.png"
 
 class Nurbs : public PolyLine

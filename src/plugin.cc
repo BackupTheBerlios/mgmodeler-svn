@@ -36,8 +36,6 @@ PluginManager::loadPlugin (std::string filename)
   p->m_createinstance = createinstance;
 
 
-  std::cout<<"Name: "<<p->getName()<<", Type: "<<p->getType ()<<std::endl;
-
   switch (p->getType()) {
   case Plugin::PLUGIN_OBJECT:
     s_plugins.push_back (p);
@@ -54,8 +52,6 @@ PluginManager::loadPlugins (std::string basedir)
   DIR *dir = opendir (basedir.c_str ());
   struct dirent *sdir;
 
-  std::cout<<"loadPlugins\n";
-  
   if (!dir)
     throw std::runtime_error ("Error opening dir: "+basedir);
   
@@ -63,12 +59,11 @@ PluginManager::loadPlugins (std::string basedir)
   while (sdir = readdir (dir))
     {
       struct stat features;
-      std::cout<<"readdir: "<<sdir->d_name<<std::endl;
 
       if (!stat (sdir->d_name, &features) || 
 	  (S_ISREG (features.st_mode)))
 	continue;
-      std::cout<<"readir (load): "<<sdir->d_name<<std::endl;
+
       loadPlugin (std::string("plugins/bin/")+std::string (sdir->d_name));
     }
 }

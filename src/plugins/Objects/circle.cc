@@ -6,7 +6,7 @@
 #include <GL/glu.h>
 
 #define PLUGIN_NAME "Circle Plugin"
-#define PLUGIN_MENU "object/circles"
+#define PLUGIN_MENU "Circles"
 #define PLUGIN_ICON "plugins/Objects/circle.png"
 
 class Circle : public PluginObject {
