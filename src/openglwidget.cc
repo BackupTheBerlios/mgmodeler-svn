@@ -252,6 +252,9 @@ OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
 {
   std::vector<std::vector<int> >::const_iterator i;
   std::vector<int>::const_iterator j;
+
+  float colors[3][4] = {{1.f, 0.f, 0.f, 1.f}, {0.f, 1.f, 0.f, 1.f}, 
+			{0.f, 0.f, 1.f, 1.f}};
   
   glPushAttrib(~0);
 
@@ -262,28 +265,16 @@ OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
     {
       glEnable(GL_LIGHTING); 
       glEnable(GL_LIGHT0);
+      glEnable (GL_COLOR_MATERIAL);
     }
 
   int current = 0;
   for (i=faces.begin (); i!= faces.end (); i++, current++)
     {
       glBegin (GL_POLYGON);
-      switch (current % 3) {
-      case 0:
-	glColor3f (1.f, 0.f, 0.f);
-	break;
-      case 1:
-	glColor3f (0.f, 1.f, 0.f);
-	break;
-      case 2:
-	glColor3f (0.f, 0.f, 1.f);
-	break;
-      }
+      glColor4fv (colors[current%3]);
       for (j = (*i).begin (); j!=(*i).end (); j++)
-	{
 	  glVertex3f (points[(*j)].x, points[(*j)].y, points[(*j)].z);
-	  
-	}
       glEnd ();
     }
 
@@ -296,8 +287,6 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 {
   std::vector<std::vector<Vec3f> >::const_iterator pi;
   std::vector<std::vector<Vec3f> >::const_iterator ni;
-  //std::cout << "faces.size == " << faces.size() <<std::endl;
-  //std::cout << "normals.size == " << normals.size() <<std::endl;
   assert(faces.size()==normals.size());
   std::vector<Vec3f>::const_iterator pj;
   std::vector<Vec3f>::const_iterator nj;
@@ -347,6 +336,8 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
   std::vector<Face>::const_iterator iend=faces.end();
   std::vector<Point>::const_iterator j;
   std::vector<Point>::const_iterator jend;
+
+  glEnable (GL_COLOR_MATERIAL);
   
   for (i=faces.begin ();i!= iend; ++i)
     {
