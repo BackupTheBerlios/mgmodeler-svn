@@ -158,8 +158,10 @@ public:
     
     for (unsigned int i=0; i<bounds.size (); i++) {
       if (where >= bounds[i].min && where<= bounds[i].max) {
+	Vec3f color=p.getColor();
 	p=paths[i].changeReference ((where-bounds[i].min)/
 				      (bounds[i].max-bounds[i].min), p, translate);
+	p.setColor(color);
 	return i;
       }
     }
