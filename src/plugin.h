@@ -58,8 +58,8 @@ public:
 
   const PluginType getType () {return io_type;}
 
-  virtual void importData(const std::string &filename) {}
-  virtual void exportData(const std::string &filename) {}
+  virtual int importData(const std::string &filename) {return -1;}
+  virtual int exportData(const std::string &filename) {return -1;}
 
   virtual const std::vector<Vec3f>& getPoints() {}
   virtual const std::vector<std::vector<int> >& getFaces() {}

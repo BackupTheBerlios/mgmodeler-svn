@@ -22,8 +22,9 @@ public:
   void setViewsMode (View2D::eMode mode);
 protected:
   void createMenus ();
-
+  void checkIOError (const std::string&, const int) throw (std::runtime_error);
 private:
+
   QWorkspace *mdi;
   View2D *m_view2d[MAX_2DVIEWS];
   View3D *m_view3d;

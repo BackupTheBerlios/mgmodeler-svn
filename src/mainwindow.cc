@@ -5,6 +5,7 @@
 #include <qpopupmenu.h>
 #include <qmenubar.h>
 #include <qfiledialog.h>
+#include <qmessagebox.h>
 
 #include <iostream>
 
@@ -222,6 +223,20 @@ MainWindow::menuPluginChoice ()
   setViewsMode (View2D::MODE_EDIT);
 }
 
+
+void
+MainWindow::checkIOError (const std::string& filename, const int result)
+  throw (std::runtime_error)
+{
+  switch (result)
+    {
+    case 0: /* No Error */   break;
+    case -1: throw std::runtime_error ("FATAL: Function Not Implemented");
+    case -2: QMessageBox::
+      critical (this, "Error", std::string("Error opening file ")+filename);
+    }
+}
+
 void
 MainWindow::menuPluginIOChoice ()
 {
@@ -238,8 +253,11 @@ MainWindow::menuPluginIOChoice ()
 
       if (!s.isEmpty ())
 	{
-	  objp->importData(s);
-	  static_cast<View3D *>(m_view3d)->current=objp;
+	  int ret = objp->importData(s);
+	  if (!ret)
+	    static_cast<View3D *>(m_view3d)->current=objp;
+	  else
+	    checkIOError (s, ret);
 	}
       break;
     case Plugin::PLUGIN_IO_EXPORT:
@@ -248,9 +266,12 @@ MainWindow::menuPluginIOChoice ()
 
       if (!s.isEmpty ())
 	{
-	  objp->exportData (s); 
+	  int ret = objp->exportData (s); 
+	  if (!ret)
+	    ;
+	  else
+	    checkIOError (s, ret);
 	}
-      break;
     }
 }
 

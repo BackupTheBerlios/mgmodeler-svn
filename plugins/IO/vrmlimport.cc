@@ -40,17 +40,19 @@ addFace(int *vec, int len)
 class VRMLImport : public PluginIO {
 public:
   VRMLImport () : PluginIO (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON) {}
-  void importData(const std::string &filename) {
+  int importData(const std::string &filename) {
     points.clear ();
     faces.clear ();
     FILE *input = fopen(filename.c_str(), "r");
     if (!input)
-      throw "error while opening vrml file";
+      //throw "error while opening vrml file";
+      return -2;
     ::points=&points;
     ::faces=&faces;
     yyrestart (input);
     yyparse();
     fclose (input);
+    return 0;
   }
   const std::vector<Vec3f> &getPoints() {
     return points;

@@ -30,11 +30,17 @@ main (int argc, char *argv[])
     }  
 
   mainWindow = new MainWindow ();
-  /*  mainWindow->resize (120, 300);
-      mainWindow->move (10, 10);*/
   application.setMainWidget (mainWindow);
-
+  
   mainWindow->show ();
-
-  return application.exec ();
+  try 
+    {
+      return application.exec ();
+    }
+  catch (std::runtime_error e)
+    {
+      std::cout<<"FATAL: Exception: "<<e.what ()<<std::endl;
+    }
+  
+  return -1;
 }
