@@ -101,7 +101,7 @@ View3D::parseMousePress (QMouseEvent *e)
 	double x, y, z;
 	unProject (e->x(), e->y(), &x ,&y, &z);
 	
-	m_plugin_active->buttonDown (e->button(), x, y, z);
+	m_plugin_active->buttonDown (e->button (), e->state (), x, y, z);
       }
   if (m_mode == MODE_SELECTION)
     {
@@ -119,7 +119,7 @@ View3D::parseMouseRelease (QMouseEvent *e)
       unProject (e->x(), e->y(), &x ,&y, &z);
       
       if (m_plugin_active)
-	m_plugin_active->buttonUp (e->button(), x, y, z);
+	m_plugin_active->buttonUp (e->button (), e->state (), x, y, z);
     }
 }
 
@@ -136,7 +136,7 @@ View3D::parseMouseMove (QMouseEvent *e)
   
       if (m_mode == MODE_EDIT)
 	if (m_plugin_active)
-	  m_plugin_active->mouseMove (x, y, z);
+	  m_plugin_active->mouseMove (e-> state (), x, y, z);
 
 	;
     
@@ -153,7 +153,7 @@ View3D::parseMouseDoubleClick (QMouseEvent *e)
       double x, y, z;
       unProject (e->x(), e->y(), &x ,&y, &z);
       if (m_plugin_active)
-	m_plugin_active->doubleClick (e->button(), x, y, z);
+	m_plugin_active->doubleClick (e->button(), e->state (), x, y, z);
     }
 }
 

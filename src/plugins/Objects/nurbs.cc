@@ -38,66 +38,98 @@ static void nurbsError(GLenum errorCode)
 void
 Nurbs::display ()
 {
-  std::list<Vec3d *>::iterator i;
-  std::list<Vec3d *>::iterator end = pts.end ();
 
-  float *knots;
-  int nknots;
-  float knotsstep;
-  float *ctlpoints;
-  int nctlpoints;
-  int pos;
-  int deg = 2;
+  std::list<Vec3f *>::iterator p;
+  std::list<Vec3f *>::iterator pend = pts.end ();
 
+  std::vector<Vec3f>::iterator j;
+  std::vector<Vec3f>::iterator jend;
+
+  std::vector<float>::iterator i;
+  std::vector<float>::iterator iend;
+
+
+  std::vector<float> knots;
+  std::vector<Vec3f> ctlpoints;
+  std::list<Vec3f *>::iterator nearest;
+  float mindist = std::numeric_limits<float>::max ();
+
+  p = pts.begin ();
+  if (p == pend)
+    return;
+
+  while (p != pend) {
+    ctlpoints.push_back (Vec3f (**p));
+    std::list<Vec3f *>::iterator first = p++;
+
+    if (first == pend)
+      break;
+    if (p != pend) {
+      float dist = distanceToSegment (Vec3f (cursor.x, cursor.y, 0),
+				      **first, **p);
+      if (dist < mindist) {
+	mindist = dist;
+	nearest = first;
+      }
+    }
+  }
+
+  int deg = 1;
+  int ordre;
+  
   std::cout << "nurbs" << std::endl;
- 
+  
   GLUnurbsObj* nurbs = gluNewNurbsRenderer();
   assert (nurbs);
 
   gluNurbsCallback(nurbs, GLU_ERROR, 
 		   (GLvoid (*)()) nurbsError);
 
-  nknots = nctlpoints = pts.size ()+(deg)*2;
-  knots = new float[nknots];
-  ctlpoints = new float[3*nknots];
-  
-  knotsstep = 1.;
-  int c;  
-  pos=0;
+  if (deg < ctlpoints.size () - 1)
+    deg = ctlpoints.size () - 1;
+  ordre = deg + 1; 
+  std::cout << "points " << pts.size () << std::endl;
+  std::cout << "deg " << deg << ", ordre " << ordre << std::endl;
+  if (ctlpoints.size ()>=2) {
+    if (ordre >=4)
+      ordre = 4;
+    if (ordre >= 2) {
+      int c;  
 
-  for (c = 0, i=pts.begin(); c < deg - 1; c++) {
-    knots[pos] = pos;
-    ctlpoints[3*pos] = (*i)->x;
-    ctlpoints[3*pos+1] = (*i)->y;
-    ctlpoints[3*pos+2] = 1.0;
-    pos++;
-  }
-  
-  for (i=pts.begin(); i!=end; ++i) {
-    //  for (int j=0;j<rep; j++) {
-    knots[pos] = pos;
-    ctlpoints[3*pos] = (*i)->x;
-    ctlpoints[3*pos+1] = (*i)->y;
-    ctlpoints[3*pos+2] = 1.0;
-    pos++;
-    //    }
-    std::cout << pos << " (" << ctlpoints[3*pos] << ", " << ctlpoints[3*pos+1]
-	      << ", " << ctlpoints[3*pos+2] << ")<" << knots[pos] << ">\n";
-  }
-  std::list<Vec3d *>::reverse_iterator r = pts.rbegin();
-  for (c = 0; c < deg - 1; c++) {
-    knots[pos] = pos;
-    ctlpoints[3*pos] = (*r)->x;
-    ctlpoints[3*pos+1] = (*r)->y;
-    ctlpoints[3*pos+2] = 1.0;
-    pos++;
-  }
+      // ajoute ordre 0
+      // ajoute 1 à nctlpoints - ordre
+      // ajoute ordre (nctlpoints - ordre)
 
+      for (c = 0; c < ordre; c++)
+	knots.push_back (0);
 
-  gluBeginCurve (nurbs);
-  gluNurbsCurve (nurbs,nknots, knots, 3, ctlpoints, deg + 1,  GL_MAP1_VERTEX_3);
-  gluEndCurve (nurbs);
-  drawPoints ();
+      for (c = 0; c < ctlpoints.size () - ordre; c++)
+	knots.push_back (c+1);
+
+      for (c = 0; c < ordre; c++)
+	knots.push_back (ctlpoints. size () - ordre + 1);
+
+      std::cout << "------------------" << std::endl;
+      std::cout << "deg = " << deg << std::endl << "ordre = " 
+		<< ordre << std::endl << "[";
+      for (i = knots.begin (), iend = knots.end ();
+	   i != iend; ++i)
+	std::cout << *i << ", ";
+      std::cout << "]" << std::endl;
+
+      for (j = ctlpoints.begin (), jend = ctlpoints.end ();
+	   j != jend; ++j)
+	std::cout << "(" << *j << "), ";
+      std::cout << "]" << std::endl;
+      
+      gluBeginCurve (nurbs);
+      gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
+		     &ctlpoints[0][0], ordre,  GL_MAP1_VERTEX_3);
+      gluEndCurve (nurbs);
+    }
+  }
+  gluDeleteNurbsRenderer (nurbs);
+  drawPoints (nearest);
 }
 
 DECLARE_PLUGIN (Nurbs);

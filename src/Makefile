@@ -1,6 +1,6 @@
 all: MGModeler
 
-CXXFLAGS=-I$(QTDIR)/include -Wall -I. -g
+CXXFLAGS=-I$(QTDIR)/include -Wall -I. -g -fPIC -DPIC
 LDFLAGS=-L$(QTDIR)/lib -lqt-mt -lGL -lGLU -rdynamic -ldl
 BIN=MGModeler
 

@@ -19,12 +19,12 @@ PolyLine::PolyLine ()
 }
 
 PolyLine::PolyLine (const std::string& name, const std::string& menu,  
-		    const std::string& filename) :PluginObject (name, menu, filename)
+		    const std::string& filename) :PluginObject (name, menu, filename), selected(0), should_close(false)
 {
 }
 
 void
-PolyLine::buttonDown (QMouseEvent::ButtonState button, double x, double y, double z)
+PolyLine::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float x, float y, float z)
 {
   switch (button) {
   case QMouseEvent::MidButton:
@@ -38,21 +38,47 @@ PolyLine::buttonDown (QMouseEvent::ButtonState button, double x, double y, doubl
 }
 
 bool
-PolyLine::buttonUp (QMouseEvent::ButtonState button, double x, double y, double z)
+PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
-    if (!selected) {
-      std::cout << PLUGIN_NAME " : adding point "<< x << " " << y << " " 
+    std::cout << (int)(state & QMouseEvent::ShiftButton) << std::endl;
+    if (!(int)(state & QMouseEvent::ShiftButton)) {
+      std::cout << PLUGIN_NAME " : adding point "<< x << " " << y << ", " 
 		<< z << std::endl;
       if (!should_close)
-	pts.push_back (new Vec3d(x,y,z));
+	pts.push_back (new Vec3f(x,y,z));
       else
-	pts.push_back (new Vec3d(**pts.begin()));
+	pts.push_back (new Vec3f(**pts.begin()));
+    } else {
+      std::cout << PLUGIN_NAME << " : inserting point" << x << ", " << y
+		<< ", "	<< z << std::endl;
+      std::list<Vec3f *>::iterator i;
+      std::list<Vec3f *>::iterator end = pts.end ();
+      std::list<Vec3f *>::iterator nearest = end;
+      float mindist = std::numeric_limits<float>::max ();
+      
+      i = pts.begin ();
+      if (i == end)
+	break;
+      
+      while (i!=end) {
+	std::list<Vec3f *>::iterator first = i++;
+	if (first == end)
+	  break;
+	glVertex2f ((*first)->x, (*first)->y); 
+	if (i != end) {
+	  float dist = distanceToSegment (Vec3f (cursor.x, cursor.y, 0),
+					  **first, **i);
+	  if (dist < mindist) {
+	    mindist = dist;
+	    nearest = first;
+	  }
+	}
+      }
+      if (nearest != end)
+	pts.insert (++nearest, new Vec3f (x, y ,z));
     }
-    break;
-  case QMouseEvent::ShiftButton:
-    std::cout << "with shift pressed" << std::endl;
     break;
   case QMouseEvent::MidButton:
     if (selected) {
@@ -74,17 +100,17 @@ PolyLine::buttonUp (QMouseEvent::ButtonState button, double x, double y, double 
 }
 
 void
-PolyLine::mouseMove (double x, double y, double z) 
+PolyLine::mouseMove (QMouseEvent::ButtonState state,float x, float y, float z) 
 {
-  std::list<Vec3d *>::iterator i;
-  std::list<Vec3d *>::iterator end = pts.end ();
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end = pts.end ();
   if (selected)
     selected->setValues (x, y, z);
   cursor.setValues (x, y, z);
 }
 
 bool
-PolyLine::doubleClick (QMouseEvent::ButtonState button, double x, double y, double z)
+PolyLine::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
@@ -103,33 +129,33 @@ PolyLine::endObject ()
 
 
 bool
-PolyLine::hasPoint (double x, double y, double z)
+PolyLine::hasPoint (float x, float y, float z)
 {
   if (getPoint (x, y, z))
     return true;
   return false;
 }
 
-Vec3d *
-PolyLine::getPoint (double x, double y, double z) {
-  std::list<Vec3d *>::iterator i = getPointIterator (x, y, z);
+Vec3f *
+PolyLine::getPoint (float x, float y, float z) {
+  std::list<Vec3f *>::iterator i = getPointIterator (x, y, z);
   if (i == pts.end ())
     return NULL;
   return *i;
 }
 
 
-std::list<Vec3d *>::iterator
-PolyLine::getPointIterator (double x, double y, double z)
+std::list<Vec3f *>::iterator
+PolyLine::getPointIterator (float x, float y, float z)
 {
-  double mindist = std::numeric_limits<double>::max();
-  std::list<Vec3d *>::iterator i;
-  std::list<Vec3d *>::iterator min;
-  std::list<Vec3d *>::iterator end = pts.end ();
-  //  double epsilon = std::numeric_limits<typeof((*i)->x)>::epsilon();
+  float mindist = std::numeric_limits<float>::max();
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator min;
+  std::list<Vec3f *>::iterator end = pts.end ();
+  //  float epsilon = std::numeric_limits<typeof((*i)->x)>::epsilon();
   
   for (i=pts.begin(); i!=end; ++i) {
-    double dist = hypot ((*i)->x-x, (*i)->y-y);
+    float dist = hypot ((*i)->x-x, (*i)->y-y);
     if (dist < mindist) {
       mindist = dist;
       min = i;
@@ -144,10 +170,10 @@ PolyLine::getPointIterator (double x, double y, double z)
 
 
 void
-PolyLine::removePoint (double x, double y, double z)
+PolyLine::removePoint (float x, float y, float z)
 {
-  Vec3d tmp=Vec3d(x, y, z);
-  std::list<Vec3d *>::iterator i = getPointIterator (x, y, z);
+  Vec3f tmp=Vec3f(x, y, z);
+  std::list<Vec3f *>::iterator i = getPointIterator (x, y, z);
   if (i != pts.end ()) {
     std::cout << PLUGIN_NAME " : removing " << tmp << std::endl;
     pts.erase (i);
@@ -159,10 +185,10 @@ PolyLine::~PolyLine ()
 }
 
 void
-PolyLine::drawPoints (std::list<Vec3d *>::iterator nearest)
+PolyLine::drawPoints (std::list<Vec3f *>::iterator nearest)
 {
-  std::list<Vec3d *>::iterator i;
-  std::list<Vec3d *>::iterator end = pts.end ();
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end = pts.end ();
   glPushAttrib (GL_CURRENT_BIT);
   glPointSize (4.0f);
   glColor3f (1.0, 0.0, 0.0);
@@ -181,30 +207,29 @@ PolyLine::drawPoints (std::list<Vec3d *>::iterator nearest)
 
   glEnd ();
   glPopAttrib ();
-
-  for (i=pts.begin(); i!=end;) {
-    std::list<Vec3d *>::iterator first = i++;
-    if (i != end)
-      distanceToSegment (Vec3d ((*i)->x, (*i)->y, 0),
-			 **first, **i);
-  }
-
 }
 
 void
 PolyLine::display ()
 {
-  std::list<Vec3d *>::iterator i;
-  std::list<Vec3d *>::iterator end = pts.end ();
-  std::list<Vec3d *>::iterator nearest;
-  double mindist = std::numeric_limits<double>::max ();
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end = pts.end ();
+  std::list<Vec3f *>::iterator nearest;
+  float mindist = std::numeric_limits<float>::max ();
 
+  i = pts.begin ();
+  if (i == end)
+    return;
+
+  std::cout << "(" << cursor.x << ", " << cursor.y << ")" << std::endl;
   glBegin (GL_LINE_STRIP);
-  for (i=pts.begin(); i!=end;) {
-    std::list<Vec3d *>::iterator first = i++;
+  while (i!=end) {
+    std::list<Vec3f *>::iterator first = i++;
+    if (first == end)
+      break;
     glVertex2f ((*first)->x, (*first)->y); 
     if (i != end) {
-      double dist = distanceToSegment (Vec3d (cursor.x, cursor.y, 0),
+      float dist = distanceToSegment (Vec3f (cursor.x, cursor.y, 0),
 				       **first, **i);
       if (dist < mindist) {
 	mindist = dist;
@@ -217,25 +242,44 @@ PolyLine::display ()
   drawPoints (nearest);
 }
 
-double
-PolyLine::distanceToSegment (const Vec3d& p, const Vec3d& f, const Vec3d& g) 
+float
+PolyLine::distanceToSegment (const Vec3f& p, const Vec3f& f, const Vec3f& g) 
 {
-  double a, b;
-  double c, d;
-  double dx = (g.x - f.x);
-  double dy = (g.y - f.y);
-  double x, y;
+  /*  float a, b;
+  float c, d;
+  float dx = (g.x - f.x);
+  float dy = (g.y - f.y);
+  float x, y;
 
+  if (dx == 0 && dy == 0)
+    return hypot (p.x - f.x, p.y - f.y);
+  if (dx == 0)
+    return distanceToSegment (Vec3f (p.y, p.x, 0), Vec3f (f.y, f.x, 0),
+			      Vec3f (g.y, g.x, 0));
+
+  std::cout << "computing distance " << p << " to (" << f << ", " << g 
+	    << ")" << std::endl;
+
+  // y=a*x+b
   a =  dy / dx ;
-  b = dy - a * dx;
+  std::cout << " dx = " << dx << ", dy = " << dy << std::endl;
+  b = g.y - a * g.x;
 
-  c = -1/a;
+  std::cout << "  eq1: y = " << a << " * x + " << b << std::endl;
+
+  // perpendicular y=-1/a*x+d
+  c = -1./a;
   d = p.y - c * p.x;
+  std::cout << "  perpendicular: y = " << c << " * x + " << d << std::endl;
 
+  // intersection
   x = (d - b) / (a - c);
   y = a * x + b;
 
-  return hypot (x, y);
+  std::cout << "  intersect: (" << x << ", " << y << ")" << std::endl;
+
+  return hypot (p.x - x, p. y - y);*/
+  return hypot (f.x - p.x, f.y - p .y) + hypot (g.x - p.x, g.y - p.y);
 }
 
 
