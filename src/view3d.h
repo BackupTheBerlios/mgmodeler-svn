@@ -65,7 +65,8 @@ public:
   void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
 
-  static void drawPolygons (const std::vector< std::vector<Vec3f> >&);
+  static void drawPolygons (const std::vector< std::vector<Vec3f> >&,
+			    const std::vector< std::vector<Vec3f> >&);
   static void drawPolygons (const std::vector<Vec3f>&, 
 			    const std::vector< std::vector<int> >&);
 

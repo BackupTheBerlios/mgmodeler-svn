@@ -34,5 +34,5 @@ coordIndex		{ return COORDINDEX; }
 [\n]			linecount++;
 [ \t,]			/* */
 [a-zA-Z{}]+		/* */
-[^ \t[]]*			/* */
+[^ \t[]]			/* */
 %%

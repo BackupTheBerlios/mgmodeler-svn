@@ -65,10 +65,11 @@ interpolatepath (const std::vector<Vec3f>& path, float y)
     y = 1.0f;
   }
     
+  std::cout << "y=" << y << "  ";
   y *= path.size ()-1;
   float inte;
   float fract = std::modf(y, &inte);
-  int a = (int)inte;
+  unsigned int a = (int)inte;
 
   std::cout << "a = " << a << ", size = " << path.size() << std::endl;
   assert (a<path.size() && a>=0);
@@ -104,13 +105,13 @@ void
 GeneralizedCylinder::display () 
 {
   std::vector<std::vector<Vec3f> > object;
+  std::vector<std::vector<Vec3f> > normals;
+
   std::vector<Vec3f> vpath;
-  std::vector<float> vtimepath;
-  std::vector<Vec3f> vnormalpath;
   std::vector<Vec3f> vprofile;
   std::vector<float> vtimeprofile;
   std::vector<Vec3f> vsection;
-  std::vector<float> vtimesection;
+  std::vector<Vec3f> vnormalsection;
   
   std::list<PluginObject *>::iterator ipath = path.begin ();
   std::list<PluginObject *>::iterator iprofile = profile.begin ();
@@ -133,8 +134,6 @@ GeneralizedCylinder::display ()
 
   for (; ipath != iendpath; ++ipath) {
     (*ipath)->evaluate (vpath);
-    (*ipath)->evaluateTimeline (vtimepath);
-    (*ipath)->evaluateNormals (vnormalpath);
   }
   for (; iprofile != iendprofile; ++iprofile) {
     (*iprofile)->evaluate (vprofile);
@@ -142,10 +141,10 @@ GeneralizedCylinder::display ()
   }
   for (; isection != iendsection; ++isection) {
     (*isection)->evaluate (vsection);
-    (*isection)->evaluateTimeline (vtimesection);
+    (*isection)->evaluateNormals (vnormalsection);
   }
 
-  std::cout << "path size = " << vpath.size () << ", section size = " << vsection.size () << std::endl;
+  std::cout << "path size = " << vpath.size () << ", section size = " << vsection.size () << "normals size = " << vnormalsection.size () << std::endl;
 
   for (unsigned int i = 0; i < vprofile.size () - 1; i++) {
     Vec3f y = vprofile[i];
@@ -155,12 +154,12 @@ GeneralizedCylinder::display ()
     
     float scale1 = y.x;
     float scale2 = y2.x;
-
+    std::cout << "timeprofile = " << y.y << ", " << y2.y << std::endl;
     Vec3f pathrel1 = interpolatepath (vpath, y.y);
     Vec3f pathrel2 = interpolatepath (vpath, y2.y);
 
-    Vec3f normale1 = interpolatepath (vnormalpath, y.y);
-    Vec3f normale2 = interpolatepath (vnormalpath, y2.y);
+    Vec3f normale1 = interpolatepath (vnormalsection, y.y);
+    Vec3f normale2 = interpolatepath (vnormalsection, y2.y);
 
     
     float cos1 = Vec3f (1, 0, 0) * normale1;
@@ -180,29 +179,52 @@ GeneralizedCylinder::display ()
     std::cout << "rotate1 = " << a1 << ", rotate2 = " << a2 << std::endl;
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
       std::vector<Vec3f> face;
+      std::vector<Vec3f> normal;
       face.push_back (Vec3f (pathrel1.x + vsection[j].x * scale1, 
 			     pathrel1.y, 
 			     vsection[j].y * scale1));
+      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
+			 vnormalsection[j].z));
       face.push_back (Vec3f (pathrel2.x + vsection[j].x * scale2, 
 			     pathrel2.y, 
 			     vsection[j].y * scale2));
+      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
+			vnormalsection[j].z));
+
       face.push_back (Vec3f (pathrel2.x + vsection[j+1].x * scale2, 
 			     pathrel2.y, 
 			     vsection[j+1].y * scale2));
+      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
+			vnormalsection[j+1].z));
+
       object.push_back (face);
+      normals.push_back (normal);
       face.clear ();
+      normal.clear ();
       face.push_back (Vec3f (pathrel1.x +  vsection[j].x * scale1,
 			     pathrel1.y, 
 			     vsection[j].y * scale1));
+
+      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
+			vnormalsection[j].z));
+
+
       face.push_back (Vec3f (pathrel1.x + vsection[j+1].x * scale1,
 			     pathrel1.y,
 			     vsection[j+1].y * scale1));
+      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
+			vnormalsection[j+1].z));
+
+
       face.push_back (Vec3f (pathrel2.x + vsection[j+1].x * scale2,
 			     pathrel2.y,
 			     vsection[j+1].y * scale2));
+      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
+			vnormalsection[j+1].z));
       object.push_back (face);
+      normals.push_back (normal);
     }
   }
   std::cout << "END" << std::endl;
-  View3DRotation::drawPolygons (object);
+  View3DRotation::drawPolygons (object, normals);
 }

@@ -251,6 +251,8 @@ Nurbs::compute ()
 
   std::vector<float> knots;
   std::vector<Vec3f> ctlpoints;
+  std::vector<Vec3f> ctlnormals;
+  PolyLine::evaluateNormals (ctlnormals);
   struct nurbs_callback ncb;
   ncb.res = &points;
   ncb.norm = &normals;
@@ -260,6 +262,12 @@ Nurbs::compute ()
 
   assert (resolution);
 
+  for (int i=0;i<ctlnormals.size (); i++)
+    ctlpoints.push_back (ctlnormals[i]);
+
+
+  glPushMatrix ();
+  glLoadIdentity();
   points.clear ();
   normals.clear ();
   timeline.clear ();
@@ -291,6 +299,9 @@ Nurbs::compute ()
     gluBeginCurve (nurbs);
     gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
 		   &ctlpoints[0][0], ordre,  GL_MAP1_VERTEX_3);
+    gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
+		   &ctlpoints[0][0], ordre,  GL_MAP1_NORMAL);
+
     gluEndCurve (nurbs);
   }
   gluDeleteNurbsRenderer (nurbs);
@@ -302,6 +313,7 @@ Nurbs::compute ()
     t+=tstep;
     
   }
+  glPopMatrix ();
 }
 
 void
@@ -315,14 +327,38 @@ void
 Nurbs::evaluateTimeline (std::vector<float>& t)
 {
   compute ();
-  t = timeline;
+  float miny = std::numeric_limits<float>::max();
+  float maxy = std::numeric_limits<float>::min();
+
+  std::vector<Vec3f>::iterator i;
+  std::vector<Vec3f>::iterator end;
+  
+  t.clear ();
+
+  if (points.empty ())
+    return;
+
+
+  end = points.end ();
+
+  for (i = points.begin (); i != end; ++i) {
+    float y = (*i).y;
+    t.push_back (y);
+    if (miny>y)
+      miny = y;
+    if (maxy<y)
+      maxy = y;
+  }
+
+  for (int i=0;i<t.size (); i++)
+    t[i] = (t[i] - miny)/ (maxy-miny);  
 }
 
 void
 Nurbs::evaluateNormals (std::vector<Vec3f>& n)
 {
-  compute ();
-  n = normals; 
+  compute();
+  n = normals;
 }
 
 

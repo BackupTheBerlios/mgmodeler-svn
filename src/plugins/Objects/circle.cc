@@ -185,14 +185,12 @@ Circle::evaluateNormals (std::vector<Vec3f>& normals)
 {
   normals.clear ();
   assert (resolution);
-  Vec3f z(0, 0, 1);
 
   double astep = M_PI/(resolution/2.);
   double a = 0;
   for (int i=0; i <= resolution; i++) {
     Vec3f v(/*center.x + */r * cos (a), /*center.y + */r * sin (a), 0);
-    Vec3f n = v.cross (z);
-    n.normalize ();
+    Vec3f n(cos(a), sin(a), 0);
     normals.push_back (n);
     a += astep;
   }

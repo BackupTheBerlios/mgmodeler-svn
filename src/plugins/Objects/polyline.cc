@@ -343,7 +343,17 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
       normals.push_back (n);
     }
   }
-
+  Vec3f last (normals[0]);
+  for (int c=1; c<normals.size()-1; c++) {
+    Vec3f tmp = last;
+    last = normals[c];
+    normals[c] = (normals[c]+tmp)/2;
+  }
+  Vec3f nend(normals[normals.size() - 2]-normals[normals.size()-1]);
+  nend[2]=0;
+  Vec3f n = nend.cross (z);
+  n.normalize ();
+  normals.push_back (n);
 }
 
 

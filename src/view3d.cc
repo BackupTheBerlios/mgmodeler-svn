@@ -230,17 +230,33 @@ View3DRotation::parseMouseRelease (QMouseEvent *e)
 
 
 void 
-View3DRotation::drawPolygons (const std::vector<std::vector<Vec3f> >& faces)
+View3DRotation::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
+			      const std::vector<std::vector<Vec3f> >& normals)
 {
-  std::vector<std::vector<Vec3f> >::const_iterator i;
-  std::vector<Vec3f>::const_iterator j;
+  std::vector<std::vector<Vec3f> >::const_iterator pi;
+  std::vector<std::vector<Vec3f> >::const_iterator ni;
+  std::cout << "faces.size == " << faces.size() <<std::endl;
+  std::cout << "normals.size == " << normals.size() <<std::endl;
+  assert(faces.size()==normals.size());
+  std::vector<Vec3f>::const_iterator pj;
+  std::vector<Vec3f>::const_iterator nj;
   //  std::cout << "Drawing polygons ";
+  glPushMatrix ();
+  glLoadIdentity();
+  GLfloat position[] = {1., 1., 10., 1.};
+  glLightfv(GL_LIGHT0, GL_POSITION, position);
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);
+  glShadeModel (GL_SMOOTH);
+  glPopMatrix ();
   int current = 0;
-  for (i=faces.begin (); i!= faces.end (); i++, current++)
+  for (pi=faces.begin (),
+	 ni=normals.begin(); 
+       pi!= faces.end (); ++pi, ++ni, current++)
     {
       //  std::cout << "!";
       glBegin (GL_POLYGON);
-      switch (current % 3) {
+      /*      switch (current % 3) {
       case 0:
 	glColor3f (1.f, 0.f, 0.f);
 	break;
@@ -250,11 +266,15 @@ View3DRotation::drawPolygons (const std::vector<std::vector<Vec3f> >& faces)
       case 2:
 	glColor3f (0.f, 0.f, 1.f);
 	break;
-      }
-      for (j = (*i).begin (); j!=(*i).end (); j++)
+	}*/
+      glColor3f( 1,1,1);
+      assert((*pi).size() == (*ni).size());
+      for (pj = (*pi).begin (),
+	     nj = (*ni).begin(); pj!=(*pi).end (); ++pj, ++nj)
 	{
+	  glNormal3f ((*nj).x, (*nj).y, (*nj).z);
+	  glVertex3f ((*pj).x, (*pj).y, (*pj).z);
 	  
-	  glVertex3f ((*j).x, (*j).y, (*j).z);
 	  
 	}
       glEnd ();
@@ -269,10 +289,8 @@ View3DRotation::drawPolygons (const std::vector<Vec3f>& points,
   std::vector<std::vector<int> >::const_iterator i;
   std::vector<int>::const_iterator j;
 
-  glPushAttrib(~0);
-  glDisable(GL_LIGHTING); 
-  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
-  //glEnable(GL_POLYGON_OFFSET_LINE);
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);
 
   int current = 0;
   for (i=faces.begin (); i!= faces.end (); i++, current++)
@@ -296,6 +314,5 @@ View3DRotation::drawPolygons (const std::vector<Vec3f>& points,
 	}
       glEnd ();
     }
-  glPopAttrib();
 }
 
