@@ -72,11 +72,10 @@ View3D::parseMousePress (QMouseEvent *e)
   if (e->button () == QMouseEvent::LeftButton)
     if (s_plugin_current)
       {
-	//TODO push old
+	m_plugins. push_back (m_plugin_active);
 	m_plugin_active = (PluginObject *)
 	  s_plugin_current-> m_createinstance ();
 	s_plugin_current = NULL;
-	//std::cout<<"NEW PLUGIN IN EDIT MODE\n";
       }
 
   if (m_plugin_active)
@@ -92,9 +91,7 @@ View3D::parseMouseMove (QMouseEvent *e)
       m_cursor_y = e-> y();
       updateStatusBar (m_cursor_x, m_cursor_y);
     }
-
 }
-
 
 void
 View3D::setCurrentPlugin (PluginObject *p) 
