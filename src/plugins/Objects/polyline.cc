@@ -103,6 +103,23 @@ PolyLine::~PolyLine ()
 }
 
 void
+PolyLine::drawPoints ()
+{
+  std::list<Vec3d *>::iterator i;
+  std::list<Vec3d *>::iterator end = pts.end ();
+  glPushAttrib (GL_CURRENT_BIT);
+  glPointSize (4.0f);
+  glColor3f (1.0, 0.0, 0.0);
+  glBegin (GL_POINTS);
+  
+  for (i=pts.begin(); i!=end; ++i)
+    glVertex2f ((*i)->x, (*i)->y);
+
+  glEnd ();
+  glPopAttrib ();
+}
+
+void
 PolyLine::display ()
 {
   std::list<Vec3d *>::iterator i;
@@ -112,9 +129,10 @@ PolyLine::display ()
   glBegin (GL_LINE_STRIP);
   for (i=pts.begin(); i!=end; ++i) {
     std::cout << "pt(" << (*i)->x << ", " << (*i)->y << ")\n";
-    glVertex2f ((*i)->x, -(*i)->y); 
+    glVertex2f ((*i)->x, (*i)->y); 
   }
   glEnd ();
+  drawPoints ();
 }
 
 DECLARE_PLUGIN (PolyLine);

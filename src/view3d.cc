@@ -79,6 +79,7 @@ unProject (int x, int y, double *dx, double *dy, double *dz)
   gluUnProject (x, y, 0,
               mv, pj, vp,
               dx, dy, dz);
+  *dy=-*dy;
 }
 
 void
@@ -104,7 +105,7 @@ View3D::parseMousePress (QMouseEvent *e)
       }
   if (m_mode == MODE_SELECTION)
     {
-      PluginObject *objp = findObject (e-> x(), e-> y());
+      //      PluginObject *objp = findObject (e-> x(), e-> y());
     }
 
 }

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
-
+#include <cassert>
 #include "polyline.h"
 
 #define PLUGIN_NAME "Nurbs Plugin"
@@ -30,19 +30,60 @@ Nurbs::~Nurbs()
 {
 }
 
+static void nurbsError(GLenum errorCode)
+{
+   const GLubyte *estring;
+
+   estring = gluErrorString(errorCode);
+   fprintf (stderr, "Nurbs Error: %s\n", estring);
+   //   exit (0);
+}
+
 void
 Nurbs::display ()
 {
   std::list<Vec3d *>::iterator i;
   std::list<Vec3d *>::iterator end = pts.end ();
 
+  float *knots;
+  int nknots;
+  float knotsstep;
+  float *ctlpoints;
+  int nctlpoints;
+  int pos;
+  int rep = 3;
+
   std::cout << "nurbs" << std::endl;
-  glBegin (GL_LINE_STRIP);
-  for (i=pts.begin(); i!=end; ++i) {
-    std::cout << "pt(" << (*i)->x << ", " << (*i)->y << ")\n";
-    glVertex2f ((*i)->x, -(*i)->y); 
+ 
+  GLUnurbsObj* nurbs = gluNewNurbsRenderer();
+  assert (nurbs);
+
+  gluNurbsCallback(nurbs, GLU_ERROR, 
+		   (GLvoid (*)()) nurbsError);
+
+  nknots = nctlpoints = pts.size ();
+  knots = new float[nknots*rep];
+  ctlpoints = new float[3*nknots*rep];
+  
+  knotsstep = 1.;
+  
+  for (i=pts.begin(), pos = 0; i!=end; ++i) {
+    for (int j=0;j<rep; j++) {
+      knots[pos] = pos;
+      ctlpoints[3*pos] = (*i)->x;
+      ctlpoints[3*pos+1] = (*i)->y;
+      ctlpoints[3*pos+2] = 1.0;
+      pos++;
+    }
+    std::cout << pos << " (" << ctlpoints[3*pos] << ", " << ctlpoints[3*pos+1]
+	      << ", " << ctlpoints[3*pos+2] << ")<" << knots[pos] << ">\n";
   }
-  glEnd ();
+
+
+  gluBeginCurve (nurbs);
+  gluNurbsCurve (nurbs,nknots*rep, knots, sizeof(float)*3, ctlpoints, rep,  GL_MAP1_VERTEX_3); 
+  gluEndCurve (nurbs);
+  drawPoints ();
 }
 
 DECLARE_PLUGIN (Nurbs);
