@@ -35,6 +35,8 @@ public:
     PluginObject::setResolution(u);
     need_recompute = true;
   }
+  void load (std::istream &stream);
+  void save (std::ostream &stream) const;
  protected:
   std::list<Vec3f *> pts;
   Vec3f *selected;

@@ -7,7 +7,7 @@
 #include <cassert>
 #include "polyline.h"
 
-#define PLUGIN_NAME "Nurbs Plugin"
+#define PLUGIN_NAME "Nurbs"
 #define PLUGIN_MENU "Nurbs"
 #define PLUGIN_ICON "plugins/Objects/nurbs.png"
 
@@ -49,7 +49,9 @@ private:
 
 Nurbs::Nurbs () : PolyLine (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON),
 		  recompute(false)
-{}
+{
+  std::cout << PLUGIN_NAME << std::endl;
+}
 
 Nurbs::~Nurbs()
 {

@@ -8,7 +8,7 @@
 
 #include "polyline.h"
 
-#define PLUGIN_NAME "PolyLine Plugin"
+#define PLUGIN_NAME "PolyLine"
 #define PLUGIN_MENU "Polylines"
 #define PLUGIN_ICON "plugins/Objects/polyline.png"
 
@@ -393,6 +393,33 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals) const
   Vec3f n = nend.cross (z);
   n.normalize ();
   normals.push_back (n);
+}
+
+void
+PolyLine::load (std::istream &stream)
+{
+  int size;
+  pts.clear ();
+  std::cout << "POLYLINE" << std::endl;
+  stream >> size;
+  for (int i=0; i<size; i++) {
+    float x=0, y=0, z=0;
+    stream >> x >> y >> z;
+    std::cout << Vec3f(x, y, z) << std::endl;
+    pts.push_back (new Vec3f (x, y, z));
+  } 
+  std::cout << "ENDPOLYLINE" << std::endl;
+}
+
+void
+PolyLine::save (std::ostream &stream) const
+{
+  std::list<Vec3f *>::const_iterator i;
+  std::list<Vec3f *>::const_iterator end = pts.end ();
+  int size = pts.size ();
+  stream << size << std::endl;
+  for (i=pts.begin (); i!=end; ++i)
+    stream << (**i).x << " " << (**i).y << " " << (**i).z << std::endl;
 }
 
 

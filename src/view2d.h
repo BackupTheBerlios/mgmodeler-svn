@@ -39,6 +39,8 @@ public:
 
   void setMode (eMode mode) {m_mode = mode;}
   void updateStatusBar (const Vec3f& v);
+  void save(std::ostream&) const;
+  void load(std::istream&);
  private:
   void addPluginObject (PluginObject *obj);
   void beginWindowMotion (int x, int y);

@@ -259,3 +259,43 @@ View2D::endWindowMotion ()
 {
   m_mouse_move = false;
 }
+
+void
+View2D::load (std::istream& stream)
+{
+  int size;
+  m_plugins.clear ();
+  stream >> size;
+  std::cout << "+" << size << std::endl;
+  while (size--) {
+    std::string name;
+    stream >> name;
+    std::cout << "-" << name << std::endl;
+    Plugin *p = PluginManager::getPluginByName (name);
+    if (p) {
+      PluginObject *o=(PluginObject *)p->m_createinstance();
+      o->load(stream);
+      m_plugins.push_back (o);
+    }
+  }
+}
+
+void
+View2D::save (std::ostream& stream) const
+{
+  std::vector<PluginObject *>::const_iterator i;
+  std::vector<PluginObject *>::const_iterator end=m_plugins.end ();
+  int size = m_plugins.size ();
+  if (m_plugin_active)
+    size ++;
+  stream << size  << std::endl;
+  
+  for (i=m_plugins.begin(); i!=end; ++i) {
+    stream << (*i)->getName() << std::endl;
+    (*i)->save (stream);
+  }
+  if (m_plugin_active) {
+    stream << m_plugin_active->getName() << std::endl;
+    m_plugin_active->save (stream);
+  }
+}

@@ -10,6 +10,8 @@
 #include <exception>
 #include <qevent.h>
 #include <cassert>
+#include <iostream>
+#include <map>
 
 #include <qstringlist.h>
 
@@ -63,9 +65,15 @@ public:
   virtual int exportData(const std::string &filename, const std::vector<Face>&)
     {return -1;}
 
-  virtual const std::vector<Vec3f>& getPoints() {}
-  virtual const std::vector<std::vector<int> >& getFaces() {}
-
+  virtual const std::vector<Vec3f>& getPoints() { 
+    return emptyPoints;
+  }
+  virtual const std::vector<std::vector<int> >& getFaces() {
+    return emptyFace;
+  }
+ private:
+  std::vector<Vec3f> emptyPoints;
+  std::vector<std::vector<int> > emptyFace;
   PluginType io_type;
 };
 
@@ -100,6 +108,11 @@ public:
     assert (res>0);
     resolution = res;
   }
+
+  virtual void load (std::istream &stream) = 0;
+  virtual void save (std::ostream &stream) const = 0;
+  
+    
  protected:
   int resolution;
 };
@@ -126,9 +139,14 @@ public:
 
   static Plugin *getPlugin (int i) {return s_plugins[i];}
   static Plugin *getIOPlugin (int i) {return s_io_plugins[i];}
+  static Plugin *getPluginByName (const std::string& name) {
+    return s_map_name_to_plugin[name];
+  }
 private:
   static std::vector<Plugin *> s_plugins;
   static std::vector<Plugin *> s_io_plugins;
+ public:
+  static std::map<std::string, Plugin *> s_map_name_to_plugin;
 };
 
 

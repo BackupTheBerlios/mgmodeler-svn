@@ -8,6 +8,9 @@
 #include <qmessagebox.h>
 
 #include <iostream>
+#include <istream>
+#include <ostream>
+#include <fstream>
 
 void
 addTool (QObject *parent, const char *text, QPixmap icon, 
@@ -29,8 +32,9 @@ MainWindow::MainWindow ()
 {
   mdi = new QWorkspace(this, "MDI");
   setCentralWidget(mdi);
-  View2D::eView a[3] = {View2D::VIEW_PROFIL, View2D::VIEW_SECTION, 
-			View2D::VIEW_PATH};
+  m_view2d_type[0] = View2D::VIEW_PROFIL;
+  m_view2d_type[1] = View2D::VIEW_SECTION;
+  m_view2d_type[2] = View2D::VIEW_PATH;
 
 
   m_subconfig = new SubConfig (this, "Subdivision Config", false, 
@@ -43,7 +47,7 @@ MainWindow::MainWindow ()
 
   for (int i=0; i<3; i++)
     {
-      m_view2d[i] = new View2D (mdi, a[i%3], this);
+      m_view2d[i] = new View2D (mdi, m_view2d_type[i%3], this);
       m_view2d[i]-> updateStatusBar (0, 0);
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
@@ -83,6 +87,10 @@ MainWindow::createMenus ()
   
   addTool (this, "Open File", QPixmap::fromMimeSource ("fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
+	   NULL);
+
+  addTool (this, "Save File", QPixmap::fromMimeSource ("filesave.png"), 
+	   QKeySequence ("Ctrl+S"), toolbar, menu_file, SLOT(menuFileSave()),
 	   NULL);
 
   menu_file->insertSeparator();
@@ -200,12 +208,57 @@ MainWindow::menuFileOpen ()
 {
   QString s = QFileDialog::getOpenFileName(
                     "./",
-                    "csg (*.csg)",
+                    "gc (*.gc)",
                     this,
                     "open file dialog",
                     "Choose a file to open" );
+  std::ifstream stream (s);
+  std::string type;
+  
+  for (int i=0; i<3; i++) {
+    stream >> type;
+    std::cout << "*" << type << std::endl;
+    if (type == "PROFILE") {
+      m_view2d[0]->load (stream);
+    } else {
+      if (type == "SECTION") {
+	m_view2d[1]->load (stream);
+      } else {
+	if (type == "PATH") {
+	  m_view2d[2]->load (stream);
+	}
+      }
+    }
+  }
 }
 
+
+void
+MainWindow::menuFileSave ()
+{
+  QString s = QFileDialog::getSaveFileName(
+                    "./",
+                    "gc (*.gc)",
+                    this,
+                    "save file dialog",
+                    "Choose a file to save" );
+
+  
+  std::ofstream stream (s);
+  for (int i=0; i<3; i++) {
+    switch (m_view2d_type[i]) {
+    case View2D::VIEW_PROFIL:
+      stream << "PROFILE" << std::endl;
+      break;
+    case View2D::VIEW_SECTION:
+      stream << "SECTION" << std::endl;
+      break;
+    case View2D::VIEW_PATH:
+      stream << "PATH" << std::endl;
+    }
+    m_view2d[i]->save (stream);
+  }
+}
 
 void
 MainWindow::menuFileQuit ()
@@ -248,8 +301,8 @@ MainWindow::menuPluginIOChoice ()
   switch (objp->getType ())
     {
     case Plugin::PLUGIN_IO_IMPORT:
-      s = QFileDialog::getOpenFileName ( "./", "csg (*.wrl)", 
-	  this, "open file dialog", "Choose a file to open" );
+      s = QFileDialog::getOpenFileName ( "./", "wrl (*.wrl)", 
+			  this, "open file dialog", "Choose a file to open" );
 
       if (!s.isEmpty ())
 	{
@@ -273,7 +326,7 @@ MainWindow::menuPluginIOChoice ()
 	  return ;
 	}
 
-      s = QFileDialog::getSaveFileName ( "./", "csg (*.wrl)", 
+      s = QFileDialog::getSaveFileName ( "./", "wrl (*.wrl)", 
 					 this, "open file dialog", 
 					 "Choose a file for writting" );
 

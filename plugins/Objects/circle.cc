@@ -5,7 +5,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define PLUGIN_NAME "Circle Plugin"
+#define PLUGIN_NAME "Circle"
 #define PLUGIN_MENU "Circles"
 #define PLUGIN_ICON "plugins/Objects/circle.png"
 
@@ -26,6 +26,8 @@ public:
   void evaluateTimeline (std::vector<float>& time) const;
   void evaluateNormals (std::vector<Vec3f>& normals) const;
   void drawNormals () const;
+  void load (std::istream &stream);
+  void save (std::ostream &stream) const;
 private:
   Vec3f center;
   Vec3f radius;
@@ -39,6 +41,7 @@ Circle::Circle ()
   :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON), drawing(false),
    r(1.0)
 {  
+  std::cout << PLUGIN_NAME << std::endl;
 }
 
 void
@@ -224,5 +227,23 @@ Circle::drawNormals () const
   }
   glEnd ();
 }
+
+void
+Circle::load (std::istream &stream)
+{
+  float x, y, z;
+  stream >> x >> y >>  z;
+  center=Vec3f (x, y, z);
+  stream >> x >> y >>  z;
+  radius=Vec3f (x, y, z);
+}
+
+void
+Circle::save (std::ostream &stream) const
+{
+  stream << center << std::endl;
+  stream << radius << std::endl;
+}
+
 
 DECLARE_PLUGIN (Circle);

@@ -5,13 +5,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <iostream>
-#include<dlfcn.h>
+#include <dlfcn.h>
 
 #include <qdir.h>
 #include <qstringlist.h>
 
 std::vector<Plugin *> PluginManager::s_plugins;
 std::vector<Plugin *> PluginManager::s_io_plugins;
+std::map<std::string, Plugin *> PluginManager::s_map_name_to_plugin;
 
 
 void
@@ -40,6 +41,7 @@ PluginManager::loadPlugin (std::string filename)
   switch (p->getType()) {
   case Plugin::PLUGIN_OBJECT:
     s_plugins.push_back (p);
+    s_map_name_to_plugin.insert (std::pair<std::string, Plugin *>(p->getName(), p));
     break;
   case Plugin::PLUGIN_IO_IMPORT:
   case Plugin::PLUGIN_IO_EXPORT:
@@ -62,3 +64,4 @@ PluginManager::loadPlugins (const QStringList& searchpath)
     }
   }
 }
+

@@ -27,6 +27,7 @@ private:
 
   QWorkspace *mdi;
   View2D *m_view2d[MAX_2DVIEWS];
+  View2D::eView m_view2d_type[MAX_2DVIEWS];
   View3D *m_view3d;
 
   SubConfig *m_subconfig;
@@ -38,6 +39,7 @@ private:
   private slots:
     
     void menuFileOpen ();
+  void menuFileSave ();
   void menuFileQuit ();
   void menuPluginChoice ();
   void menuPluginIOChoice ();
@@ -51,8 +53,6 @@ private:
   void menuConfig ();
   void menuSelect ();
   void windowsMenuActivated(int id);
-
-  friend class View2D;
 };
 
 #endif /* MAINWINDOW_H */
