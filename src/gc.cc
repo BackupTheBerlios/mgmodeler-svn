@@ -171,9 +171,9 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
       p*=scale1;
       p+=pathrel1;
-      Vec3f n1(vnormalpath[j][0], 0, vnormalpath[j][1] );
+      Vec3f n1(vnormalsection[j][0], 0, -vnormalsection[j][1] );
 
-      Vec3f n2(vnormalpath[j+1][0], 0, vnormalpath[j+1][1]);
+      Vec3f n2(vnormalsection[j+1][0], 0, -vnormalsection[j+1][1]);
 
       p.setNormal(n1);
       p.setColor(Vec3f(1,0,0));

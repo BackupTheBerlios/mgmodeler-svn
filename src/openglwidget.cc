@@ -328,6 +328,7 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
     for (j=(*i).begin(), jend=(*i).end(); j!=jend; ++j) {
       Point p=(*j);
       Vec3f coords=p.getCoords();
+      coords[2]=-coords[2];
       Vec3f pointTo=coords+p.getNormal()/10;
       Vec3f white(1, 1, 1);
       Vec3f blue(0, 0, 1);
