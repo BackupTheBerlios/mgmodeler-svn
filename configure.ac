@@ -283,4 +283,4 @@ if test ! -z "$am_depcomp"; then
 fi
 AC_SUBST(DEPCOMP)
 
-AC_OUTPUT([Makefile src/Makefile icons/Makefile plugins/Makefile plugins/Objects/Makefile plugins/IO/Makefile wrl/Makefile])
+AC_OUTPUT([Makefile src/Makefile icons/Makefile help/Makefile plugins/Makefile plugins/Objects/Makefile plugins/IO/Makefile wrl/Makefile])

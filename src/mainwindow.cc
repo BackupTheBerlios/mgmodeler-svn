@@ -77,17 +77,17 @@ MainWindow::createMenus ()
   menu_plugins-> insertItem ("&Import", menu_pg_import);
   menu_plugins-> insertItem ("&Export", menu_pg_export);
   
-  addTool (this, "Open File", QPixmap ("fileopen.png"), 
+  addTool (this, "Open File", QPixmap::fromMimeSource ("fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
 	   NULL);
 
   menu_file->insertSeparator();
 
-  addTool (this, "Quit",QPixmap ("exit.png") ,
+  addTool (this, "Quit",QPixmap::fromMimeSource ("exit.png") ,
 	   QKeySequence ("Ctrl+Q"), NULL, menu_file, SLOT(menuFileQuit()),
 	   NULL);
 
-  addTool (this, "Move 2d Window", QPixmap ("move.png"),
+  addTool (this, "Move 2d Window", QPixmap::fromMimeSource ("move.png"),
 	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
 	   NULL);
 
@@ -252,7 +252,7 @@ MainWindow::menuHelp ()
 {
   /*    QAssistantClient *helpclient = 
 	new QAssistantClient (QDir("help/").absPath(), this );*/
-  system ("assistant -profile help/index.dcf&");
+  system ("assistant -profile ../share/MGModeler/index.dcf&");
   /*QString docsPath = QDir("help/").absPath();
     helpclient->showPage( QString("%1/index.dcf").arg(docsPath) );*/
 }
