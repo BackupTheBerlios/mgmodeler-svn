@@ -1,1 +1,13 @@
+Ce programme doit être installé pour fonctionner correctement.
+(sinon les plugins sont introuvables et l'aide n'est pas disponible)
+
+
+BUGS:
+les normales calculées ne dépendent pas du profile ce qui conduit à des
+résultats erronés lorsque le profile n'est pas vertical.
+parfois les nurbs ne sont pas complètement dessiné par les appels OpenGL.
+
+Fonctionnalités supplémentaires:
+il gère plusieurs chemins, et plusieurs sections.
+
 Regardez help/manual.html ou utilisé le boutton d'aide dans le modeleur.
