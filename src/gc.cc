@@ -85,15 +85,6 @@ namespace {
   }
 
   void
-  genTangentes (const std::vector<Vec3f>& normals, std::vector<Vec3f>& tangentes)
-  {
-    std::vector<Vec3f>::const_iterator i;
-    std::vector<Vec3f>::const_iterator end=normals.end();
-    const Vec3f z(0, 0, 1);
-    for (i=normals.begin(); i!=end; ++i)
-      tangentes.push_back ((*i).cross(z));    
-  }
-  void
   changeRepere (const Vec3f& tangent, const Vec3f& normal, 
 		const Vec3f& binormal, const Vec3f& in, Vec3f& out)
   {

@@ -197,6 +197,7 @@ OpenglWidget::SyncContext ()
       glMatrixMode (GL_MODELVIEW);
     } 
 
+
   if (m_update_modelview)
     {
       if (m_trackball_enable)
@@ -208,28 +209,6 @@ OpenglWidget::SyncContext ()
 	  m_trackball->getRotation (modelview);
 	  /* Send the Matrix */
 	  glLoadIdentity ();
-	  GLfloat position[] = {1., 1., 10., 1.};
-
-	  if (m_wireframe)  
-	    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
-	  else {
-	    glPolygonMode(GL_BACK, GL_LINE);
-	    glPolygonMode(GL_FRONT, GL_FILL);
-	  }
-
-	  if (m_lighting)
-	    {
-	      glLightfv(GL_LIGHT0, GL_POSITION, position);
-	      glEnable(GL_LIGHTING); 
-	      glEnable(GL_LIGHT0);
-	      glShadeModel (GL_SMOOTH);
-	      
-	      glEnable(GL_LIGHTING); 
-	      glEnable(GL_LIGHT0);
-	    } else
-	      glDisable(GL_LIGHTING);
-
-
 	  gluLookAt (0, 0, 2, 0, 0, 0, 0, 1, 0);
 	  glMultMatrixf ((float *)modelview[0]);
 	  glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
@@ -358,9 +337,7 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
   for (i=faces.begin ();i!= iend; ++i)
     {
       glBegin (GL_POLYGON);
-      std::cout << "F";
       for (j=i->begin(), jend=i->end(); j!=jend; ++j) {
-	std::cout << ".";
 	const Point p=(*j);
 	Vec3f coords=p.getCoords();
 	Vec3f normal=p.getNormal();
@@ -370,9 +347,7 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
 	glVertex3fv(&coords[0]);
       }
       glEnd ();
-      //std::cout << "E";
     }
-  //std::cout << std::endl;
 
   if (m_normals) {
     glPushAttrib(~0);
@@ -410,7 +385,22 @@ OpenglWidget::moveWindow (int relx, int rely)
 void 
 OpenglWidget::setLighting ()
 {
+  GLfloat position[] = {1., 1., 10., 0};
   m_lighting = !m_lighting;
+  makeCurrent();
+  if (m_lighting)
+    {
+      glLoadIdentity ();
+      glLightfv(GL_LIGHT0, GL_POSITION, position);
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+      glShadeModel (GL_SMOOTH);
+      
+      glEnable(GL_LIGHTING); 
+      glEnable(GL_LIGHT0);
+    } else
+      glDisable(GL_LIGHTING);
+
   updateGL ();
 }
 
@@ -418,6 +408,14 @@ void
 OpenglWidget::setWireframe (bool flag)
 {
   m_wireframe = flag;
+  makeCurrent();
+  if (m_wireframe)  
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+  else {
+    glPolygonMode(GL_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT, GL_FILL);
+  }
+
   updateGL ();
 }
 
@@ -425,5 +423,6 @@ void
 OpenglWidget::toggleNormals ()
 {
   m_normals = !m_normals;
+  
   updateGL ();
 }

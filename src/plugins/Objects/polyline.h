@@ -37,7 +37,6 @@ public:
   Vec3f cursor;
  private:
   bool should_close;
-  
 };
 
 #endif /* POLYLINES_H */
