@@ -191,7 +191,7 @@ Nurbs::display ()
       ordre = 6;
     
     buildNodalVector (ordre, ctlpoints.size (), knots);
-    glColor3f (1,1,1);
+    glColor3f (.0,.0,.0);
     gluBeginCurve (nurbs);
     gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
 		   &ctlpoints[0][0], ordre,  GL_MAP1_VERTEX_3);
