@@ -47,6 +47,8 @@ OpenglWidget::resizeGL (int w, int h)
   m_update_modelview = true;
   m_update_projection = true;
 
+
+  updateGL ();
 }
 
 void 

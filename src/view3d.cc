@@ -41,15 +41,12 @@ View3D::setupView ()
     {
     case VIEW_PROFIL:
       setCaption ("OpenGL 2D View: Profil");
-      //gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
       break;
     case VIEW_SECTION:
       setCaption ("OpenGL 2D View: Section");
-      //gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
       break;
     case VIEW_WAY:
       setCaption ("OpenGL 2D View: Way");
-      //gluLookAt (0.0, 0.0, distance, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);      
       break;
     default:
       std::cout << "Warning Invalid Axe"<<std::endl;
