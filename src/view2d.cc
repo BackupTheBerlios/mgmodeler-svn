@@ -185,6 +185,7 @@ View2D::redisplay ()
     (*i)->display ();
 
   if (m_plugin_active) {
+    glColor3f(0, 0, 0);
     m_plugin_active -> display ();
     m_plugin_active -> drawNormals ();
   }

@@ -39,6 +39,7 @@ private:
   void menuLighting ();
   void menuFill ();
   void menuWireframe ();
+  void menuNormals ();
   void windowsMenuActivated(int id);
 };
 

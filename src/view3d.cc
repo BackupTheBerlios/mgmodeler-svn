@@ -80,3 +80,9 @@ View3D::setWireframe ()
 {
   m_glwidget->setWireframe (true);
 }
+
+void
+View3D::toggleNormals ()
+{
+  m_glwidget->toggleNormals();
+}

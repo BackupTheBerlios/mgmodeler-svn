@@ -353,8 +353,8 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
     std::list<Vec3f *>::iterator first = i++;
 
     if (i != end) {
-      float dx = ((*i)->x-(*first)->x);
-      float dy = ((*i)->y-(*first)->y);
+      float dx = ((*first)->x-(*i)->x);
+      float dy = ((*first)->y-(*i)->y);
       Vec3f v (dx, dy, 0);
       Vec3f n = v.cross (z);
       normals.push_back (n);
@@ -369,7 +369,7 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
     normals[c].normalize();
   }
 
-  Vec3f nend(**(pts.rbegin())-**(++pts.rbegin()));
+  Vec3f nend(**(++pts.rbegin())-**(pts.rbegin()));
   nend[2]=0;
   Vec3f n = nend.cross (z);
   n.normalize ();

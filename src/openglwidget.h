@@ -48,6 +48,7 @@ public:
 
   void setLighting ();
   void setWireframe (bool);
+  void toggleNormals ();
 
 private:
   void mousePressEvent (QMouseEvent *e);
@@ -75,7 +76,7 @@ private:
   float m_trackball_zoom;
   bool m_trackball_enable;
   static const float TRACKBALL_ZOOM_DEF = 0.5;
-
+  bool m_normals;
   bool m_lighting;
   bool m_wireframe;
 };

@@ -25,6 +25,7 @@ public:
   void setLighting ();
   void setFillMode ();
   void setWireframe ();
+  void toggleNormals ();
   /* FIXME */
 public:
   PluginIO *current;

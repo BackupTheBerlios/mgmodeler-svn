@@ -16,6 +16,7 @@ OpenglWidget::OpenglWidget (QWidget *parent, const char *name,
   m_trackball_enable = trackball;
   m_lighting = false;
   m_wireframe = false;
+  m_normals = false;
   if (m_trackball_enable)
     {
       m_trackball = new Trackball (100, 100);
@@ -207,9 +208,32 @@ OpenglWidget::SyncContext ()
 	  m_trackball->getRotation (modelview);
 	  /* Send the Matrix */
 	  glLoadIdentity ();
+	  GLfloat position[] = {1., 1., 10., 1.};
+
+	  if (m_wireframe)  
+	    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+	  else {
+	    glPolygonMode(GL_BACK, GL_LINE);
+	    glPolygonMode(GL_FRONT, GL_FILL);
+	  }
+
+	  if (m_lighting)
+	    {
+	      glLightfv(GL_LIGHT0, GL_POSITION, position);
+	      glEnable(GL_LIGHTING); 
+	      glEnable(GL_LIGHT0);
+	      glShadeModel (GL_SMOOTH);
+	      
+	      glEnable(GL_LIGHTING); 
+	      glEnable(GL_LIGHT0);
+	    } else
+	      glDisable(GL_LIGHTING);
+
+
 	  gluLookAt (0, 0, 2, 0, 0, 0, 0, 1, 0);
 	  glMultMatrixf ((float *)modelview[0]);
 	  glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
+	  glEnable(GL_AUTO_NORMAL);
 	}
       else
 	{
@@ -288,6 +312,7 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
   assert(faces.size()==normals.size());
   std::vector<Vec3f>::const_iterator pj;
   std::vector<Vec3f>::const_iterator nj;
+
   GLfloat position[] = {1., 1., 10., 1.};
 
   glPushMatrix ();
@@ -307,19 +332,7 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 	 ni=normals.begin(); 
        pi!= faces.end (); ++pi, ++ni, current++)
     {
-      //  std::cout << "!";
       glBegin (GL_POLYGON);
-      /*      switch (current % 3) {
-      case 0:
-	glColor3f (1.f, 0.f, 0.f);
-	break;
-      case 1:
-	glColor3f (0.f, 1.f, 0.f);
-	break;
-      case 2:
-	glColor3f (0.f, 0.f, 1.f);
-	break;
-	}*/
       glColor3f( 1,1,1);
       assert((*pi).size() == (*ni).size());
       for (pj = (*pi).begin (),
@@ -340,26 +353,7 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
   std::vector<Face>::const_iterator iend=faces.end();
   std::vector<Point>::const_iterator j;
   std::vector<Point>::const_iterator jend;
-  GLfloat position[] = {1., 1., 10., 1.};
   
-  glPushAttrib(~0);
-
-  if (m_lighting)
-    {
-      glLightfv(GL_LIGHT0, GL_POSITION, position);
-      glEnable(GL_LIGHTING); 
-      glEnable(GL_LIGHT0);
-      glShadeModel (GL_SMOOTH);
-      
-      glEnable(GL_LIGHTING); 
-      glEnable(GL_LIGHT0);
-    }
-    
-  if (m_wireframe)  
-    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
-  /*  glEnable(GL_POLYGON_OFFSET_LINE); 
-      glPolygonOffset(m_PolygonOffset,-1.0f);*/
-
   for (i=faces.begin ();i!= iend; ++i)
     {
       glBegin (GL_POLYGON);
@@ -370,7 +364,6 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
 	Vec3f coords=p.getCoords();
 	Vec3f normal=p.getNormal();
 	Vec3f color=p.getColor();
-	coords[2]=-coords[2];
 	glColor3fv(&color[0]);
 	glNormal3fv(&normal[0]);
 	glVertex3fv(&coords[0]);
@@ -380,23 +373,28 @@ OpenglWidget::drawPolygons (const std::vector<Face>& faces)
     }
   //std::cout << std::endl;
 
-  glBegin (GL_LINES);
-  for (i=faces.begin(); i!=iend; ++i) {
-    for (j=(*i).begin(), jend=(*i).end(); j!=jend; ++j) {
-      Point p=(*j);
-      Vec3f coords=p.getCoords();
-      coords[2]=-coords[2];
-      Vec3f pointTo=coords+p.getNormal()/10;
-      Vec3f white(1, 1, 1);
-      Vec3f blue(0, 0, 1);
-      glColor3fv(&white[0]);
-      glVertex3fv(&coords[0]);
-      glColor3fv(&blue[0]);
-      glVertex3fv(&pointTo[0]);
+  if (m_normals) {
+    glPushAttrib(~0);
+    glDisable(GL_LIGHTING); 
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+      
+    glBegin (GL_LINES);
+    for (i=faces.begin(); i!=iend; ++i) {
+      for (j=(*i).begin(), jend=(*i).end(); j!=jend; ++j) {
+	Point p=(*j);
+	Vec3f coords=p.getCoords();
+	Vec3f pointTo=coords+p.getNormal()/15;
+	Vec3f white(1, 1, 1);
+	Vec3f blue(0, 0, 1);
+	glColor3fv(&white[0]);
+	glVertex3fv(&coords[0]);
+	glColor3fv(&blue[0]);
+	glVertex3fv(&pointTo[0]);
+      }
     }
+    glEnd ();
+    glPopAttrib();
   }
-  glEnd ();
-  glPopAttrib();
 }
 
 
@@ -412,6 +410,7 @@ void
 OpenglWidget::setLighting ()
 {
   m_lighting = !m_lighting;
+
   updateGL ();
 }
 
@@ -419,5 +418,12 @@ void
 OpenglWidget::setWireframe (bool flag)
 {
   m_wireframe = flag;
+  updateGL ();
+}
+
+void 
+OpenglWidget::toggleNormals ()
+{
+  m_normals = !m_normals;
   updateGL ();
 }

@@ -6,14 +6,23 @@
 
 class Point {
  public:
-  Point (const Vec3f& coords = Vec3f(0, 0, 0), const Vec3f& normal = Vec3f (1, 0, 0), const Vec3f& color = Vec3f(1, 1, 1), 
-	   float alpha = 1) : coords(coords), normal(normal), color(color), alpha(alpha) {}
+  Point (const Vec3f& coords = Vec3f(0, 0, 0), 
+	 const Vec3f& normal = Vec3f (1, 0, 0),
+	 const Vec3f& tangent = Vec3f(0, -1, 0),
+	 const Vec3f& color = Vec3f(1, 1, 1), float alpha = 1) : 
+    coords(coords), normal(normal), color(color), 
+    tangent(tangent), alpha(alpha) 
+    {}
   void setCoords(const Vec3f& coords) {
     this->coords=coords;
   }
 
   void setNormal(const Vec3f& normal) {
     this->normal=normal;
+  }
+
+  void setTangent(const Vec3f& tangent) {
+    this->tangent=tangent;
   }
 
   void setColor(const Vec3f& color) {
@@ -36,6 +45,10 @@ class Point {
     return color;
   }
 
+  const Vec3f& getTangent() const {
+    return tangent;
+  }
+
   Vec3f& getCoords() {
     return coords;
   }
@@ -48,6 +61,9 @@ class Point {
     return color;
   }
   
+  Vec3f& getTangent() {
+    return tangent;
+  }
   
   const float getAlpha () const {
       return alpha;
@@ -76,6 +92,8 @@ class Point {
   Vec3f coords;
   Vec3f normal;
   Vec3f color;
+  Vec3f tangent;
+
   float alpha;
 };
 

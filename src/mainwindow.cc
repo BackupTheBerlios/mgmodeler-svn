@@ -153,6 +153,9 @@ MainWindow::createMenus ()
   addTool (this, "Lighting", QPixmap ("icons/light.png"),
 	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
 	   NULL);
+  addTool (this, "Normals", QPixmap ("icons/normals.png"),
+	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuNormals ()),
+	   NULL);
 }
 
 
@@ -249,5 +252,12 @@ void
 MainWindow::menuWireframe ()
 {
   m_view3d-> setWireframe ();
+}
+
+
+void
+MainWindow::menuNormals ()
+{
+  m_view3d-> toggleNormals ();
 }
 
