@@ -28,6 +28,7 @@ private:
     void menuFileOpen ();
   void menuFileQuit ();
   void menuPluginChoice ();
+  void menuSelect ();
 };
 
 #endif /* MAINWINDOW_H */
