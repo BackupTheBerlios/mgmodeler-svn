@@ -28,10 +28,13 @@ public:
   virtual void updateStatusBar (int x, int y);
 
   virtual void parseMousePress (QMouseEvent *e);
+  virtual void parseMouseRelease (QMouseEvent *e);
   virtual void parseMouseMove (QMouseEvent *e);
 
   void setCurrentPlugin (PluginObject *p);
   const std::vector<PluginObject *>& getPlugins();
+
+  PluginObject *getActivePlugin () {return m_plugin_active;}
 
   void setMode (eMode mode) {m_mode = mode;}
 
@@ -57,6 +60,7 @@ public:
 
 
   void parseMousePress (QMouseEvent *e);
+  void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
 
 private:

@@ -1,4 +1,4 @@
-CXXFLAGS=-I$(QTDIR)/include -I ../..
+CXXFLAGS=-I$(QTDIR)/include -I ../.. -g
 LDFLAGS=-L$(QTDIR)/lib -shared
 BIN=../bin/polylines.so
 

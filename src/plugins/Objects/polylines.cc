@@ -3,6 +3,8 @@
 #include <qevent.h>
 #include <iostream>
 #include <GL/gl.h>
+#include <GL/glu.h>
+
 
 #define PLUGIN_NAME "PolyLine Plugin"
 #define PLUGIN_MENU "object/polylines"
@@ -105,11 +107,14 @@ PolyLine::display ()
 {
   std::list<Vec3d *>::iterator i;
   std::list<Vec3d *>::iterator end = pts.end ();
-  glBegin (GL_LINE);
-  for (i=pts.begin(); i!=end; ++i)
-    glVertex2f ((*i)->x, (*i)->y);
+
+  std::cout << "azertyuio" << std::endl;
+  glBegin (GL_LINE_STRIP);
+  for (i=pts.begin(); i!=end; ++i) {
+    std::cout << "pt(" << (*i)->x << ", " << (*i)->y << ")\n";
+    glVertex2f ((*i)->x, -(*i)->y); 
+  }
   glEnd ();
-  
 }
 
 DECLARE_PLUGIN (PolyLine);

@@ -63,6 +63,11 @@ OpenglWidget::paintGL ()
   clearGL ();
   for (i = plugins.begin (); i!=end; ++i)
     (*i)->display ();
+
+  View3D *parent = (View3D *)m_parent;
+
+  if (parent-> getActivePlugin ())
+    parent-> getActivePlugin ()-> display ();
   
   swapBuffers ();
 }
@@ -79,12 +84,13 @@ OpenglWidget::mousePressEvent (QMouseEvent *e) {
       {
 	m_trackball->startRotation (e->x (), e-> y());
 	m_update_modelview = true;
-	updateGL ();
       }
     break;
   default:
     break;
   }
+
+  updateGL ();
 }
 
 void
@@ -92,18 +98,23 @@ OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
   //View3D *parent = (View3D *)m_parent;
   //parent-> parseMousePress (e);
 
+  View3D *parent = (View3D *)m_parent;
+  parent-> parseMouseRelease (e);
+
   switch (e->button ()) {
   case QMouseEvent::LeftButton:
     if (m_trackball_enable)
       {
 	m_trackball->stopRotation ();
 	m_update_modelview = true;
-	updateGL ();
       }
     break;
   default:
     break;
   }
+  
+  updateGL ();
+
 }
 
 

@@ -66,6 +66,24 @@ View3D::updateStatusBar (int x, int y)
 }
 
 
+static void
+unproject (int x, int y, double *dx, double *dy, double *dz)
+{
+  double mv[16];
+  double pj[16];
+  int vp[16];
+  
+
+  glGetDoublev (GL_MODELVIEW_MATRIX, mv);
+  glGetDoublev (GL_PROJECTION_MATRIX, pj);
+  glGetIntegerv (GL_VIEWPORT, vp);
+  
+  gluUnProject (x, y, 0,
+              mv, pj, vp,
+              dx, dy, dz);
+
+}
+
 void
 View3D::parseMousePress (QMouseEvent *e)
 {
@@ -78,8 +96,22 @@ View3D::parseMousePress (QMouseEvent *e)
 	s_plugin_current = NULL;
       }
 
+  double x, y, z;
+  unproject (e->x(), e->y(), &x ,&y, &z);
+
   if (m_plugin_active)
-    m_plugin_active->buttonDown (e->button(), e->x(), e->y (), 0);
+    m_plugin_active->buttonDown (e->button(), x, y, z);
+}
+
+void
+View3D::parseMouseRelease (QMouseEvent *e)
+{
+  double x, y, z;
+  unproject (e->x(), e->y(), &x ,&y, &z);
+
+
+  if (m_plugin_active)
+    m_plugin_active->buttonUp (e->button(), x, y, z);
 }
 
 void
@@ -89,7 +121,12 @@ View3D::parseMouseMove (QMouseEvent *e)
     {
       m_cursor_x = e-> x();
       m_cursor_y = e-> y();
-      updateStatusBar (m_cursor_x, m_cursor_y);
+      
+      double x, y, z;
+      unproject (e->x(), e->y(), &x ,&y, &z);
+
+
+      updateStatusBar (x, y);
     }
 }
 
@@ -142,3 +179,10 @@ void
 View3DRotation::parseMouseMove (QMouseEvent *e)
 {
 }
+
+void
+View3DRotation::parseMouseRelease (QMouseEvent *e)
+{
+  
+}
+
