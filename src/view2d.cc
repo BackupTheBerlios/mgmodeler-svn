@@ -111,6 +111,10 @@ View2D::parseMousePress (QMouseEvent *e)
 void
 View2D::parseMouseRelease (QMouseEvent *e)
 {
+  std::list<PluginObject *>::iterator i;
+  std::list<PluginObject *>::iterator end=m_plugins.end();
+  Vec3f v;
+
   if (m_mode == MODE_EDIT)
     {
       Vec3f v;
@@ -130,9 +134,6 @@ View2D::parseMouseRelease (QMouseEvent *e)
   if (e->button () == QMouseEvent::LeftButton)
     if (m_mode == MODE_SELECTION_OBJECT && m_view!=VIEW_PROFIL)
       {
-	std::list<PluginObject *>::iterator i;
-	std::list<PluginObject *>::iterator end=m_plugins.end();
-	Vec3f v;
 	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
 
 	for (i = m_plugins.begin (); i!=end; ++i)
@@ -147,8 +148,44 @@ View2D::parseMouseRelease (QMouseEvent *e)
 	      }
 	  }
       }
-}
 
+  if (e->button () == QMouseEvent::LeftButton)
+    if (m_mode == MODE_DELETE_OBJECT)
+      {
+	PluginObject *obj = NULL;
+
+	OpenglWidget::unProject (Vec3f(e->x(), e->y(), 0), v);
+	
+	for (i = m_plugins.begin (); i!=end; ++i)
+	  {
+	    if ((*i)->hasPoint (v))
+	      {
+		obj = *i;
+		m_plugins.remove (*i);
+		m_win_parent->setViewsMode (MODE_EDIT);
+		break;
+	      }
+	  }
+	
+	if (!obj)
+	  if (m_plugin_active)
+	    if (m_plugin_active->hasPoint (v))
+	      {
+		obj = m_plugin_active;
+		m_plugin_active = NULL;
+		m_win_parent->setViewsMode (MODE_EDIT);
+	      }
+	
+	if (obj)
+	  {
+	    View::getGC ().removePath (obj);
+	    View::getGC ().removeSection (obj);
+	    View::getGC ().removeProfile (obj); 
+	  }
+
+      }
+}
+  
 void
 View2D::parseMouseMove (QMouseEvent *e)
 {

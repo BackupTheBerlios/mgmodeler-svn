@@ -164,6 +164,10 @@ MainWindow::createMenus ()
     menu_window->setItemParameter( id, i );
   }  
 
+  addTool (this, "Delete Object", QPixmap::fromMimeSource ("delete.png"),
+	   QKeySequence ("Ctrl+D"), toolbar, menu_plugins, 
+	   SLOT(menuDeleteObject ()), NULL);
+
   toolbar->addSeparator(); 
 
   addTool (this, "Wireframe", QPixmap::fromMimeSource ("wireframe.png"),
@@ -303,6 +307,12 @@ MainWindow::menuPluginChoice ()
   
   View2D::setCurrentPlugin (objp);
   setViewsMode (View2D::MODE_EDIT);
+}
+
+void 
+MainWindow::menuDeleteObject ()
+{
+  setViewsMode (View2D::MODE_DELETE_OBJECT);
 }
 
 

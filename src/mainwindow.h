@@ -54,6 +54,7 @@ private:
   void menuConfig ();
   void menuSelect ();
   void menuCompute ();
+  void menuDeleteObject ();
   void windowsMenuActivated(int id);
 };
 
