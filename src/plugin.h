@@ -69,15 +69,17 @@ public:
   const PluginType getType () {return PLUGIN_OBJECT;}
 
 
-  virtual void buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z) = 0;
-  virtual bool buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z) = 0;
-  virtual bool doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z) = 0;
-
-  virtual void mouseMove (QMouseEvent::ButtonState state, float x, float y, float z) = 0;
+  virtual void buttonDown (QMouseEvent::ButtonState button, 
+			   QMouseEvent::ButtonState state, const Vec3f& v) = 0;
+  virtual bool buttonUp (QMouseEvent::ButtonState button, 
+			 QMouseEvent::ButtonState state, const Vec3f& v) = 0;
+  virtual bool doubleClick (QMouseEvent::ButtonState button,
+			    QMouseEvent::ButtonState state, const Vec3f& v) = 0;
+  virtual void mouseMove (QMouseEvent::ButtonState state, const Vec3f& v) = 0;
   virtual void endObject () = 0;
 
-  virtual bool hasPoint (float x, float y, float z) = 0;
-  virtual void removePoint (float x, float y, float z) = 0;
+  virtual bool hasPoint (const Vec3f& v) = 0;
+  virtual void removePoint (const Vec3f& v) = 0;
   virtual void display () = 0;
   virtual void evaluate (std::vector<Vec3f>& res) = 0;
   virtual void evaluateNormals (std::vector<Vec3f>& normals) = 0;

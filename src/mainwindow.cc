@@ -25,42 +25,27 @@ addTool (QObject *parent, const char *text, QPixmap icon,
 
 MainWindow::MainWindow () 
   throw () 
-  : QMainWindow (0, APPLICATION_NAME) 
+  : QMainWindow (0, APPLICATION_NAME)
 {
-  eView a[3] = {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY};
+  mdi = new QWorkspace(this, "MDI");
+  setCentralWidget(mdi);
+  View2D::eView a[3] = {View2D::VIEW_PROFIL, View2D::VIEW_SECTION, 
+			View2D::VIEW_PATH};
 
+
+  m_view3d = new View3D (mdi);
+  m_view3d-> show ();
+  m_view3d->setupView ();
 
   for (int i=0; i<3; i++)
     {
-      m_view2d[i] = new View3D (NULL, a[i%3]);
-      m_view2d[i]-> resize (500, 400);
+      m_view2d[i] = new View2D (mdi, a[i%3]);
       m_view2d[i]-> updateStatusBar (0, 0);
-      m_view2d[i]-> move (150+(i%2)*520, 10 + (i/2) * 440);
-      //      m_view2d[i]-> show ();
-      //m_view2d[i]-> setupView ();
+      m_view2d[i]-> show ();
+      m_view2d[i]-> setupView ();
     }
-
-  m_view3d = new View3DRotation (NULL);
-  m_view3d-> resize (500, 400);
-  //  m_view3d-> show ();
-  m_view3d->move (670, 450);
-  //m_view3d->setupView ();
-
+  show ();
   createMenus ();
-}
-
-void
-MainWindow::show ()
-{
-  QMainWindow::show ();
-  for (int i=0; i <3; i++)
-    {
-      m_view2d[i]->show ();
-      m_view2d[i]->setupView ();
-    }
-  m_view3d->show ();
-  m_view3d->setupView ();
-  
 }
 
 void
@@ -68,7 +53,7 @@ MainWindow::createMenus ()
 {
   QToolBar *toolbar = new QToolBar (this, "ToolBar");
   QPopupMenu *menu_file = new QPopupMenu (this);
-  menuBar ()-> insertItem ("File", menu_file);
+  menuBar ()-> insertItem ("&File", menu_file);
   
   addTool (this, "Open File", QPixmap ((const char **)icon_fileopen), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
@@ -94,7 +79,7 @@ MainWindow::createMenus ()
       str[0] = k;
       Plugin *p = *i;
       addTool (this, p->getName ().c_str (), QPixmap(p-> getIcon ()),
-	       QKeySequence (), toolbar, menu_file, SLOT(menuPluginIOChoice()),
+	       QKeySequence (), NULL, menu_file, SLOT(menuPluginIOChoice()),
 	       str);
     }
   k=0;
@@ -109,10 +94,30 @@ MainWindow::createMenus ()
 	       QKeySequence (), toolbar, NULL, 
 	       SLOT(menuPluginChoice()), str);
     }
+
+
+  QPopupMenu *menu_window = new QPopupMenu (this);
+  menuBar ()-> insertItem ("&Windows", menu_window);
+  int cascadeId = menu_window->insertItem("&Cascade", mdi, SLOT(cascade() ) );
+  int tileId = menu_window->insertItem("&Tile", mdi, SLOT(tile() ) );
+  mdi->tile ();
+  mdi->setScrollBarsEnabled(true);
+  if ( mdi->windowList().isEmpty() ) {
+    menu_window->setItemEnabled( cascadeId, FALSE );
+    menu_window->setItemEnabled( tileId, FALSE );
+  }
+  menu_window->insertSeparator();
+  QWidgetList windows = mdi->windowList();
+  for ( int i = 0; i < int(windows.count()); ++i ) {
+    int id = menu_window->insertItem(windows.at(i)->caption(),
+				     this, SLOT( windowsMenuActivated( int ) ) );
+    menu_window->setItemParameter( id, i );
+    /*    menu_window->setItemChecked( id, mdi->activeWindow() == windows.at(i) );*/
+  }  
 }
 
 
-void MainWindow::setViewsMode (View3D::eMode mode)
+void MainWindow::setViewsMode (View2D::eMode mode)
 {
   for (int i=0; i<3; i++)
     {
@@ -146,8 +151,8 @@ MainWindow::menuPluginChoice ()
   
   //std::cout<<"Plugin: "<< objp->getName ()<<"\n";
 
-  m_view3d-> setCurrentPlugin (objp);
-  setViewsMode (View3D::MODE_EDIT);
+  View2D::setCurrentPlugin (objp);
+  setViewsMode (View2D::MODE_EDIT);
 }
 
 void
@@ -165,12 +170,20 @@ MainWindow::menuPluginIOChoice ()
 
 
   objp->parse(s);
-  static_cast<View3DRotation *>(m_view3d)->current=objp;
+  static_cast<View3D *>(m_view3d)->current=objp;
 }
 
+void
+MainWindow::windowsMenuActivated(int id)
+{
+   QWidget* w = mdi->windowList().at( id );
+   if ( w )
+     w->showNormal();
+   w->setFocus();
+}
 void
 MainWindow::menuSelect ()
 {
   std::cout<<"SELECT\n";
-  setViewsMode (View3D::MODE_SELECTION);
+  setViewsMode (View2D::MODE_SELECTION);
 }

@@ -13,15 +13,15 @@ class Circle : public PluginObject {
 public:
   Circle ();
   ~Circle ();
-  void buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float, float, float);
-  bool buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float, float, float);
+  void buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v);
+  bool buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v);
   void endObject ();
-  bool doubleClick (QMouseEvent::ButtonState  button, QMouseEvent::ButtonState state, float, float, float);
-  bool hasPoint (float, float, float);
-  void removePoint (float, float, float);
+  bool doubleClick (QMouseEvent::ButtonState  button, QMouseEvent::ButtonState state, const Vec3f& v);
+  bool hasPoint (const Vec3f& v);
+  void removePoint (const Vec3f& v);
   void display ();
   void drawPoints ();
-  void mouseMove (QMouseEvent::ButtonState state, float x, float y, float z);
+  void mouseMove (QMouseEvent::ButtonState state, const Vec3f& v);
   void evaluate (std::vector<Vec3f>& res);
   void evaluateTimeline (std::vector<float>& time);
   void evaluateNormals (std::vector<Vec3f>& normals);
@@ -41,19 +41,19 @@ Circle::Circle ()
 }
 
 void
-Circle::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float x, float y, float z)
+Circle::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v)
 {
-  center = radius = Vec3f(x, y, z);
+  center = radius = v;
   drawing = true;
   std::cout << PLUGIN_NAME" : setting center to " << center << std::endl;
 }
 
 bool
-Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float x, float y, float z)
+Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
-    radius = Vec3f (x, y, z);
+    radius = v;
     r = (radius - center).length ();
     std::cout << PLUGIN_NAME" : setting radius control point to " << radius 
 	      << std::endl;
@@ -62,7 +62,7 @@ Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState stat
     break;
     
   case QMouseEvent::RightButton:
-    removePoint (x, y, z);
+    removePoint (v);
   default:
     std::cout << "blabla" << std::endl;
   }
@@ -72,7 +72,7 @@ Circle::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState stat
 
 
 bool
-Circle::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float x, float y, float z)
+Circle::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
@@ -82,10 +82,10 @@ Circle::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState s
 }
 
 void
-Circle::mouseMove (QMouseEvent::ButtonState state, float x, float y, float z)
+Circle::mouseMove (QMouseEvent::ButtonState state, const Vec3f& v)
 {
   if (drawing)
-    radius = Vec3f (x, y,z);
+    radius = v;
 }
 
 
@@ -96,22 +96,22 @@ Circle::endObject ()
 
 
 bool
-Circle::hasPoint (float x, float y, float z)
+Circle::hasPoint (const Vec3f& v)
 {
   float epsilon = std::numeric_limits<typeof(center.x)>::epsilon();
   
-  if (std::abs(center.x-x) < epsilon && 
-      std::abs(center.y-y) < epsilon)
+  if (std::abs(center.x-v.x) < epsilon && 
+      std::abs(center.y-v.y) < epsilon)
     return true;
-  if (std::abs(radius.x-x) < epsilon && 
-      std::abs(radius.y-y) < epsilon)
+  if (std::abs(radius.x-v.x) < epsilon && 
+      std::abs(radius.y-v.y) < epsilon)
     return true;
   return false;
 }
 
 
 void
-Circle::removePoint (float x, float y, float z)
+Circle::removePoint (const Vec3f& v)
 {
 }
 

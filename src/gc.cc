@@ -1,10 +1,5 @@
 #include "gc.h"
 #include "view3d.h"
-/*GeneralizedCylinder::GeneralizedCylinder () {
-}
-
-GeneralizedCylinder::~GeneralizedCylinder () {
-}*/
 
 void
 GeneralizedCylinder::addPath (PluginObject *o) 
@@ -82,32 +77,22 @@ interpolatepath (const std::vector<Vec3f>& path, float y)
 		0); 
 }
 
-#if 0
-Vec3f
-getNormalizedProfile (const std::vector<Vec3f>& vprofile, int y) 
-{
-  float miny = std::numeric_limits<float>::max() ;
-  float maxy = std::numeric_limits<float>::min() ;
-
-  for (unsigned int i = 0; i < vprofile.size (); i++) {
-    if (vprofile[i].y < miny)
-      miny = vprofile[i].y;
-    if (maxy < vprofile[i].y)
-      maxy = vprofile[i].y;
-  }
-
-  return Vec3f (vprofile[y].x, (vprofile[y].y-miny)/(maxy-miny), vprofile[y].z);
-}
-
-#endif
-
 void
-GeneralizedCylinder::display () 
+genTangentes (const std::vector<Vec3f>& normals, std::vector<Vec3f>& tangentes)
 {
-  std::vector<std::vector<Vec3f> > object;
-  std::vector<std::vector<Vec3f> > normals;
-
+  std::vector<Vec3f>::const_iterator i;
+  std::vector<Vec3f>::const_iterator end=normals.end();
+  const Vec3f z(0, 0, 1);
+  for (i=normals.begin(); i!=end; ++i)
+    tangentes.push_back ((*i).cross(z));    
+}
+void
+GeneralizedCylinder::compute (std::vector<Face>& v)
+{
+  v.clear ();
   std::vector<Vec3f> vpath;
+  std::vector<Vec3f> vnormalpath;
+  std::vector<Vec3f> vtangentpath;
   std::vector<Vec3f> vprofile;
   std::vector<float> vtimeprofile;
   std::vector<Vec3f> vsection;
@@ -132,21 +117,20 @@ GeneralizedCylinder::display ()
 
   std::cout << "GCSTART" << std::endl;
 
-  for (; ipath != iendpath; ++ipath) {
-    (*ipath)->evaluate (vpath);
-  }
-  for (; iprofile != iendprofile; ++iprofile) {
-    (*iprofile)->evaluate (vprofile);
-    (*iprofile)->evaluateTimeline (vtimeprofile);
-  }
-  for (; isection != iendsection; ++isection) {
-    (*isection)->evaluate (vsection);
-    (*isection)->evaluateNormals (vnormalsection);
-  }
+  (*ipath)->evaluate (vpath);
+  (*ipath)->evaluateNormals (vnormalpath);
 
-  std::cout << "path size = " << vpath.size () << ", section size = " << vsection.size () << "normals size = " << vnormalsection.size () << std::endl;
+  (*iprofile)->evaluate (vprofile);
+  (*iprofile)->evaluateTimeline (vtimeprofile);
 
+  (*isection)->evaluate (vsection);
+  (*isection)->evaluateNormals (vnormalsection);
+
+  std::cout << "path size = " << vpath.size () << ", section size = " << vsection.size () << "normals size = " << 
+    vnormalsection.size () << std::endl;
+  
   for (unsigned int i = 0; i < vprofile.size () - 1; i++) {
+    genTangentes(vnormalpath, vtangentpath);
     Vec3f y = vprofile[i];
     y.y = vtimeprofile[i];
     Vec3f y2 = vprofile[i+1];
@@ -154,12 +138,9 @@ GeneralizedCylinder::display ()
     
     float scale1 = y.x;
     float scale2 = y2.x;
-    std::cout << "timeprofile = " << y.y << ", " << y2.y << std::endl;
-    Vec3f pathrel1 = interpolatepath (vpath, y.y);
-    Vec3f pathrel2 = interpolatepath (vpath, y2.y);
-
-    Vec3f normale1 = interpolatepath (vnormalsection, y.y);
-    Vec3f normale2 = interpolatepath (vnormalsection, y2.y);
+    
+    Vec3f normale1 = interpolatepath (vnormalpath, y.y);
+    Vec3f normale2 = interpolatepath (vnormalpath, y2.y);
 
     
     float cos1 = Vec3f (1, 0, 0) * normale1;
@@ -174,57 +155,70 @@ GeneralizedCylinder::display ()
       a2 = acos (cos2);
     else
       a2 = -acos (cos2);
-    
-    std::cout << "scale1 = " << scale1 << ", scale2 = " << scale2 << std::endl;
-    std::cout << "rotate1 = " << a1 << ", rotate2 = " << a2 << std::endl;
+
+    std::cout << "timeprofile = " << y.y << ", " << y2.y << std::endl;
+    Vec3f pathrel1 = interpolatepath (vpath, y.y);
+    Vec3f pathrel2 = interpolatepath (vpath, y2.y);
+    pathrel1.z= 0;
+    pathrel2.z= 0;
+    std::cout << "pathrel1 = " << pathrel1 << std::endl;
+    std::cout << "pathrel2 = " << pathrel2 << std::endl;
     for (unsigned int j = 0; j < vsection.size () - 1; j++) {
-      std::vector<Vec3f> face;
-      std::vector<Vec3f> normal;
-      face.push_back (Vec3f (pathrel1.x + vsection[j].x * scale1, 
-			     pathrel1.y, 
-			     vsection[j].y * scale1));
-      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
-			 vnormalsection[j].z));
-      face.push_back (Vec3f (pathrel2.x + vsection[j].x * scale2, 
-			     pathrel2.y, 
-			     vsection[j].y * scale2));
-      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
-			vnormalsection[j].z));
+      Face face;
+      face.clear();
+      Point p(Vec3f (vsection[j].x*scale1,
+		     0,
+		     vsection[j].y*scale1));
+      p+=pathrel1;
+      p.setNormal(vnormalsection[j]);
+      p.setColor(Vec3f(1,0,0));
+      face.push_back (p);
 
-      face.push_back (Vec3f (pathrel2.x + vsection[j+1].x * scale2, 
-			     pathrel2.y, 
-			     vsection[j+1].y * scale2));
-      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
-			vnormalsection[j+1].z));
+      p.setCoords(Vec3f(vsection[j].x * scale2,
+			0,
+			vsection[j].y * scale2));
+      p+=pathrel2;
+      p.setNormal(vnormalsection[j]);
+      p.setColor(Vec3f(0,1,0));
+      face.push_back (p);
 
-      object.push_back (face);
-      normals.push_back (normal);
+      p.setCoords(Vec3f(vsection[j+1].x * scale2,
+			0,
+			vsection[j+1].y * scale2));
+      p+=pathrel2;
+      p.setNormal (vnormalsection[j+1]);
+      p.setColor(Vec3f(0,0,1));
+      face.push_back(p);
+
+      v.push_back (face);
+
       face.clear ();
-      normal.clear ();
-      face.push_back (Vec3f (pathrel1.x +  vsection[j].x * scale1,
-			     pathrel1.y, 
-			     vsection[j].y * scale1));
 
-      normal.push_back (Vec3f(vnormalsection[j].x, vnormalsection[j].y,
-			vnormalsection[j].z));
+      p.setCoords(Vec3f(vsection[j].x * scale1, 
+			0,
+			vsection[j].y * scale1));
+      p+=pathrel1;
+      p.setNormal(vnormalsection[j]);
+      p.setColor(Vec3f(1,1,0));
+      face.push_back(p);
 
+      p.setCoords(Vec3f (vsection[j+1].x * scale2,
+			 0,
+			 vsection[j+1].y * scale2));
+      p+=pathrel2;
+      p.setNormal(vnormalsection[j+1]);
+      p.setColor(Vec3f(1,0,1));
+      face.push_back(p);
 
-      face.push_back (Vec3f (pathrel1.x + vsection[j+1].x * scale1,
-			     pathrel1.y,
-			     vsection[j+1].y * scale1));
-      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
-			vnormalsection[j+1].z));
+      p.setCoords(Vec3f(vsection[j+1].x * scale1,
+			0,
+			vsection[j+1].y * scale1));
+      p+=pathrel1;
+      p.setNormal(vnormalsection[j+1]);
+      p.setColor(Vec3f(0,1,1));
+      face.push_back(p);
 
-
-      face.push_back (Vec3f (pathrel2.x + vsection[j+1].x * scale2,
-			     pathrel2.y,
-			     vsection[j+1].y * scale2));
-      normal.push_back (Vec3f(vnormalsection[j+1].x, vnormalsection[j+1].y,
-			vnormalsection[j+1].z));
-      object.push_back (face);
-      normals.push_back (normal);
+      v.push_back(face);
     }
   }
-  std::cout << "END" << std::endl;
-  View3DRotation::drawPolygons (object, normals);
 }

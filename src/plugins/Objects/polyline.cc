@@ -24,11 +24,11 @@ PolyLine::PolyLine (const std::string& name, const std::string& menu,
 }
 
 void
-PolyLine::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float x, float y, float z)
+PolyLine::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, const Vec3f& v)
 {
   switch (button) {
   case QMouseEvent::MidButton:
-    selected = getPoint (x, y, z);    
+    selected = getPoint (v);
     if (selected)
       std::cout << PLUGIN_NAME " : dragging point " << *selected << std::endl;
     break;
@@ -38,21 +38,19 @@ PolyLine::buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState 
 }
 
 bool
-PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z)
+PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,const Vec3f& v)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
     std::cout << (int)(state & QMouseEvent::ShiftButton) << std::endl;
     if (!(int)(state & QMouseEvent::ShiftButton)) {
-      std::cout << PLUGIN_NAME " : adding point "<< x << " " << y << ", " 
-		<< z << std::endl;
+      std::cout << PLUGIN_NAME " : adding point "<< v << std::endl;
       if (!should_close)
-	pts.push_back (new Vec3f(x,y,z));
+	pts.push_back (new Vec3f(v));
       else
 	pts.push_back (new Vec3f(**pts.begin()));
     } else {
-      std::cout << PLUGIN_NAME << " : inserting point" << x << ", " << y
-		<< ", "	<< z << std::endl;
+      std::cout << PLUGIN_NAME << " : inserting point" << v << std::endl;
       std::list<Vec3f *>::iterator i;
       std::list<Vec3f *>::iterator end = pts.end ();
       std::list<Vec3f *>::iterator nearest = end;
@@ -77,21 +75,20 @@ PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState st
 	}
       }
       if (nearest != end)
-	pts.insert (++nearest, new Vec3f (x, y ,z));
+	pts.insert (++nearest, new Vec3f (v));
     }
     break;
   case QMouseEvent::MidButton:
     if (selected) {
-      std::cout << PLUGIN_NAME " : dropping point to " << x << ", " << y
-		<< ", " << z << std::endl;
-      selected->setValues (x, y, z);
+      std::cout << PLUGIN_NAME " : dropping point to " << v << std::endl;
+      selected->setValues (v.x, v.y, v.z);
       selected = 0;
     }
 
     break;
   case QMouseEvent::RightButton:
-    std::cout << PLUGIN_NAME "try to remove " << x << ", " << y << ", " << z << std::endl;
-    removePoint (x, y, z);
+    std::cout << PLUGIN_NAME "try to remove " << v << std::endl;
+    removePoint (v);
   default:
     break;
   }
@@ -100,17 +97,17 @@ PolyLine::buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState st
 }
 
 void
-PolyLine::mouseMove (QMouseEvent::ButtonState state,float x, float y, float z) 
+PolyLine::mouseMove (QMouseEvent::ButtonState state,const Vec3f& v) 
 {
   std::list<Vec3f *>::iterator i;
   std::list<Vec3f *>::iterator end = pts.end ();
   if (selected)
-    selected->setValues (x, y, z);
-  cursor.setValues (x, y, z);
+    selected->setValues (v.x, v.y, v.z);
+  cursor.setValues (v.x, v.y, v.z);
 }
 
 bool
-PolyLine::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float x, float y, float z)
+PolyLine::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,const Vec3f& v)
 {
   switch (button) {
   case QMouseEvent::LeftButton:
@@ -129,16 +126,16 @@ PolyLine::endObject ()
 
 
 bool
-PolyLine::hasPoint (float x, float y, float z)
+PolyLine::hasPoint (const Vec3f& v)
 {
-  if (getPoint (x, y, z))
+  if (getPoint (v))
     return true;
   return false;
 }
 
 Vec3f *
-PolyLine::getPoint (float x, float y, float z) {
-  std::list<Vec3f *>::iterator i = getPointIterator (x, y, z);
+PolyLine::getPoint (const Vec3f& v) {
+  std::list<Vec3f *>::iterator i = getPointIterator (v);
   if (i == pts.end ())
     return NULL;
   return *i;
@@ -146,7 +143,7 @@ PolyLine::getPoint (float x, float y, float z) {
 
 
 std::list<Vec3f *>::iterator
-PolyLine::getPointIterator (float x, float y, float z)
+PolyLine::getPointIterator (const Vec3f& v)
 {
   float mindist = std::numeric_limits<float>::max();
   std::list<Vec3f *>::iterator i;
@@ -155,7 +152,7 @@ PolyLine::getPointIterator (float x, float y, float z)
   //  float epsilon = std::numeric_limits<typeof((*i)->x)>::epsilon();
   
   for (i=pts.begin(); i!=end; ++i) {
-    float dist = hypot ((*i)->x-x, (*i)->y-y);
+    float dist = hypot ((*i)->x-v.x, (*i)->y-v.y);
     if (dist < mindist) {
       mindist = dist;
       min = i;
@@ -170,12 +167,11 @@ PolyLine::getPointIterator (float x, float y, float z)
 
 
 void
-PolyLine::removePoint (float x, float y, float z)
+PolyLine::removePoint (const Vec3f& v)
 {
-  Vec3f tmp=Vec3f(x, y, z);
-  std::list<Vec3f *>::iterator i = getPointIterator (x, y, z);
+  std::list<Vec3f *>::iterator i = getPointIterator (v);
   if (i != pts.end ()) {
-    std::cout << PLUGIN_NAME " : removing " << tmp << std::endl;
+    std::cout << PLUGIN_NAME " : removing " << v << std::endl;
     pts.erase (i);
   }
 }
@@ -326,10 +322,10 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
   std::list<Vec3f *>::iterator end = pts.end ();
 
   normals.clear ();
+  if (pts.size()<2)
+    return;
 
   i = pts.begin ();
-  if (i == end)
-    return;
 
   while (i != end) {
     std::list<Vec3f *>::iterator first = i++;

@@ -21,11 +21,11 @@ main (int argc, char *argv[])
     }  
 
   mainWindow = new MainWindow ();
-  mainWindow->resize (120, 300);
-  mainWindow->move (10, 10);
+  /*  mainWindow->resize (120, 300);
+      mainWindow->move (10, 10);*/
   application.setMainWidget (mainWindow);
 
-  mainWindow->show ();
+  //  mainWindow->show ();
 
   return application.exec ();
 }

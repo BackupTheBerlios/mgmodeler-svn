@@ -1,76 +1,28 @@
 #ifndef VIEW3D_H
 #define VIEW3D_H
 
-#include <qmainwindow.h>
 #include <qworkspace.h>
-#include <qstatusbar.h>
-#include "plugin.h"
-#include "view3d.h"
-#include "math/vector3.h"
+#include "view.h"
 
-class OpenglWidget;
-class Trackball;
-
-
-typedef enum {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY} eView;
-
-class View3D : public QMainWindow 
+class View3D : public View
 {
 public:
-  enum eMode{
-    MODE_EDIT,
-    MODE_SELECTION
-  };
-
-  View3D (QWorkspace *parent, std::string name);
-  View3D (QWorkspace *parent, eView view);
-
-  virtual void setupView ();
-  virtual void updateStatusBar (float x, float y);
-
-  virtual void parseMousePress (QMouseEvent *e);
-  virtual void parseMouseRelease (QMouseEvent *e);
-  virtual void parseMouseMove (QMouseEvent *e);
-  virtual void parseMouseDoubleClick (QMouseEvent *e);
-  void setCurrentPlugin (PluginObject *p);
-  const std::vector<PluginObject *>& getPlugins();
-
-  PluginObject *getActivePlugin () { return m_plugin_active; }
-
-  void setMode (eMode mode) {m_mode = mode;}
-
-public:
-
-  static PluginObject *s_plugin_current;
-  PluginObject *m_plugin_active;
-  eView m_view;
-  OpenglWidget *m_glwidget;
-
-  int m_cursor_x, m_cursor_y;
-  eMode m_mode;
-  bool m_editable;
-  std::vector<PluginObject *> m_plugins;
-};
-
-
-class View3DRotation : public View3D {
-public:
-  View3DRotation (QWorkspace *parent);
+  View3D (QWorkspace *parent, const std::string& name = "View3D");
 
   void setupView ();
-  void updateStatusBar (float x, float y);
-
+  void updateStatusBar (const std::string& s);
 
   void parseMousePress (QMouseEvent *e);
   void parseMouseRelease (QMouseEvent *e);
   void parseMouseMove (QMouseEvent *e);
+  void parseMouseDoubleClick (QMouseEvent *e);
+  
+  void setCurrentPlugin (PluginIO *p);
+  PluginIO *getCurrentPlugin () { return current; }
 
-  static void drawPolygons (const std::vector< std::vector<Vec3f> >&,
-			    const std::vector< std::vector<Vec3f> >&);
-  static void drawPolygons (const std::vector<Vec3f>&, 
-			    const std::vector< std::vector<int> >&);
-
- public:
+  void redisplay ();
+  /* FIXME */
+public:
   PluginIO *current;
 };
 

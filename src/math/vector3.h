@@ -34,10 +34,6 @@ public:
     x = v[0]; y = v[1]; z = v[2];
   }
 
-  T maxValue() {
-    return std::max(std::max(x, y), z);
-  }
-
   T& operator[](unsigned int i) {
     assert(i<3);
     return *(&x+i);

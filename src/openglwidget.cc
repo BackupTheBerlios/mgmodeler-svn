@@ -5,13 +5,11 @@
 #include <qgl.h>
 #include <iostream>
 
-extern GeneralizedCylinder gc;
-
 OpenglWidget::OpenglWidget (QWidget *parent, const char *name, 
 			    bool ortho, bool trackball)
   :QGLWidget (parent, name), m_trackball_zoom (TRACKBALL_ZOOM_DEF)
 {
-  m_parent = parent;
+  m_parent = static_cast<View *>(parent);
   m_orthoview = ortho;
   m_update_projection = true;
   setMouseTracking (true);
@@ -21,7 +19,8 @@ OpenglWidget::OpenglWidget (QWidget *parent, const char *name,
       m_trackball = new Trackball (100, 100);
       m_trackball_zoom = TRACKBALL_ZOOM_DEF;
       m_update_modelview = true;
-    }
+    } else 
+      m_trackball = 0;
 }
 
 void 
@@ -57,41 +56,16 @@ OpenglWidget::resizeGL (int w, int h)
 void 
 OpenglWidget::paintGL ()
 {
-  View3D *v = static_cast<View3D *>(m_parent);
-  std::vector<PluginObject *> plugins = v->getPlugins ();
-  std::vector<PluginObject *>::iterator i;
-  std::vector<PluginObject *>::iterator end=plugins.end();
-
   SyncContext ();  
   clearGL ();
-  for (i = plugins.begin (); i!=end; ++i)
-    (*i)->display ();
-
-  View3D *parent = (View3D *)m_parent;
-
-  if (parent) {
-    if (parent-> getActivePlugin ()) {
-      parent-> getActivePlugin ()-> display ();
-    } else {
-      if (!parent->m_editable) {
-	View3DRotation * rotation = dynamic_cast<View3DRotation *>(m_parent);
-	if (rotation->current) {
-	  rotation->drawPolygons(rotation->current->getPoints(),
-				 rotation->current->getFaces());
-	} else 
-	  gc.display ();
-      }
-    }
-  }
-  
+  m_parent->redisplay (); 
   swapBuffers ();
 }
 
 
 void
 OpenglWidget::mousePressEvent (QMouseEvent *e) {
-  View3D *parent = (View3D *)m_parent;
-  parent-> parseMousePress (e);
+  m_parent-> parseMousePress (e);
 
   switch (e->button ()) {
   case QMouseEvent::LeftButton:
@@ -104,22 +78,19 @@ OpenglWidget::mousePressEvent (QMouseEvent *e) {
   default:
     break;
   }
-
   updateGL ();
 }
 
 void
 OpenglWidget::mouseDoubleClickEvent (QMouseEvent *e)
 {
-  View3D *parent = (View3D *)m_parent;
-  parent-> parseMouseDoubleClick (e);
+  m_parent->parseMouseDoubleClick (e);
   updateGL ();
 }
 
 void
 OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
-  View3D *parent = (View3D *)m_parent;
-  parent-> parseMouseRelease (e);
+  m_parent->parseMouseRelease (e);
 
   switch (e->button ()) {
   case QMouseEvent::LeftButton:
@@ -140,8 +111,7 @@ OpenglWidget::mouseReleaseEvent (QMouseEvent *e) {
 
 void
 OpenglWidget::mouseMoveEvent (QMouseEvent *e) {
-  View3D *parent = (View3D *)m_parent;
-  parent-> parseMouseMove (e);
+  m_parent-> parseMouseMove (e);
   
   if (e-> state ()&QMouseEvent::LeftButton)
     if (m_trackball_enable)
@@ -201,4 +171,172 @@ OpenglWidget::SyncContext ()
 	glMultMatrixf ((float *)modelview[0]);
 	glScalef (m_trackball_zoom, m_trackball_zoom, m_trackball_zoom);
       }
+}
+
+void
+OpenglWidget::unProject (const Vec3f& i, Vec3f& o)
+{
+  double mv[16];
+  double pj[16];
+  int vp[16];
+  double x, y, z;
+
+  glGetDoublev (GL_MODELVIEW_MATRIX, mv);
+  glGetDoublev (GL_PROJECTION_MATRIX, pj);
+  glGetIntegerv (GL_VIEWPORT, vp);
+  
+  gluUnProject (i.x, i.y, 0,
+              mv, pj, vp,
+              &x, &y, &z);
+  o.x = x;
+  /* FIXME */
+  o.y = -y;
+  o.z = z;
+}
+
+void 
+OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
+			    const std::vector<std::vector<int> >& faces)
+{
+  std::vector<std::vector<int> >::const_iterator i;
+  std::vector<int>::const_iterator j;
+
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);
+
+  int current = 0;
+  for (i=faces.begin (); i!= faces.end (); i++, current++)
+    {
+      glBegin (GL_POLYGON);
+      switch (current % 3) {
+      case 0:
+	glColor3f (1.f, 0.f, 0.f);
+	break;
+      case 1:
+	glColor3f (0.f, 1.f, 0.f);
+	break;
+      case 2:
+	glColor3f (0.f, 0.f, 1.f);
+	break;
+      }
+      for (j = (*i).begin (); j!=(*i).end (); j++)
+	{
+	  glVertex3f (points[(*j)].x, points[(*j)].y, points[(*j)].z);
+	  
+	}
+      glEnd ();
+    }
+}
+
+void 
+OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
+			      const std::vector<std::vector<Vec3f> >& normals)
+{
+  std::vector<std::vector<Vec3f> >::const_iterator pi;
+  std::vector<std::vector<Vec3f> >::const_iterator ni;
+  std::cout << "faces.size == " << faces.size() <<std::endl;
+  std::cout << "normals.size == " << normals.size() <<std::endl;
+  assert(faces.size()==normals.size());
+  std::vector<Vec3f>::const_iterator pj;
+  std::vector<Vec3f>::const_iterator nj;
+  //  std::cout << "Drawing polygons ";
+  glPushMatrix ();
+  glLoadIdentity();
+  GLfloat position[] = {1., 1., 10., 1.};
+  glLightfv(GL_LIGHT0, GL_POSITION, position);
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);
+  glShadeModel (GL_SMOOTH);
+  glPopMatrix ();
+  int current = 0;
+  for (pi=faces.begin (),
+	 ni=normals.begin(); 
+       pi!= faces.end (); ++pi, ++ni, current++)
+    {
+      //  std::cout << "!";
+      glBegin (GL_POLYGON);
+      /*      switch (current % 3) {
+      case 0:
+	glColor3f (1.f, 0.f, 0.f);
+	break;
+      case 1:
+	glColor3f (0.f, 1.f, 0.f);
+	break;
+      case 2:
+	glColor3f (0.f, 0.f, 1.f);
+	break;
+	}*/
+      glColor3f( 1,1,1);
+      assert((*pi).size() == (*ni).size());
+      for (pj = (*pi).begin (),
+	     nj = (*ni).begin(); pj!=(*pi).end (); ++pj, ++nj)
+	{
+	  glNormal3f ((*nj).x, (*nj).y, (*nj).z);
+	  glVertex3f ((*pj).x, (*pj).y, (*pj).z);
+	  
+	  
+	}
+      glEnd ();
+    }
+ 
+}
+
+void 
+OpenglWidget::drawPolygons (const std::vector<Face>& faces)
+{
+  std::vector<Face>::const_iterator i;
+  std::vector<Face>::const_iterator iend=faces.end();
+  std::vector<Point>::const_iterator j;
+  std::vector<Point>::const_iterator jend;
+
+  /*GLfloat position[] = {1., 1., 10., 1.};
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);
+  glShadeModel (GL_SMOOTH);
+
+  glEnable(GL_LIGHTING); 
+  glEnable(GL_LIGHT0);*/
+  glPushAttrib(~0);
+  glDisable(GL_LIGHTING); 
+  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+  /*  glEnable(GL_POLYGON_OFFSET_LINE); 
+      glPolygonOffset(m_PolygonOffset,-1.0f);*/
+
+  for (i=faces.begin ();i!= iend; ++i)
+    {
+      glBegin (GL_POLYGON);
+      std::cout << "F";
+      for (j=i->begin(), jend=i->end(); j!=jend; ++j) {
+	std::cout << ".";
+	const Point p=(*j);
+	Vec3f coords=p.getCoords();
+	Vec3f normal=p.getNormal();
+	Vec3f color=p.getColor();
+	coords[2]=-coords[2];
+	glColor3fv(&color[0]);
+	glNormal3fv(&normal[0]);
+	glVertex3fv(&coords[0]);
+      }
+      glEnd ();
+      std::cout << "E";
+    }
+  std::cout << std::endl;
+
+  glBegin (GL_LINES);
+  for (i=faces.begin(); i!=iend; ++i) {
+    for (j=(*i).begin(), jend=(*i).end(); j!=jend; ++j) {
+      Point p=(*j);
+      Vec3f coords=p.getCoords();
+      Vec3f pointTo=coords+p.getNormal()/10;
+      Vec3f white(1, 1, 1);
+      Vec3f blue(0, 0, 1);
+      glColor3fv(&white[0]);
+      glVertex3fv(&coords[0]);
+      glColor3fv(&blue[0]);
+      glVertex3fv(&pointTo[0]);
+    }
+  }
+  glEnd ();
+  glPopAttrib();
 }

@@ -3,6 +3,8 @@
 
 #include <list>
 #include "plugin.h"
+#include "math/vector3.h"
+#include "math/point.h"
 
 class GeneralizedCylinder {
  private:
@@ -13,7 +15,7 @@ class GeneralizedCylinder {
   void addPath (PluginObject *);
   void addProfile (PluginObject *);
   void addSection (PluginObject *);
-  void display ();
+  void compute (std::vector<Face>&);
   void removePath (PluginObject *);
   void removeSection (PluginObject *);
   void removeProfile (PluginObject *);

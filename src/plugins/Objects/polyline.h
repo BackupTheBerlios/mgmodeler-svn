@@ -12,15 +12,18 @@ public:
   PolyLine (const std::string& name, const std::string& menu,  
       const std::string& filename);
   ~PolyLine ();
-  void buttonDown (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state, float, float, float);
-  bool buttonUp (QMouseEvent::ButtonState button, QMouseEvent::ButtonState state,float, float, float);
+  void buttonDown (QMouseEvent::ButtonState button, 
+		   QMouseEvent::ButtonState state, const Vec3f& v);
+  bool buttonUp (QMouseEvent::ButtonState button, 
+		 QMouseEvent::ButtonState state, const Vec3f& v);
   void endObject ();
-  bool doubleClick (QMouseEvent::ButtonState  button, QMouseEvent::ButtonState state,float, float, float);
-  bool hasPoint (float, float, float);
-  Vec3f *getPoint (float x, float y, float z);
-  std::list<Vec3f *>::iterator getPointIterator (float x, float y, float z);
-  void mouseMove (QMouseEvent::ButtonState state, float x, float y, float z);
-  void removePoint (float, float, float);
+  bool doubleClick (QMouseEvent::ButtonState  button,
+		    QMouseEvent::ButtonState state, const Vec3f& v);
+  bool hasPoint (const Vec3f& v);
+  Vec3f *getPoint (const Vec3f& v);
+  std::list<Vec3f *>::iterator getPointIterator (const Vec3f& v);
+  void mouseMove (QMouseEvent::ButtonState state, const Vec3f& v);
+  void removePoint (const Vec3f& v);
   void display ();
   void drawPoints (std::list<Vec3f *>::iterator nearest);
   float distanceToSegment (const Vec3f& pt, const Vec3f& a, const Vec3f& b);
