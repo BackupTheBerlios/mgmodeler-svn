@@ -155,8 +155,10 @@ OpenglWidget::SyncContext ()
       glMatrixMode (GL_PROJECTION);
       glLoadIdentity ();
       
+      float ratio = (float)m_width / (float)m_height;
+
       if (m_orthoview)
-	gluOrtho2D (0, m_width, m_height, 0);
+	gluOrtho2D (-1.0, 1.0, -1.0/ratio, 1.0/ratio);
       else
 	gluPerspective (60.0, (double)m_width/(double)m_height, 0.1, 100.0);
       

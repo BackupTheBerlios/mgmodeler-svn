@@ -30,11 +30,13 @@ MainWindow::MainWindow ()
 {
   eView a[3] = {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY};
 
+
   for (int i=0; i<3; i++)
     {
       m_view2d[i] = new View3D (NULL, a[i%3]);
       m_view2d[i]-> resize (500, 400);
       m_view2d[i]-> updateStatusBar (0, 0);
+      m_view2d[i]-> move (150+(i%2)*520, 10 + (i/2) * 440);
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
     }
@@ -42,6 +44,7 @@ MainWindow::MainWindow ()
   m_view3d = new View3DRotation (NULL);
   m_view3d-> resize (500, 400);
   m_view3d-> show ();
+  m_view3d->move (670, 450);
   m_view3d->setupView ();
 
   createMenus ();
