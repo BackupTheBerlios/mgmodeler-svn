@@ -16,7 +16,12 @@
 
 PolyLine::PolyLine ()
   :PluginObject (PLUGIN_NAME, PLUGIN_MENU, PLUGIN_ICON)
-{
+{  
+}
+
+PolyLine::PolyLine (const std::string& name, const std::string& menu,  
+		    const std::string& filename) {
+  ::PluginObject (name, menu, filename);
 }
 
 void
