@@ -93,23 +93,22 @@ public:
     out.z = in.x*binormal.x + in.y*binormal.y + in.z*binormal.z;
   }
   
-  Vec3f changeReference (float where, Point& p) const {
+  Point changeReference (float where, const Point& p, Vec3f& translate) const {
     Vec3f normal(interpolate(normals, where));
     normal.normalize();
     const Vec3f tangent(normal.y, -normal.x, 0);
 
-    Vec3f res;
-    rotate (tangent, normal, p.getCoords(), res);
-    Vec3f pos = interpolate(path, where);
-    if (pos.z!=0.0) {
-      std::cout << "WARNING interpolate(path[where]) == " << pos.z << "\n";
-      pos.z=0;
+    Point res;
+    rotate (tangent, normal, p.getCoords(), res.getCoords());
+    translate = interpolate(path, where);
+    if (translate.z!=0.0) {
+      std::cout << "WARNING interpolate(path[where]) == " << translate.z << "\n";
+      translate.z=0;
     }
 
-    p.setCoords(res);
-    rotate (tangent, normal, p.getNormal(), res);
-    p.setNormal (res);
-    return pos;
+    rotate (tangent, normal, p.getNormal(), res.getNormal());
+
+    return res;
   }
   friend class WholePath;
 private:  
@@ -147,8 +146,24 @@ public:
       std::cout << "[" << j->min << ", " << j->max << "]\n";
     }
   }
-  Vec3f changeReference (float where, Point& p) const {
-    return Vec3f(0,0,0);
+  int changeReference (float where, Point& p, Vec3f& translate) const {
+    if (where<0.0f) {
+      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+      where = 0.0f;
+    }
+    if (where>1.0f) {
+      std::cout << __PRETTY_FUNCTION__ << " / WARNING: y = " << where << std::endl;
+      where = 1.0f;
+    }
+    
+    for (unsigned int i=0; i<bounds.size (); i++) {
+      if (where >= bounds[i].min && where<= bounds[i].max) {
+	p=paths[i].changeReference ((where-bounds[i].min)/
+				      (bounds[i].max-bounds[i].min), p, translate);
+	return i;
+      }
+    }
+    throw "no matching part\n";
   }
   
 private:
@@ -199,7 +214,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
 
   (*isection)->evaluate (vsection);
   (*isection)->evaluateNormals (vnormalsection);
-
+  int last = 0;
   for (unsigned int i = 0; i < vprofile.size () - 1; i++) {
     float scale1 = vprofile[i].x;
     float scale2 = vprofile[i+1].x;
@@ -219,8 +234,8 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f (vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      Vec3f pos=vpath[0].changeReference (vtimeprofile[i], p);
-      std::cout << "p'" << p.getCoords() << ")\n" ;
+      Vec3f pos;
+      last=wpath.changeReference (vtimeprofile[i], p, pos);
       p*=scale1;
       p+=pos;
       face.push_back (p);
@@ -228,7 +243,8 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      pos=vpath[0].changeReference (vtimeprofile[i+1], p);
+      if (last!=wpath.changeReference (vtimeprofile[i+1], p, pos))
+	continue;
       p*=scale2;
       p+=pos;
       face.push_back (p);
@@ -236,7 +252,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal (n2);
       p.setColor(n2);
-      pos=vpath[0].changeReference (vtimeprofile[i+1], p);
+      last=wpath.changeReference (vtimeprofile[i+1], p, pos);
       p*=scale2;
       p+=pos;
       face.push_back(p);
@@ -247,7 +263,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f(vsection[j].x, 0, vsection[j].y));
       p.setNormal(n1);
       p.setColor(n1);
-      pos=vpath[0].changeReference (vtimeprofile[i], p);
+      last=wpath.changeReference (vtimeprofile[i], p, pos);
       p*=scale1;
       p+=pos;
       face.push_back(p);
@@ -255,7 +271,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f (vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal(n2);
       p.setColor(n2);
-      pos=vpath[0].changeReference(vtimeprofile[i+1], p);
+      last=wpath.changeReference (vtimeprofile[i+1], p, pos);
       p*=scale2;
       p+=pos;
       face.push_back(p);
@@ -263,7 +279,7 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
       p.setCoords(Vec3f(vsection[j+1].x, 0, vsection[j+1].y));
       p.setNormal(n2);
       p.setColor(n2);
-      pos=vpath[0].changeReference(vtimeprofile[i], p);
+      last=wpath.changeReference (vtimeprofile[i], p, pos);
       p*=scale1;
       p+=pos;
       face.push_back(p);
