@@ -33,11 +33,11 @@ public:
     for (i=faces.begin ();i!= faces.end (); ++i)
       {
 	fprintf(file, "       %f %f %f,\n", (*i)[0].getCoords ()[0], 
-		(*i)[0].getCoords ()[1], (*i)[0].getCoords ()[2]);
+		(*i)[0].getCoords ()[2], -(*i)[0].getCoords ()[1]);
 	fprintf(file, "       %f %f %f,\n", (*i)[1].getCoords ()[0], 
-		(*i)[1].getCoords ()[1], (*i)[1].getCoords ()[2]);
+		(*i)[1].getCoords ()[2], -(*i)[1].getCoords ()[1]);
 	fprintf(file, "       %f %f %f,\n", (*i)[2].getCoords ()[0], 
-		(*i)[2].getCoords ()[1], (*i)[2].getCoords ()[2]);
+		(*i)[2].getCoords ()[2], -(*i)[2].getCoords ()[1]);
 	k+=3;
       }
     fprintf (file, "        ]\n");

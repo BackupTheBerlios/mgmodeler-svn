@@ -29,8 +29,8 @@ nodist_MGModeler_SOURCES=mainwindow_moc.cc icons.cc
 
 mainwindow_moc.cc: mainwindow.h
 images_noprefix=exit.png fill.png help.png normals.png wireframe.png \
-        fileopen.png handbook.png light.png move.png tile.png \
-	snormals.png configure.png select.png
+        filenew.png fileopen.png handbook.png light.png move.png tile.png \
+	snormals.png configure.png select.png compute.png
 images=$(addprefix ../icons/, $(images_noprefix))
 
 icons.cc: ${images}
@@ -38,7 +38,7 @@ icons.cc: ${images}
 
 MGModeler_CXXFLAGS=@QT_CFLAGS@ @GL_CFLAGS@
 MGModeler_LDFLAGS=
-MGModeler_LDADD=@QT_LIBS@ @GL_LIBS@ -lqassistantclient
+MGModeler_LDADD=@QT_LIBS@ @GL_LIBS@
 
 mostlyclean-local:
 	@-rm -f *~ *_moc.cc subconfig.h subconfig.cc icons.h

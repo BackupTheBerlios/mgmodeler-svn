@@ -25,12 +25,18 @@ class GeneralizedCylinder {
   void addPath (PluginObject *);
   void addProfile (PluginObject *);
   void addSection (PluginObject *);
+  void compute ();
   void compute (std::vector<Face>&);
   void removePath (PluginObject *);
   void removeSection (PluginObject *);
   void removeProfile (PluginObject *);
   void cfgDialog ();
   void setResolution(Curve, int u);
+
+  std::vector<Face>& getFaces () {return m_faces;}
+
+ private:
+  std::vector<Face> m_faces;
 };
 
 #endif /* GC_H */

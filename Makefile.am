@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS=dist-bzip2
 ACLOCAL=@ACLOCAL@ -I m4
-SUBDIRS=src icons plugins wrl
+SUBDIRS=src icons plugins wrl help
 #plugins help icons
 
 mostlyclean-local:

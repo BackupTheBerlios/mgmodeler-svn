@@ -174,6 +174,12 @@ private:
 };
 
 void
+GeneralizedCylinder::compute ()
+{
+  compute (m_faces);
+}
+
+void
 GeneralizedCylinder::compute (std::vector<Face>& v)
 {
   v.clear ();
@@ -194,8 +200,12 @@ GeneralizedCylinder::compute (std::vector<Face>& v)
   std::list<PluginObject *>::iterator iendprofile = profile.end ();
   std::list<PluginObject *>::iterator iendsection = section.end ();
 
+  std::cout<< "GC COMPUTE\n";
+
   if (ipath == iendpath || iprofile == iendprofile || isection == iendsection)
     return;
+
+  v.clear ();
 
   std::cout << "GCSTART" << std::endl;
 

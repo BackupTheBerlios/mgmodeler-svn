@@ -38,7 +38,8 @@ private:
     void view3dRedisplay ();
   private slots:
     
-    void menuFileOpen ();
+    void menuFileNew ();
+  void menuFileOpen ();
   void menuFileSave ();
   void menuFileQuit ();
   void menuPluginChoice ();
@@ -52,6 +53,7 @@ private:
   void menuSwitchNormals ();
   void menuConfig ();
   void menuSelect ();
+  void menuCompute ();
   void windowsMenuActivated(int id);
 };
 

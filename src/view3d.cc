@@ -54,8 +54,10 @@ View3D::redisplay ()
     m_glwidget->drawPolygons (current->getPoints(),
 			      current->getFaces ());
   else {
-    gc.compute (f);
-    m_glwidget->drawPolygons (f);
+    f = gc.getFaces ();
+    //gc.compute (f);
+    if (f. size ())
+      m_glwidget->drawPolygons (f);
   }
 }
 

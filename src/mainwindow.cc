@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "plugin.h"
-#include <qassistantclient.h>
 #include <qaction.h>
 #include <qpopupmenu.h>
 #include <qmenubar.h>
@@ -84,6 +83,10 @@ MainWindow::createMenus ()
   menu_plugins-> insertItem ("&Objects", menu_pg_objects);
   menu_plugins-> insertItem ("&Import", menu_pg_import);
   menu_plugins-> insertItem ("&Export", menu_pg_export);
+
+  addTool (this, "New File", QPixmap::fromMimeSource ("filenew.png"), 
+	   QKeySequence ("Ctrl+N"), toolbar, menu_file, SLOT(menuFileNew()),
+	   NULL);
   
   addTool (this, "Open File", QPixmap::fromMimeSource ("fileopen.png"), 
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
@@ -189,6 +192,13 @@ MainWindow::createMenus ()
 
   toolbar->addSeparator(); 
 
+  addTool (this, "Compute Generalized Cylinder", 
+	   QPixmap::fromMimeSource ("compute.png"), 
+	   QKeySequence ("Ctrl-R"), toolbar, NULL, SLOT(menuCompute()),
+	   NULL);
+
+  toolbar->addSeparator(); 
+
   addTool (this, "Manual", QPixmap::fromMimeSource ("help.png"), 
 	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
 	   NULL);
@@ -201,6 +211,11 @@ void MainWindow::setViewsMode (View2D::eMode mode)
     {
       m_view2d[i]-> setMode (mode);
     }
+}
+
+void
+MainWindow::menuFileNew ()
+{
 }
 
 void
@@ -357,33 +372,27 @@ MainWindow::menuWindowMove ()
 void
 MainWindow::menuHelp ()
 {
-  QAssistantClient *helpclient = 
-    new QAssistantClient (QDir(DATADIR).absPath(), this );
-  
-  //system ("assistant -profile ../share/MGModeler/index.dcf&");
-  QString docsPath = QDir(DATADIR).absPath();
-  helpclient->showPage(QString("index.html"));//QString("index.html").arg(docsPath) );
+  char path[256];
+  sprintf (path, "cd %s && assistant assistant -profile index.dcf&", DATADIR);
+  system (path);
 }
 
 void
 MainWindow::menuLighting ()
 {
   m_view3d-> setLighting ();
-  m_view3d->redisplay ();
 }
 
 void
 MainWindow::menuFill ()
 {
   m_view3d-> setFillMode ();
-  m_view3d->redisplay ();
 }
 
 void
 MainWindow::menuWireframe ()
 {
   m_view3d-> setWireframe ();
-  m_view3d->redisplay ();
 }
 
 
@@ -391,14 +400,12 @@ void
 MainWindow::menuNormals ()
 {
   m_view3d-> toggleNormals ();
-  m_view3d->redisplay ();
 }
 
 void
 MainWindow::menuSwitchNormals ()
 {
   m_view3d-> switchNormals ();
-  m_view3d->redisplay ();
 }
 
 void
@@ -416,6 +423,13 @@ MainWindow::view3dRedisplay ()
 void
 MainWindow::menuSelect ()
 {
-  printf("SELECT\n");
   setViewsMode (View2D::MODE_SELECTION_OBJECT);
+}
+
+
+void
+MainWindow::menuCompute ()
+{
+  View::getGC ().compute ();
+  m_view3d->redisplay ();
 }

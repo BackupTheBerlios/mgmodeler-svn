@@ -20,6 +20,8 @@ public:
   virtual void parseMouseDoubleClick (QMouseEvent *e) = 0;
   virtual void redisplay () = 0;
 
+  static GeneralizedCylinder& getGC () {return gc;}
+  
   static GeneralizedCylinder gc;
 
 protected:
