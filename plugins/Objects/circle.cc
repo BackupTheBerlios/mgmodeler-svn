@@ -29,8 +29,8 @@ public:
 private:
   Vec3f center;
   Vec3f radius;
-  float r;
   bool drawing;
+  float r;
 };
 
 
@@ -78,6 +78,8 @@ Circle::doubleClick (QMouseEvent::ButtonState button, QMouseEvent::ButtonState s
   switch (button) {
   case QMouseEvent::LeftButton:
     return true;
+  default:
+    break;
   }
   return false;
 }
@@ -99,8 +101,8 @@ Circle::endObject ()
 bool
 Circle::hasPoint (const Vec3f& v)
 {
-  float epsilon = std::numeric_limits<typeof(center.x)>::epsilon();
-  
+  //  float epsilon = std::numeric_limits<typeof(center.x)>::epsilon();
+  float epsilon = 0.075;
   if (std::abs(center.x-v.x) < epsilon && 
       std::abs(center.y-v.y) < epsilon)
     return true;

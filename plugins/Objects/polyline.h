@@ -31,6 +31,10 @@ public:
   void evaluateTimeline (std::vector<float>& time) const;
   void evaluateNormals (std::vector<Vec3f>& time) const;
   void drawNormals () const;
+  void setResolution (int u) {
+    PluginObject::setResolution(u);
+    need_recompute = true;
+  }
  protected:
   std::list<Vec3f *> pts;
   Vec3f *selected;

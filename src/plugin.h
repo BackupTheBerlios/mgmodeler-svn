@@ -88,7 +88,7 @@ public:
   virtual void evaluateNormals (std::vector<Vec3f>& normals) const  = 0;
   virtual void evaluateTimeline (std::vector<float>& time) const = 0;
   virtual void drawNormals () const = 0;
-  void setResolution (int res) {
+  virtual void setResolution (int res) {
     assert (res>0);
     resolution = res;
   }
