@@ -52,28 +52,16 @@ OpenglWidget::resizeGL (int w, int h)
 void 
 OpenglWidget::paintGL ()
 {
+  View3D *v = static_cast<View3D *>(m_parent);
+  std::vector<PluginObject *> plugins = v->getPlugins ();
+  std::vector<PluginObject *>::iterator i;
+  std::vector<PluginObject *>::iterator end=plugins.end();
+
   SyncContext ();  
-
   clearGL ();
-  glBegin (GL_TRIANGLES);
+  for (i = plugins.begin (); i!=end; ++i)
+    (*i)->display ();
   
-  glColor3f (1.0, 0.0, 0.0);
-  glVertex3f (0.0, 0.0, 0.0);
-  glVertex3f (0.0, 2.0, 0.0);
-  glVertex3f (2.0, 0.0, 0.0);
-
-  glColor3f (0.0, 1.0, 0.0);
-  glVertex3f (0.0, 0.0, 0.0);
-  glVertex3f (0.0, 2.0, 0.0);
-  glVertex3f (0.0, 0.0, 2.0);
-
-  glColor3f (0.0, 0.0, 1.0);
-  glVertex3f (0.0, 0.0, 0.0);
-  glVertex3f (2.0, 0.0, 0.0);
-  glVertex3f (0.0, 0.0, 2.0);
-
-
-  glEnd ();
   swapBuffers ();
 }
 

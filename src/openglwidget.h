@@ -2,7 +2,6 @@
 #define OPENGLWIDGET_H
 
 #include <qgl.h>
-
 class Trackball;
 
 class OpenglWidget : public QGLWidget

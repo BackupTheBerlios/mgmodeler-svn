@@ -4,6 +4,8 @@
 #include <qmainwindow.h>
 #include <qworkspace.h>
 #include <qstatusbar.h>
+#include "plugin.h"
+#include "view3d.h"
 
 class OpenglWidget;
 class Trackball;
@@ -22,14 +24,21 @@ public:
 
   virtual void parseMousePress (QMouseEvent *e);
   virtual void parseMouseMove (QMouseEvent *e);
-
+  void setCurrentPlugin (PluginObject *p);
+  const std::vector<PluginObject *>& getPlugins();
+  enum mode {
+    EDIT_MODE,
+    OBJECT_MODE
+  };
 protected:
-
+  PluginObject *m_current;
   eView m_view;
   OpenglWidget *m_glwidget;
 
   int m_cursor_x, m_cursor_y;
+  mode m_mode;
   bool m_editable;
+  std::vector<PluginObject *> m_plugins;
 };
 
 

@@ -1,6 +1,7 @@
 #include "view3d.h"
 #include "openglwidget.h"
 #include "trackball.h"
+#include "plugin.h"
 
 #include <qgl.h>
 #include <qstring.h>
@@ -66,6 +67,8 @@ View3D::updateStatusBar (int x, int y)
 void
 View3D::parseMousePress (QMouseEvent *e)
 {
+  assert (m_current);
+  m_current->buttonDown (e->button(), e->x(), e->y (), 0);
 }
 
 void
@@ -80,6 +83,18 @@ View3D::parseMouseMove (QMouseEvent *e)
 
 }
 
+
+void
+View3D::setCurrentPlugin (PluginObject *p) 
+{
+  m_current = p;
+}
+
+const std::vector<PluginObject *>&
+View3D::getPlugins ()
+{
+  return m_plugins;
+}
 
 // View3DRotation
 
@@ -111,6 +126,7 @@ View3DRotation::updateStatusBar (int x, int y)
 void
 View3DRotation::parseMousePress (QMouseEvent *e)
 {
+  
 }
 
 void

@@ -39,6 +39,7 @@ MainWindow::MainWindow ()
       m_view2d[i]-> move (150+(i%2)*520, 10 + (i/2) * 440);
       m_view2d[i]-> show ();
       m_view2d[i]-> setupView ();
+      m_view2d[i]-> setCurrentPlugin (static_cast<PluginObject *>(PluginManager::getPlugin (0)->m_createinstance()));
     }
 
   m_view3d = new View3DRotation (NULL);

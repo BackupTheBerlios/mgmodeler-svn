@@ -35,13 +35,25 @@ PolyLine::PolyLine ()
 void
 PolyLine::buttonDown (QMouseEvent::ButtonState button, double x, double y, double z)
 {
+  std::cout << "buttonDown" << std::endl;
 }
 
 bool
 PolyLine::buttonUp (QMouseEvent::ButtonState button, double x, double y, double z)
 {
-  std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
-  pts.push_back (new Vec3d(x,y,z));
+  switch (button) {
+  case QMouseEvent::LeftButton:
+    std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
+    pts.push_back (new Vec3d(x,y,z));
+    return false;
+    break;
+    
+  case QMouseEvent::RightButton:
+    removePoint (x, y, z);
+  default:
+    std::cout << "blabla" << std::endl;
+  }
+
   return true;
 }
 
@@ -53,12 +65,10 @@ PolyLine::doubleClick (QMouseEvent::ButtonState button, double x, double y, doub
   case QMouseEvent::LeftButton:
     std::cout << "adding point "<< x << " " << y << " " << z << std::endl;
     pts.push_back (new Vec3d(x,y,z));
-    //    pts.push_back (new Vec3d(*pts[0]));
+    pts.push_back (new Vec3d(**(pts.begin())));
     endObject ();
     return true;
-  case QMouseEvent::RightButton:
-    removePoint (x, y, z);
-    }
+  }
   return false;
 }
 
