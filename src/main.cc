@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "plugin.h"
 #include <qapplication.h>
+#include <qstringlist.h>
 #include <iostream>
 
 int
@@ -12,7 +13,14 @@ main (int argc, char *argv[])
   
   try 
     {
-      PluginManager::loadPlugins ("plugins/bin");
+      QStringList spath;
+      spath+="../plugins/Objects/.libs";
+      spath+="plugins/Objects/.libs";
+      spath+="../plugins/IO/.libs";
+      spath+="plugins/IO/.libs";
+      spath+=QStringList::split (":", MODULES_DIR);
+      std::cout << "searching plugins from " << spath.join(", ") << std::endl;
+      PluginManager::loadPlugins (spath);
     }
   catch (std::runtime_error e)
     {

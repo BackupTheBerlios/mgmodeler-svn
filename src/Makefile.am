@@ -1,4 +1,5 @@
-DEFS="-DDATADIR=\"${pkgdatadir}\""
+DEFS="-DDATADIR=\"${pkgdatadir}\"" \
+  -DMODULES_DIR=\"@datadir@/@PACKAGE_NAME@-@VERSION@:@datadir@/@PACKAGE_NAME@\"
 INCLUDES=-I../$(top_srcdir)/
 
 EXTRA_DIST=subconfig.ui
@@ -37,7 +38,7 @@ icons.cc: ${images}
 
 MGModeler_CXXFLAGS=@QT_CFLAGS@ @GL_CFLAGS@
 MGModeler_LDFLAGS=
-MGModeler_LDADD=@QT_LIBS@ @GL_LIBS@
+MGModeler_LDADD=@QT_LIBS@ @GL_LIBS@ -lqassistantclient
 
 mostlyclean-local:
 	@-rm -f *~ *_moc.cc subconfig.h subconfig.cc icons.h

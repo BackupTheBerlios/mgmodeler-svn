@@ -7,7 +7,8 @@
 #include <iostream>
 #include<dlfcn.h>
 
-
+#include <qdir.h>
+#include <qstringlist.h>
 
 std::vector<Plugin *> PluginManager::s_plugins;
 std::vector<Plugin *> PluginManager::s_io_plugins;
@@ -46,24 +47,17 @@ PluginManager::loadPlugin (std::string filename)
 }
 
 void 
-PluginManager::loadPlugins (std::string basedir)
+PluginManager::loadPlugins (const QStringList& searchpath)
   throw (std::runtime_error)
 {
-  DIR *dir = opendir (basedir.c_str ());
-  struct dirent *sdir;
-
-  if (!dir)
-    throw std::runtime_error ("Error opening dir: "+basedir);
-  
-  
-  while (sdir = readdir (dir))
-    {
-      struct stat features;
-
-      if (!stat (sdir->d_name, &features) || 
-	  (S_ISREG (features.st_mode)))
-	continue;
-
-      loadPlugin (std::string("plugins/bin/")+std::string (sdir->d_name));
+  for (QStringList::ConstIterator it = searchpath.begin(); 
+       it != searchpath.end(); ++it) {
+    std::cout << "searching in "<< *it << std::endl;
+    QDir  dir(*it, "*.so");
+    QStringList plugs=dir.entryList();
+    for (QStringList::ConstIterator pit = plugs.begin(); pit != plugs.end(); ++pit) {
+      std::cout << " loading " << QDir(*it).absPath()+"/"+*pit << std::endl;
+      loadPlugin (QDir(*it).absPath()+"/"+*pit);
     }
+  }
 }

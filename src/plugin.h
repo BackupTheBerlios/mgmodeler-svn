@@ -1,13 +1,16 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
+#include "math/vector3.h"
+
 #include <vector>
 #include <string>
 #include <stdexcept>
 #include <exception>
 #include <qevent.h>
 #include <cassert>
-#include "math/vector3.h"
+
+#include <qstringlist.h>
 
 class Plugin;
 
@@ -102,7 +105,7 @@ public:
   static void loadPlugin (std::string filename)
     throw (std::runtime_error);
 
-  static void loadPlugins (std::string basedir)
+  static void loadPlugins (const QStringList& l)
     throw (std::runtime_error);
 
   static std::vector<Plugin *>::iterator begin () {return s_plugins.begin ();}
