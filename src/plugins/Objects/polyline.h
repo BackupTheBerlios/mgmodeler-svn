@@ -30,7 +30,7 @@ public:
   void evaluate (std::vector<Vec3f>& res);
   void evaluateTimeline (std::vector<float>& time);
   void evaluateNormals (std::vector<Vec3f>& time);
-  
+  void drawNormals ();
  protected:
   std::list<Vec3f *> pts;
   Vec3f *selected;

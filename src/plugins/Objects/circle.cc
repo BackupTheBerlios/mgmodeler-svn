@@ -25,6 +25,7 @@ public:
   void evaluate (std::vector<Vec3f>& res);
   void evaluateTimeline (std::vector<float>& time);
   void evaluateNormals (std::vector<Vec3f>& normals);
+  void drawNormals ();
 private:
   Vec3f center;
   Vec3f radius;
@@ -158,8 +159,8 @@ Circle::evaluate (std::vector<Vec3f>& res)
   double astep = M_PI/(resolution/2.);
   double a = 0;
   for (int i=0; i <= resolution; i++) {
-    res.push_back (Vec3f (/*center.x + */r * cos (a),
-			  /*center.y + */r * sin (a), 0));
+    res.push_back (Vec3f (center.x + r * cos (a),
+			  center.y + r * sin (a), 0));
     a += astep;
   }
 }
@@ -189,10 +190,36 @@ Circle::evaluateNormals (std::vector<Vec3f>& normals)
   double astep = M_PI/(resolution/2.);
   double a = 0;
   for (int i=0; i <= resolution; i++) {
-    Vec3f v(/*center.x + */r * cos (a), /*center.y + */r * sin (a), 0);
+    Vec3f v(/*center.x +*/ r * cos (a), /*center.y + */r * sin (a), 0);
     Vec3f n(cos(a), sin(a), 0);
     normals.push_back (n);
     a += astep;
   }
 }
+
+void
+Circle::drawNormals ()
+{
+  int c;
+  std::vector<Vec3f> pts;
+  evaluate(pts);
+  std::vector<Vec3f>::iterator i;
+  std::vector<Vec3f>::iterator end = pts.end ();
+  std::vector<Vec3f> normals;
+  evaluateNormals (normals);
+  if (normals.empty())
+    return;
+  glBegin (GL_LINES);
+  for (i=pts.begin(), c= 0 ; i!=end; ++i, c++) {
+    Vec3f white(1, 1, 1);
+    Vec3f blue(0, 0, 1);
+    Vec3f p=(*i);
+    glColor3fv(&white[0]);
+    glVertex3fv(&p[0]);
+    glColor3fv(&blue[0]);
+    glVertex3fv(&(p+normals[c]/10)[0]);
+  }
+  glEnd ();
+}
+
 DECLARE_PLUGIN (Circle);

@@ -206,6 +206,29 @@ PolyLine::drawPoints (std::list<Vec3f *>::iterator nearest)
 }
 
 void
+PolyLine::drawNormals ()
+{
+  int c;
+  std::list<Vec3f *>::iterator i;
+  std::list<Vec3f *>::iterator end = pts.end ();
+  std::vector<Vec3f> normals;
+  evaluateNormals (normals);
+  if (normals.empty())
+    return;
+  glBegin (GL_LINES);
+  for (i=pts.begin(), c= 0 ; i!=end; ++i, c++) {
+    Vec3f white(1, 1, 1);
+    Vec3f blue(0, 0, 1);
+    Vec3f p=*(*i);
+    glColor3fv(&white[0]);
+    glVertex3fv(&p[0]);
+    glColor3fv(&blue[0]);
+    glVertex3fv(&(p+normals[c]/10)[0]);
+  }
+  glEnd ();
+}
+
+void
 PolyLine::display ()
 {
   std::list<Vec3f *>::iterator i;
@@ -235,7 +258,6 @@ PolyLine::display ()
   glEnd ();
 
   drawPoints (nearest);
-
 }
 
 float
@@ -335,17 +357,19 @@ PolyLine::evaluateNormals (std::vector<Vec3f>& normals)
       float dy = ((*i)->y-(*first)->y);
       Vec3f v (dx, dy, 0);
       Vec3f n = v.cross (z);
-      n.normalize ();
       normals.push_back (n);
     }
   }
+
   Vec3f last (normals[0]);
-  for (int c=1; c<normals.size()-1; c++) {
+  for (int c=0; c<normals.size(); c++) {
     Vec3f tmp = last;
     last = normals[c];
     normals[c] = (normals[c]+tmp)/2;
+    normals[c].normalize();
   }
-  Vec3f nend(normals[normals.size() - 2]-normals[normals.size()-1]);
+
+  Vec3f nend(**(pts.rbegin())-**(++pts.rbegin()));
   nend[2]=0;
   Vec3f n = nend.cross (z);
   n.normalize ();

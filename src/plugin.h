@@ -84,6 +84,7 @@ public:
   virtual void evaluate (std::vector<Vec3f>& res) = 0;
   virtual void evaluateNormals (std::vector<Vec3f>& normals) = 0;
   virtual void evaluateTimeline (std::vector<float>& time) = 0;
+  virtual void drawNormals () = 0;
   void setResolution (int res) {
     assert (res>0);
     resolution = res;
@@ -114,7 +115,6 @@ public:
 
   static Plugin *getPlugin (int i) {return s_plugins[i];}
   static Plugin *getIOPlugin (int i) {return s_io_plugins[i];}
-
 private:
   static std::vector<Plugin *> s_plugins;
   static std::vector<Plugin *> s_io_plugins;

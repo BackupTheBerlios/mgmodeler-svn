@@ -163,8 +163,10 @@ View2D::redisplay ()
   for (i = m_plugins.begin (); i!=end; ++i)
     (*i)->display ();
 
-  if (m_plugin_active)
+  if (m_plugin_active) {
     m_plugin_active -> display ();
+    m_plugin_active -> drawNormals ();
+  }
 }
 
 void

@@ -36,7 +36,7 @@ public:
   void vertexCallBack (GLfloat *vtx, void *data);
   void normalCallBack (GLfloat *nml, void *data);
   void endCallBack (void *data);
-
+  void drawNormals ();
 private:
 
   bool recompute;
@@ -191,6 +191,7 @@ Nurbs::display ()
       ordre = 6;
     
     buildNodalVector (ordre, ctlpoints.size (), knots);
+    glColor3f (1,1,1);
     gluBeginCurve (nurbs);
     gluNurbsCurve (nurbs,knots.size (), &knots[0], 3, 
 		   &ctlpoints[0][0], ordre,  GL_MAP1_VERTEX_3);
@@ -361,5 +362,29 @@ Nurbs::evaluateNormals (std::vector<Vec3f>& n)
   n = normals;
 }
 
+void
+Nurbs::drawNormals ()
+{
+  int c;
+  std::vector<Vec3f> pts;
+  evaluate(pts);
+  std::vector<Vec3f>::iterator i;
+  std::vector<Vec3f>::iterator end = pts.end ();
+  std::vector<Vec3f> normals;
+  evaluateNormals (normals);
+  if (normals.empty())
+    return;
+  glBegin (GL_LINES);
+  for (i=pts.begin(), c= 0 ; i!=end; ++i, c++) {
+    Vec3f white(1, 1, 1);
+    Vec3f blue(0, 0, 1);
+    Vec3f p=(*i);
+    glColor3fv(&white[0]);
+    glVertex3fv(&p[0]);
+    glColor3fv(&blue[0]);
+    glVertex3fv(&(p+normals[c]/10)[0]);
+  }
+  glEnd ();
+}
 
 DECLARE_PLUGIN (Nurbs);
