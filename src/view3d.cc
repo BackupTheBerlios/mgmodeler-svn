@@ -33,8 +33,6 @@ View3D::View3D (QWorkspace *parent, eView view)
 void
 View3D::setupView ()
 {
-  double distance = 3.0;
-
   glLoadIdentity ();
   
   switch (m_view)
@@ -67,7 +65,7 @@ View3D::updateStatusBar (int x, int y)
 
 
 static void
-unproject (int x, int y, double *dx, double *dy, double *dz)
+unProject (int x, int y, double *dx, double *dy, double *dz)
 {
   double mv[16];
   double pj[16];
@@ -81,7 +79,6 @@ unproject (int x, int y, double *dx, double *dy, double *dz)
   gluUnProject (x, y, 0,
               mv, pj, vp,
               dx, dy, dz);
-
 }
 
 void
@@ -90,28 +87,39 @@ View3D::parseMousePress (QMouseEvent *e)
   if (e->button () == QMouseEvent::LeftButton)
     if (s_plugin_current)
       {
-	m_plugins. push_back (m_plugin_active);
+	if (m_plugin_active)
+	  m_plugins.push_back (m_plugin_active);
 	m_plugin_active = (PluginObject *)
 	  s_plugin_current-> m_createinstance ();
 	s_plugin_current = NULL;
       }
 
-  double x, y, z;
-  unproject (e->x(), e->y(), &x ,&y, &z);
+  if (m_mode == MODE_EDIT)
+    if (m_plugin_active)
+      {
+	double x, y, z;
+	unProject (e->x(), e->y(), &x ,&y, &z);
+	
+	m_plugin_active->buttonDown (e->button(), x, y, z);
+      }
+  if (m_mode == MODE_SELECTION)
+    {
+      PluginObject *objp = findObject (e-> x(), e-> y());
+    }
 
-  if (m_plugin_active)
-    m_plugin_active->buttonDown (e->button(), x, y, z);
 }
 
 void
 View3D::parseMouseRelease (QMouseEvent *e)
 {
-  double x, y, z;
-  unproject (e->x(), e->y(), &x ,&y, &z);
-
-
-  if (m_plugin_active)
-    m_plugin_active->buttonUp (e->button(), x, y, z);
+  if (m_mode == MODE_EDIT)
+    {
+      double x, y, z;
+      unProject (e->x(), e->y(), &x ,&y, &z);
+      
+      if (m_plugin_active)
+	m_plugin_active->buttonUp (e->button(), x, y, z);
+    }
 }
 
 void
@@ -123,11 +131,15 @@ View3D::parseMouseMove (QMouseEvent *e)
       m_cursor_y = e-> y();
       
       double x, y, z;
-      unproject (e->x(), e->y(), &x ,&y, &z);
-
-
-      updateStatusBar (x, y);
+      unProject (e->x(), e->y(), &x ,&y, &z);
+  
+      if (m_mode == MODE_EDIT)
+	//TODO CALL PLUGIN CALLBACK
+	;
+    
+      updateStatusBar (e->x (), e->y ());
     }
+  
 }
 
 void

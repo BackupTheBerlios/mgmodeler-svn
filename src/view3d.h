@@ -39,6 +39,7 @@ public:
   void setMode (eMode mode) {m_mode = mode;}
 
 protected:
+
   static PluginObject *s_plugin_current;
   PluginObject *m_plugin_active;
   eView m_view;
