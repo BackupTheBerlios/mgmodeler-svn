@@ -13,9 +13,11 @@ SUFFIXES = .ui
 %_moc.cc: %.h
 	@MOC@ $< -o $@
 
-pkgincludemathdir=@includedir@/@PACKAGE_NAME@
+pkgincludemathdir=@includedir@/@PACKAGE_NAME@/math
 pkgincludemath_HEADERS=math/vector3.h math/quaternion.h math/matrix4.h \
         math/matrix.h
+include_HEADERS=plugin.h
+
 
 BUILT_SOURCES=mainwindow_moc.cc icons.cc subconfig_moc.cc subconfig.cc \
 	subconfig.h subconfig.ui.h
