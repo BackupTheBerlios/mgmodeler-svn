@@ -107,7 +107,7 @@ View2D::parseMousePress (QMouseEvent *e)
 		if (m_plugin_active)
 		  m_plugins.push_back (m_plugin_active);
 		m_plugin_active = *i;
-		//m_mode = MODE_EDIT;
+		m_mode = MODE_EDIT;
 		printf("Found\n");
 		return;
 	      }
