@@ -250,7 +250,12 @@ OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
 {
   std::vector<std::vector<int> >::const_iterator i;
   std::vector<int>::const_iterator j;
+  
+  glPushAttrib(~0);
 
+  if (m_wireframe)  
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
+  
   if (m_lighting)
     {
       glEnable(GL_LIGHTING); 
@@ -279,6 +284,8 @@ OpenglWidget::drawPolygons (const std::vector<Vec3f>& points,
 	}
       glEnd ();
     }
+
+  glPopAttrib ();
 }
 
 void 
@@ -295,8 +302,13 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 
   GLfloat position[] = {1., 1., 10., 1.};
 
+  glPushAttrib(~0);
+
   glPushMatrix ();
   glLoadIdentity();
+
+  if (m_wireframe)  
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); 
 
   if (m_lighting)
     {
@@ -323,7 +335,7 @@ OpenglWidget::drawPolygons (const std::vector<std::vector<Vec3f> >& faces,
 	}
       glEnd ();
     }
- 
+  glPopAttrib();
 }
 
 void 

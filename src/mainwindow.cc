@@ -34,7 +34,7 @@ MainWindow::MainWindow ()
 
   m_view3d = new View3D (mdi);
   m_view3d-> show ();
-  m_view3d->setupView ();
+  m_view3d-> setupView ();
 
   for (int i=0; i<3; i++)
     {
@@ -79,10 +79,6 @@ MainWindow::createMenus ()
 	   QKeySequence ("Ctrl+O"), toolbar, menu_file, SLOT(menuFileOpen()),
 	   NULL);
 
-  addTool (this, "Manual", QPixmap ("icons/help.png"), 
-	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
-	   NULL);
-
   menu_file->insertSeparator();
 
   addTool (this, "Quit",QPixmap ("icons/exit.png") ,
@@ -92,7 +88,9 @@ MainWindow::createMenus ()
   addTool (this, "Move 2d Window", QPixmap ("icons/move.png"),
 	   QKeySequence ("Ctrl+M"), toolbar, NULL, SLOT(menuWindowMove ()),
 	   NULL);
-  
+
+  toolbar->addSeparator();  
+ 
   for (i = PluginManager::iobegin (); i != PluginManager::ioend (); ++i, ++k)
     {
       char str[2] = "0";
@@ -135,12 +133,15 @@ MainWindow::createMenus ()
   menu_window->insertSeparator();
   QWidgetList windows = mdi->windowList();
   for ( int i = 0; i < int(windows.count()); ++i ) {
-    int id = menu_window->insertItem(windows.at(i)->caption(),
-				     this, SLOT( windowsMenuActivated( int ) ) );
+    int id = 
+      menu_window->insertItem(windows.at(i)->caption(),
+			      this, SLOT( windowsMenuActivated( int ) ) );
     menu_window->setItemParameter( id, i );
     /*    menu_window->setItemChecked
 	  ( id, mdi->activeWindow() == windows.at(i) );*/
   }  
+
+  toolbar->addSeparator(); 
 
   addTool (this, "Wireframe", QPixmap ("icons/wireframe.png"),
 	   QKeySequence ("Ctrl+W"), toolbar, NULL, SLOT(menuWireframe ()),
@@ -153,13 +154,20 @@ MainWindow::createMenus ()
   addTool (this, "Lighting", QPixmap ("icons/light.png"),
 	   QKeySequence ("Ctrl+L"), toolbar, NULL, SLOT(menuLighting ()),
 	   NULL);
+
+  toolbar->addSeparator(); 
+
+  addTool (this, "Manual", QPixmap ("icons/help.png"), 
+	   QKeySequence ("F1"), toolbar, menu_help, SLOT(menuHelp()),
+	   NULL);
+
   addTool (this, "Normals", QPixmap ("icons/normals.png"),
 	   QKeySequence ("Ctrl+N"), toolbar, NULL, SLOT(menuNormals ()),
 	   NULL);
+
   addTool (this, "Switch Normals", QPixmap ("icons/snormals.png"),
 	   QKeySequence ("Ctrl+S"), toolbar, NULL, SLOT(menuSwitchNormals ()),
 	   NULL);
-
 }
 
 
