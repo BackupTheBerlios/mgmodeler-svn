@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "view3d.h"
 #include "icons.h"
 #include "plugin.h"
 
@@ -88,6 +87,15 @@ MainWindow::createMenus ()
     }
 }
 
+
+void MainWindow::setViewsMode (View3D::eMode mode)
+{
+  for (int i=0; i<3; i++)
+    {
+      m_view2d[i]-> setMode (mode);
+    }
+}
+
 void
 MainWindow::menuFileOpen ()
 {
@@ -115,10 +123,12 @@ MainWindow::menuPluginChoice ()
   //std::cout<<"Plugin: "<< objp->getName ()<<"\n";
 
   m_view3d-> setCurrentPlugin (objp);
+  setViewsMode (View3D::MODE_EDIT);
 }
 
 void
 MainWindow::menuSelect ()
 {
   std::cout<<"SELECT\n";
+  setViewsMode (View3D::MODE_SELECTION);
 }

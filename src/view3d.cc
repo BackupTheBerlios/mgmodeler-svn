@@ -24,8 +24,10 @@ View3D::View3D (QWorkspace *parent, eView view)
   m_cursor_x = m_cursor_y=0;
   m_editable = true;
   setMouseTracking (true);
-
+  
   m_plugin_active = NULL;
+
+  m_mode = MODE_EDIT;
 }
 
 void

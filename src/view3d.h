@@ -16,6 +16,11 @@ typedef enum {VIEW_PROFIL, VIEW_SECTION, VIEW_WAY} eView;
 class View3D : public QMainWindow 
 {
 public:
+  enum eMode{
+    MODE_EDIT,
+    MODE_SELECTION
+  };
+
   View3D (QWorkspace *parent, std::string name);
   View3D (QWorkspace *parent, eView view);
 
@@ -24,13 +29,11 @@ public:
 
   virtual void parseMousePress (QMouseEvent *e);
   virtual void parseMouseMove (QMouseEvent *e);
+
   void setCurrentPlugin (PluginObject *p);
   const std::vector<PluginObject *>& getPlugins();
 
-  enum mode {
-    EDIT_MODE,
-    OBJECT_MODE
-  };
+  void setMode (eMode mode) {m_mode = mode;}
 
 protected:
   static PluginObject *s_plugin_current;
@@ -39,7 +42,7 @@ protected:
   OpenglWidget *m_glwidget;
 
   int m_cursor_x, m_cursor_y;
-  mode m_mode;
+  eMode m_mode;
   bool m_editable;
   std::vector<PluginObject *> m_plugins;
 };

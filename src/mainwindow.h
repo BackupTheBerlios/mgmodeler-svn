@@ -9,7 +9,7 @@
 #define APPLICATION_NAME "MGModeler"
 #define MAX_2DVIEWS 3
 
-class View3D;
+#include "view3d.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -22,6 +22,8 @@ protected:
 private:
   View3D *m_view2d[MAX_2DVIEWS];
   View3D *m_view3d;
+
+  void setViewsMode (View3D::eMode mode);
   
   signals:
     private slots:
